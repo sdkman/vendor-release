@@ -37,9 +37,9 @@ val itDependencies = Seq()
 
 val accDependencies = Seq(
   "org.scalatest" %% "scalatest" % scalaTestVersion % AcceptanceTest,
-  "org.mongodb.scala" %% "mongo-scala-driver" % "1.1.1" % AcceptanceTest,
   "info.cukes" %% "cucumber-scala" % cucumberVersion % AcceptanceTest,
   "info.cukes" % "cucumber-junit" % cucumberVersion % AcceptanceTest,
+  "com.novocode" % "junit-interface" % "0.11" % AcceptanceTest,
   "org.scalaj" %% "scalaj-http" % scalajHttpVersion % AcceptanceTest
 )
 
@@ -49,7 +49,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j" % "2.4.16",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.1.8",
-  "io.spray" %% "spray-json" % "1.3.2"
+  "io.spray" %% "spray-json" % "1.3.2",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "1.1.1"
 ) ++ testDependencies ++ itDependencies ++ accDependencies
 
 lazy val `vendor-release` = (project in file("."))
