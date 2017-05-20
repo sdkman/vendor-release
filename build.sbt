@@ -1,3 +1,5 @@
+import scala.io.Source
+
 name := "vendor-release"
 
 val akkaHttpVersion = "10.0.2"
@@ -12,10 +14,13 @@ val commonSettings = Seq(
   scalaVersion := "2.11.8"
 )
 
+version := Source.fromFile("version").getLines.mkString
+
 lazy val dockerSettings = Seq(
   dockerBaseImage := "openjdk:8",
   maintainer in Docker := "Marco Vermeulen <marco@sdkman.io>",
-  dockerUpdateLatest := true
+  dockerUpdateLatest := true,
+  packageName := "sdkman/vendor-release"
 )
 
 lazy val IntegrationTest = config("it") extend Test

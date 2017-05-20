@@ -4,7 +4,7 @@ services:
 
   vendor-release:
     container_name: vendor-release
-    image: vendor-release:latest
+    image: sdkman/vendor-release:latest
     ports:
       - "9000:9000"
     volumes:

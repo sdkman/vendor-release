@@ -7,14 +7,15 @@ language: scala
 
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - sbt docker:publishLocal
 script:
-  - docker build -t sdkman/vendor-release:2.0.0-SNAPSHOT .
   - ./compose run --rm vendor_release_acc_tests
 after_success:
-  - docker push sdkman/vendor-release:2.0.0-SNAPSHOT
+  - docker push sdkman/vendor-release:3.0.0-SNAPSHOT
 cache:
   directories:
   - "$HOME/.sbt"
+  - "$HOME/.ivy2"
 
 # blacklist
 branches:
