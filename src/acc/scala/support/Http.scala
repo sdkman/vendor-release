@@ -21,7 +21,7 @@ import scalaj.http.{BaseHttp, HttpOptions, HttpRequest, HttpResponse, Http => Ht
 
 object Http {
 
-  val host = "http://localhost:9000"
+  val host = "http://vendor-release:9000"
 
   def get(endpoint: String) = httpCallWithOptions { http =>
     http(s"$host$endpoint").headers(

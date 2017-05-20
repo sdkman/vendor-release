@@ -13,7 +13,7 @@ val commonSettings = Seq(
 )
 
 lazy val dockerSettings = Seq(
-  dockerBaseImage := "openjdk:8u131",
+  dockerBaseImage := "openjdk:8",
   maintainer in Docker := "Marco Vermeulen <marco@sdkman.io>",
   dockerUpdateLatest := true
 )

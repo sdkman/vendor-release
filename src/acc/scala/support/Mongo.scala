@@ -24,7 +24,7 @@ object Mongo {
 
   import Helpers._
 
-  lazy val mongoClient = MongoClient("mongodb://localhost:27017")
+  lazy val mongoClient = MongoClient("mongodb://mongo:27017")
 
   lazy val db = mongoClient.getDatabase("sdkman")
 

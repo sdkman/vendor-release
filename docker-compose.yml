@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+
+  vendor-release:
+    container_name: vendor-release
+    image: vendor-release:latest
+    ports:
+      - "9000:9000"
+    volumes:
+      - $PWD/wait-for-it.sh:/opt/docker/wait-for-it.sh
+    command: bash -c "/opt/docker/wait-for-it.sh -t 60 'mongo:27017'"
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: mongo
+    image: mongo:3.2
+    ports:
+      - "27017:27017"
+
+  vendor_release_acc_tests:
+    image: nightscape/docker-sbt:latest
+    working_dir: /work
+    user: ${USER_ID}
+    volumes:
+      - ${PWD}:/work
+      - ${CACHE_DIR}/.ivy2:/ivy2
+      - ${CACHE_DIR}/.sbt:/sbt
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/bin/docker
+    depends_on:
+      - vendor-release
+    command: ./sbtw acc:test
