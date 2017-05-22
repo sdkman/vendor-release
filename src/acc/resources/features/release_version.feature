@@ -28,14 +28,12 @@ Feature: Release a Candidate Version
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is 201
+    Then the status received is 201 "CREATED"
     And "groovy" Version "2.3.6" with URL "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.11.zip" was published as UNIVERSAL
-    And the message "Released groovy 2.3.6 for UNIVERSAL" is received
+    And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
-  @pending
   Scenario: Attempt to Release a duplicate Version
-    Given the existing Default "groovy" Version is "2.3.5"
-    When a JSON POST on the "/release" endpoint:
+    When a JSON POST on the "/release/universal" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -43,7 +41,7 @@ Feature: Release a Candidate Version
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    And a JSON POST on the "/release" endpoint:
+    And a JSON POST on the "/release/universal" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -51,8 +49,8 @@ Feature: Release a Candidate Version
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is "CONFLICT"
-    And the error message received includes "duplicate candidate version: groovy 2.3.6"
+    Then the status received is 409 "CONFLICT"
+    And the message "Duplicate: groovy 2.3.6 already exists" is received
 
   @pending
   Scenario: Attempt to Release a Version for a non-existent Candidate

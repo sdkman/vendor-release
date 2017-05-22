@@ -2,10 +2,9 @@ package io.sdkman.vendor.release
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.StatusCodes.Created
+import akka.http.scaladsl.model.StatusCodes.{Conflict, Created}
 import akka.http.scaladsl.server.Directives
 import io.sdkman.vendor.release.repos.{Version, VersionsRepo}
-import org.mongodb.scala.Completed
 import spray.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,16 +33,16 @@ trait ApiRoutes extends Directives with JsonSupport with VersionsRepo {
     }
   } ~ path("release" / "universal") {
     post {
-      entity(as[UniversalPlatformReleaseRequest]) { request =>
+      entity(as[UniversalPlatformReleaseRequest]) { req =>
         complete {
-          saveVersion(Version(request.candidate, request.version, Universal, request.url)).toFuture.map { completeions =>
-            completeions.headOption.map(_ =>
-                HttpResponse(Created, entity = releaseMessage(request.candidate, request.version, Universal)))
+          findVersion(req.candidate, req.version, Universal).map { vO =>
+            vO.map(v => HttpResponse(Conflict, entity = s"Duplicate: ${v.candidate} ${v.version} already exists")).getOrElse {
+              saveVersion(Version(req.candidate, req.version, Universal, req.url))
+              HttpResponse(Created, entity = s"Released: ${req.candidate} ${req.version} for $Universal")
+            }
           }
         }
       }
     }
   }
-
-  def releaseMessage(candidate: String, version: String, platform: String) = s"Released $candidate $version for $platform"
 }

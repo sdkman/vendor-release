@@ -22,8 +22,8 @@ import org.scalatest.Matchers
 
 class FeatureSteps extends ScalaDsl with EN with Matchers with JsonSupport {
 
-  Then( """^the status received is (.*)$""") { (status: Int) =>
-    World.response.code shouldBe status
+  Then( """^the status received is (.*) "(.*)"$""") { (code: Int, status: String) =>
+    World.response.code shouldBe code
   }
 
   Then( """^the message "(.*?)" is received$""") { (message: String) =>
