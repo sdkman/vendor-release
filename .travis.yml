@@ -5,6 +5,10 @@ services:
 
 language: scala
 
+env:
+  - SBT_CACHE=$HOME/.sbt
+  - IVY_CACHE=$HOME/.ivy
+
 before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - sbt docker:publishLocal
