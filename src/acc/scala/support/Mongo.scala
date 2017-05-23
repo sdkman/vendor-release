@@ -2,6 +2,7 @@ package support
 
 import java.util.concurrent.TimeUnit
 
+import io.sdkman.vendor.release.repos.Version
 import org.mongodb.scala.bson.BsonString
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters.{and, equal}
@@ -17,8 +18,6 @@ case class Candidate(candidate: String,
                      default: String,
                      websiteUrl: String,
                      distribution: String)
-
-case class Version(candidate: String, version: String, platform: String, url: String)
 
 object Mongo {
 

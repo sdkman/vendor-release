@@ -16,8 +16,9 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
+import io.sdkman.vendor.release.repos.Version
 import org.scalatest.Matchers
-import support.{Candidate, Mongo, Version}
+import support.{Candidate, Mongo}
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers {
   Then( """^"(.*?)" Version "(.*?)" with URL "(.*?)" was published as (.*?)$""") { (candidate: String, version: String, url: String, platform: String) =>

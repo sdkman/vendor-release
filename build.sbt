@@ -31,7 +31,7 @@ lazy val itSettings = Defaults.itSettings ++ Seq(
     TestFrameworks.ScalaTest, "-F", Option(System.getProperty("itTimeScale")).getOrElse("1"))
 )
 
-lazy val AcceptanceTest = config("acc") extend Test
+lazy val AcceptanceTest = config("acc") extend IntegrationTest
 parallelExecution in AcceptanceTest := false
 
 val testDependencies = Seq(
