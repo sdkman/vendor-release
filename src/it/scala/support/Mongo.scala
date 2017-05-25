@@ -2,7 +2,7 @@ package support
 
 import java.util.concurrent.TimeUnit
 
-import io.sdkman.vendor.release.repos.Version
+import io.sdkman.vendor.release.repos.{Candidate, Version}
 import org.mongodb.scala.bson.BsonString
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters.{and, equal}
@@ -11,13 +11,6 @@ import org.mongodb.scala.{MongoClient, ScalaObservable, _}
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, _}
-
-case class Candidate(candidate: String,
-                     name: String,
-                     description: String,
-                     default: String,
-                     websiteUrl: String,
-                     distribution: String)
 
 object Mongo {
 

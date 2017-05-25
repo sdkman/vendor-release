@@ -1,11 +1,18 @@
 package io.sdkman.vendor.release
 
 import akka.http.scaladsl.model.HttpResponse
-import akka.http.scaladsl.model.StatusCodes.{Conflict, Created}
-import io.sdkman.vendor.release.repos.Version
+import akka.http.scaladsl.model.StatusCodes.{BadRequest, Conflict, Created}
+
+import scala.concurrent.Future
 
 trait HttpResponses {
-  def createdResponse(v: Version) = HttpResponse(Created, entity = s"Released: ${v.candidate} ${v.version} for ${v.platform}")
+  def conflictResponse(c: String, v: String) = HttpResponse(Conflict, entity = s"Duplicate: $c $v already exists")
 
-  def conflictResponse(v: Version) = HttpResponse(Conflict, entity = s"Duplicate: ${v.candidate} ${v.version} already exists")
+  def conflictResponseF(req: UniversalPlatformReleaseRequest) = Future.successful(conflictResponse(req.candidate, req.version))
+
+  def createdResponse(c: String, v: String, p: String) = HttpResponse(Created, entity = s"Released: $c $v for $p")
+
+  def badRequestResponse(c: String) = HttpResponse(BadRequest, entity = s"Invalid candidate: $c")
+
+  def badRequestResponseF(req: UniversalPlatformReleaseRequest) = Future.successful(badRequestResponse(req.candidate))
 }

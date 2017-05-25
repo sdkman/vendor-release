@@ -8,7 +8,17 @@ import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 
 package object repos {
+
   implicit val mongoExecutionContext = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(10))
+
+  implicit def documentToCandidate(doc: Document): Candidate =
+    Candidate(
+      field("candidate", doc),
+      field("name", doc),
+      field("description", doc),
+      field("default", doc),
+      field("websiteUrl", doc),
+      field("distribution", doc))
 
   implicit def documentToVersion(doc: Document): Version =
     Version(

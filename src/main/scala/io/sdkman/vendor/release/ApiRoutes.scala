@@ -2,11 +2,11 @@ package io.sdkman.vendor.release
 
 import akka.http.scaladsl.model.StatusCodes.Created
 import akka.http.scaladsl.server.Directives
-import io.sdkman.vendor.release.repos.{Version, VersionsRepo}
+import io.sdkman.vendor.release.repos.{CandidatesRepo, Version, VersionsRepo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ApiRoutes extends Directives with VersionsRepo with HttpResponses {
+trait ApiRoutes extends Directives with CandidatesRepo with VersionsRepo with HttpResponses with JsonSupport {
 
   val Universal = "UNIVERSAL"
 
@@ -23,11 +23,15 @@ trait ApiRoutes extends Directives with VersionsRepo with HttpResponses {
     post {
       entity(as[UniversalPlatformReleaseRequest]) { req =>
         complete {
-          findVersion(req.candidate, req.version, Universal).map { maybeVersion =>
-            maybeVersion.map(v => conflictResponse(v)).getOrElse {
-              val version = Version(req.candidate, req.version, Universal, req.url)
-              saveVersion(version)
-              createdResponse(version)
+          val candidateFO = findCandidate(req.candidate)
+          val versionFO = findVersion(req.candidate, req.version, Universal)
+          for {
+            candidateO <- candidateFO
+            versionO <- versionFO
+          } yield {
+            candidateO.fold(badRequestResponseF(req)) { _ =>
+              versionO.fold(saveVersion(Version(req.candidate, req.version, Universal, req.url))
+                .map(_ => createdResponse(req.candidate, req.version, Universal)))(_ => conflictResponseF(req))
             }
           }
         }
