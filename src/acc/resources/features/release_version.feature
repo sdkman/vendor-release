@@ -68,41 +68,38 @@ Feature: Release a Candidate Version
     And the message "Invalid candidate: groovy" is received
     And Candidate "groovy" Version "2.3.6" does not exists
 
-  @pending
   Scenario: Attempt to submit malformed JSON with no Candidate
-    When a JSON POST on the "/release" endpoint:
+    When a JSON POST on the "/release/universal" endpoint:
     """
           |{
           |  "version" : "2.3.6",
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is "BAD_REQUEST"
-    And the error message received includes "on field 'candidate': rejected value [null]"
-    And the error message received includes "Candidate can not be null."
+    Then the status received is 400 "BAD_REQUEST"
+    And the message containing "The request content was malformed" is received
+    And the message containing "Object is missing required member 'candidate'" is received
 
-  @pending
   Scenario: Attempt to submit malformed JSON with no Version
-    When a JSON POST on the "/release" endpoint:
+    When a JSON POST on the "/release/universal" endpoint:
     """
           |{
           |  "candidate" : "groovy",
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is "BAD_REQUEST"
-    And the error message received includes "on field 'version': rejected value [null]"
-    And the error message received includes "Version can not be null."
+    Then the status received is 400 "BAD_REQUEST"
+    And the message containing "The request content was malformed" is received
+    And the message containing "Object is missing required member 'version'" is received
 
-  @pending
   Scenario: Attempt to submit malformed JSON with no URL
-    When a JSON POST on the "/release" endpoint:
+    When a JSON POST on the "/release/universal" endpoint:
     """
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6"
           |}
     """
-    Then the status received is "BAD_REQUEST"
-    And the error message received includes "on field 'url': rejected value [null]"
-    And the error message received includes "URL can not be null."
+    Then the status received is 400 "BAD_REQUEST"
+    And the message containing "The request content was malformed" is received
+    And the message containing "Object is missing required member 'url'" is received

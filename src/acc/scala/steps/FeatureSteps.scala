@@ -30,8 +30,7 @@ class FeatureSteps extends ScalaDsl with EN with Matchers with JsonSupport {
     World.response.body shouldBe message
   }
 
-  Then( """^the error message received includes "(.*?)"$""") { (message: String) =>
-    throw new PendingException()
+  Then( """^the message containing "(.*?)" is received$""") { (message: String) =>
+    World.response.body should include(message)
   }
-
 }
