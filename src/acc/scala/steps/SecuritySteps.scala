@@ -26,7 +26,7 @@ class SecuritySteps extends ScalaDsl with EN with Matchers {
     consumer = "invalid_consumer"
   }
 
-  And( """^the Client is Authorised and Authenticated as "(.*)"$""") { (principal: String) =>
+  And( """^the Client is Authorised and Authenticated as (.*)$""") { (principal: String) =>
     token = "default_token"
     consumer = principal
   }

@@ -21,15 +21,15 @@ import org.scalatest.Matchers
 
 class FeatureSteps extends ScalaDsl with EN with Matchers with JsonSupport {
 
-  Then( """^the status received is (.*) "(.*)"$""") { (code: Int, status: String) =>
+  Then( """^the status received is (.*) (.*)$""") { (code: Int, status: String) =>
     World.response.code shouldBe code
   }
 
-  Then( """^the message "(.*?)" is received$""") { (message: String) =>
+  Then( """^the message "(.*)" is received$""") { (message: String) =>
     World.response.body shouldBe message
   }
 
-  Then( """^the message containing "(.*?)" is received$""") { (message: String) =>
+  Then( """^the message containing "(.*)" is received$""") { (message: String) =>
     World.response.body should include(message)
   }
 }

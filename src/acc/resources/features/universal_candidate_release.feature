@@ -17,11 +17,12 @@
 Feature: Universal Candidate Release
 
   Background:
-    Given the Client is Authorised and Authenticated as "groovy"
+    Given the Client is Authorised and Authenticated as groovy
 
   Scenario: Release a Universal Candidate Version
-    Given the existing Default "groovy" Version is "2.3.5"
-    When a JSON POST on the "/release/universal" endpoint:
+    Given an existing UNIVERSAL groovy Version 2.3.5 exists
+    And the existing UNIVERSAL Default groovy Version is 2.3.5
+    When a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -29,13 +30,14 @@ Feature: Universal Candidate Release
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is 201 "CREATED"
-    And "groovy" Version "2.3.6" with URL "https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.11.zip" was published as UNIVERSAL
+    Then the status received is 201 CREATED
+    And groovy Version 2.3.6 with URL https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.11.zip was published as UNIVERSAL
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
   Scenario: Attempt to Release a duplicate Version
-    Given the existing Default "groovy" Version is "2.3.5"
-    When a JSON POST on the "/release/universal" endpoint:
+    Given an existing UNIVERSAL groovy Version 2.3.5 exists
+    And the existing UNIVERSAL Default groovy Version is 2.3.5
+    When a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -43,7 +45,7 @@ Feature: Universal Candidate Release
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    And a JSON POST on the "/release/universal" endpoint:
+    And a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -51,12 +53,12 @@ Feature: Universal Candidate Release
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is 409 "CONFLICT"
+    Then the status received is 409 CONFLICT
     And the message "Duplicate: groovy 2.3.6 already exists" is received
 
   Scenario: Attempt to Release a Version for a non-existent Candidate
-    Given Candidate "groovy" does not exist
-    When a JSON POST on the "/release/universal" endpoint:
+    Given Candidate groovy does not exist
+    When a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -64,42 +66,42 @@ Feature: Universal Candidate Release
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is 400 "BAD_REQUEST"
+    Then the status received is 400 BAD_REQUEST
     And the message "Invalid candidate: groovy" is received
-    And Candidate "groovy" Version "2.3.6" does not exists
+    And Candidate groovy Version 2.3.6 does not exists
 
   Scenario: Attempt to submit malformed JSON with no Candidate
-    When a JSON POST on the "/release/universal" endpoint:
+    When a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "version" : "2.3.6",
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is 400 "BAD_REQUEST"
+    Then the status received is 400 BAD_REQUEST
     And the message containing "The request content was malformed" is received
     And the message containing "Object is missing required member 'candidate'" is received
 
   Scenario: Attempt to submit malformed JSON with no Version
-    When a JSON POST on the "/release/universal" endpoint:
+    When a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "candidate" : "groovy",
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    Then the status received is 400 "BAD_REQUEST"
+    Then the status received is 400 BAD_REQUEST
     And the message containing "The request content was malformed" is received
     And the message containing "Object is missing required member 'version'" is received
 
   Scenario: Attempt to submit malformed JSON with no URL
-    When a JSON POST on the "/release/universal" endpoint:
+    When a JSON POST on the /release/universal endpoint:
     """
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6"
           |}
     """
-    Then the status received is 400 "BAD_REQUEST"
+    Then the status received is 400 BAD_REQUEST
     And the message containing "The request content was malformed" is received
     And the message containing "Object is missing required member 'url'" is received

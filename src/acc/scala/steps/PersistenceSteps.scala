@@ -21,23 +21,27 @@ import org.scalatest.Matchers
 import support.Mongo
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers {
-  Then( """^"(.*?)" Version "(.*?)" with URL "(.*?)" was published as (.*?)$""") { (candidate: String, version: String, url: String, platform: String) =>
+
+  Then( """^(.*) Version (.*) with URL (.*) was published as (.*)$""") { (candidate: String, version: String, url: String, platform: String) =>
     withClue("Version was not published") {
       Mongo.versionPublished(candidate, version, url, platform) shouldBe true
     }
   }
 
-  Given( """^a "(.*?)" Version "(.*?)" with URL "(.*?)" already exists$""") { (candidate: String, version: String, url: String) =>
-    Mongo.insertVersion(Version(candidate, version, "UNIVERSAL", s"http://somecandidate.org/$candidate/$version"))
+  Given( """^a (.*) (.*) Version (.*) with URL (.*) already exists$""") { (platform: String, candidate: String, version: String, url: String) =>
+    Mongo.insertVersion(Version(candidate, version, platform, s"http://somecandidate.org/$candidate/$version"))
   }
 
-  Given( """^the existing Default "(.*?)" Version is "(.*?)"$""") { (candidate: String, version: String) =>
+  Given( """^an existing (.*) (.*) Version (.*) exists""") { (platform: String, candidate: String, version: String) =>
     Mongo.insertVersion(
       Version(
         candidate = candidate,
         version = version,
-        platform = "UNIVERSAL",
+        platform = platform,
         url = s"http://somecandidate.org/$candidate/$version"))
+  }
+
+  Given( """^the existing (.*) Default (.*) Version is (.*)$""") { (platform: String, candidate: String, version: String) =>
     Mongo.insertCandidate(
       Candidate(
         candidate = candidate,
@@ -45,18 +49,18 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
         description = s"$candidate description",
         default = version,
         websiteUrl = s"http://somecandidate.org/$candidate",
-        distribution = "UNIVERSAL"))
+        distribution = platform))
   }
 
-  Then( """^the Default "(.*?)" Version has changed to "(.*?)"$""") { (candidate: String, version: String) =>
+  Then( """^the Default (.*) Version has changed to (.*)$""") { (candidate: String, version: String) =>
     Mongo.isDefault(candidate, version) shouldBe true
   }
 
-  Given( """^Candidate "(.*?)" Version "(.*?)" does not exists$""") { (candidate: String, version: String) =>
+  Given( """^Candidate (.*) Version (.*) does not exists$""") { (candidate: String, version: String) =>
     Mongo.versionExists(candidate, version) shouldBe false
   }
 
-  Given( """^Candidate "(.*?)" does not exist$""") { (candidate: String) =>
+  Given( """^Candidate (.*) does not exist$""") { (candidate: String) =>
     Mongo.candidateExists(candidate) shouldBe false
   }
 }

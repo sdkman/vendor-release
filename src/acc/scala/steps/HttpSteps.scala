@@ -20,15 +20,15 @@ import org.scalatest.Matchers
 import steps.World._
 
 class HttpSteps extends ScalaDsl with EN with Matchers {
-  When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>
+  When( """^a JSON POST on the (.*) endpoint:$""") { (endpoint: String, json: String) =>
     response = support.Http.post(endpoint, json.stripMargin)
   }
 
-  When( """^a JSON PUT on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
+  When( """^a JSON PUT on the (.*) endpoint:$""") { (endpoint: String, payload: String) =>
     response = support.Http.put(endpoint, payload.stripMargin)
   }
 
-  And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
+  And( """^the (.*) endpoint is accessed$""") { (endpoint: String) =>
     response = support.Http.get(endpoint)
   }
 }
