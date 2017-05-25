@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Marco Vermeulen
+ * Copyright 2017 Marco Vermeulen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package steps
 
-import cucumber.api.PendingException
 import cucumber.api.scala.{EN, ScalaDsl}
 import io.sdkman.vendor.release.JsonSupport
 import org.scalatest.Matchers
