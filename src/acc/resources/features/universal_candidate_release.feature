@@ -14,7 +14,7 @@
 #  limitations under the License.
 #
 
-Feature: Release a Candidate Version
+Feature: Universal Candidate Release
 
   Background:
     Given the Client is Authorised and Authenticated as "groovy"
