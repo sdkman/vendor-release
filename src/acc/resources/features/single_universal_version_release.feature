@@ -21,7 +21,7 @@ Feature: Universal Candidate Release
 
   Scenario: Release a Universal Candidate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
-    And the existing UNIVERSAL Default groovy Version is 2.3.5
+    And the existing Default UNIVERSAL groovy Version is 2.3.5
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -36,7 +36,7 @@ Feature: Universal Candidate Release
 
   Scenario: Attempt to Release a duplicate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
-    And the existing UNIVERSAL Default groovy Version is 2.3.5
+    And the existing Default UNIVERSAL groovy Version is 2.3.5
     When a JSON POST on the /release/version endpoint:
     """
           |{

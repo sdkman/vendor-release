@@ -15,7 +15,6 @@
   */
 package io.sdkman.vendor.release
 
-import akka.http.scaladsl.model.StatusCodes.Created
 import akka.http.scaladsl.server.Directives
 import io.sdkman.vendor.release.repos.{CandidatesRepo, Version, VersionsRepo}
 
@@ -26,27 +25,21 @@ trait ApiRoutes extends Directives with CandidatesRepo with VersionsRepo with Ht
   val Universal = "UNIVERSAL"
 
   val apiRoute = path("release" / "versions") {
-    post {
-      entity(as[MultiPlatformReleaseRequest]) { req =>
-        println(req)
-        complete {
-          Created
-        }
-      }
-    }
-  } ~ path("release" / "version") {
-    post {
-      entity(as[UniversalPlatformReleaseRequest]) { req =>
-        complete {
-          val candidateFO = findCandidate(req.candidate)
-          val versionFO = findVersion(req.candidate, req.version, Universal)
-          for {
-            candidateO <- candidateFO
-            versionO <- versionFO
-          } yield {
-            candidateO.fold(badRequestResponseF(req)) { _ =>
-              versionO.fold(saveVersion(Version(req.candidate, req.version, Universal, req.url))
-                .map(_ => createdResponse(req.candidate, req.version, Universal)))(_ => conflictResponseF(req))
+    path("release" / "version") {
+      post {
+        entity(as[VersionReleaseRequest]) { req =>
+          val platform = req.platform.getOrElse(Universal)
+          complete {
+            val candidateFO = findCandidate(req.candidate)
+            val versionFO = findVersion(req.candidate, req.version, platform)
+            for {
+              candidateO <- candidateFO
+              versionO <- versionFO
+            } yield {
+              candidateO.fold(badRequestResponseF(req)) { _ =>
+                versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
+                  .map(_ => createdResponse(req.candidate, req.version, platform)))(_ => conflictResponseF(req))
+              }
             }
           }
         }
@@ -54,3 +47,5 @@ trait ApiRoutes extends Directives with CandidatesRepo with VersionsRepo with Ht
     }
   }
 }
+
+case class VersionReleaseRequest(candidate: String, version: String, url: String, platform: Option[String])

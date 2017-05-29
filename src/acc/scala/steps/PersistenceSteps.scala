@@ -41,7 +41,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
         url = s"http://somecandidate.org/$candidate/$version"))
   }
 
-  Given( """^the existing (.*) Default (.*) Version is (.*)$""") { (platform: String, candidate: String, version: String) =>
+  Given( """^the existing Default (.*) (.*) Version is (.*)$""") { (platform: String, candidate: String, version: String) =>
     Mongo.insertCandidate(
       Candidate(
         candidate = candidate,
