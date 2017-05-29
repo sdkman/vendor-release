@@ -68,7 +68,7 @@ object Mongo {
 
   def isDefault(candidate: String, version: String): Boolean = Await.result(
     candidatesCollection
-      .find(and(equal("candidate", candidate), equal("version", version)))
+      .find(and(equal("candidate", candidate), equal("default", version)))
       .first
       .toFuture()
       .map(_.nonEmpty), 5.seconds)

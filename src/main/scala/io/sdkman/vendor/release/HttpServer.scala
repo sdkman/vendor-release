@@ -18,20 +18,20 @@ package io.sdkman.vendor.release
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import io.sdkman.vendor.release.routes.{HealthRoutes, ReleaseRoutes}
+import io.sdkman.vendor.release.routes.{DefaultRoutes, HealthRoutes, ReleaseRoutes}
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HttpServer extends Configuration with ReleaseRoutes with HealthRoutes {
+class HttpServer extends Configuration with ReleaseRoutes with DefaultRoutes with HealthRoutes {
 
   implicit lazy val actorSystem = ActorSystem("vendor-release-service")
   implicit lazy val materializer = ActorMaterializer()
 
-  val routes = healthRoutes ~ releaseRoutes
+  val routes = healthRoutes ~ releaseRoutes ~ defaultRoutes
 
-  def start() : Future[Http.ServerBinding] = Http().bindAndHandle(routes, serviceHost, servicePort)
+  def start(): Future[Http.ServerBinding] = Http().bindAndHandle(routes, serviceHost, servicePort)
 
   def shutdown(): Unit = {
     Await.ready(actorSystem.terminate(), 5.seconds)

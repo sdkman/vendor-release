@@ -53,15 +53,21 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
   }
 
   Then( """^the Default (.*) Version has changed to (.*)$""") { (candidate: String, version: String) =>
-    Mongo.isDefault(candidate, version) shouldBe true
+    withClue(s"The default $candidate version was not changed to $version") {
+      Mongo.isDefault(candidate, version) shouldBe true
+    }
   }
 
   Given( """^Candidate (.*) Version (.*) does not exists$""") { (candidate: String, version: String) =>
-    Mongo.versionExists(candidate, version) shouldBe false
+    withClue(s"$candidate $version does not exist") {
+      Mongo.versionExists(candidate, version) shouldBe false
+    }
   }
 
   Given( """^Candidate (.*) does not exist$""") { (candidate: String) =>
-    Mongo.candidateExists(candidate) shouldBe false
+    withClue(s"The exists: $candidate") {
+      Mongo.candidateExists(candidate) shouldBe false
+    }
   }
 
   Given("""^an alive OK entry in the application collection$""") { () =>

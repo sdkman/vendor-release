@@ -3,6 +3,7 @@ package io.sdkman.vendor.release.repos
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfter, Matchers, OptionValues, WordSpec}
 import support.Mongo
+import support.Mongo.isDefault
 
 class CandidatesRepoSpec extends WordSpec with Matchers with BeforeAndAfter with ScalaFutures with OptionValues {
 
@@ -25,6 +26,16 @@ class CandidatesRepoSpec extends WordSpec with Matchers with BeforeAndAfter with
       val candidate = "scoobeedoo"
       whenReady(repo.findCandidate(candidate)) { maybeCandidate =>
         maybeCandidate shouldNot be(defined)
+      }
+    }
+
+    "update a single candidate when present" in {
+      val candidate = "scala"
+      val version = "2.12.1"
+      whenReady(repo.updateDefaultVersion(candidate, version)) { _ =>
+        withClue(s"$candidate was not set to default $version") {
+          isDefault(candidate, version) shouldBe true
+        }
       }
     }
   }

@@ -18,6 +18,8 @@ package io.sdkman.vendor.release.repos
 import io.sdkman.vendor.release.MongoConnectivity
 import org.mongodb.scala._
 import org.mongodb.scala.model.Filters.equal
+import org.mongodb.scala.model.Updates.set
+import org.mongodb.scala.result.UpdateResult
 
 import scala.concurrent.Future
 
@@ -30,6 +32,11 @@ trait CandidatesRepo extends MongoConnectivity {
       .map(doc => doc: Candidate)
       .toFuture()
       .map(_.headOption)
+
+  def updateDefaultVersion(candidate: String, version: String): Future[UpdateResult] =
+    candidatesCollection
+      .updateOne(equal("candidate", candidate), set("default", version))
+      .head()
 }
 
 case class Candidate(candidate: String,

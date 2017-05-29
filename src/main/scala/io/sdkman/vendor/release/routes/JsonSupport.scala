@@ -13,12 +13,13 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package io.sdkman.vendor.release
+package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import io.sdkman.vendor.release.routes.VersionReleaseRequest
 import spray.json.DefaultJsonProtocol
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val universalPlatformFormat = jsonFormat4(VersionReleaseRequest)
+  implicit val versionReleaseFormat = jsonFormat4(VersionReleaseRequest)
+
+  implicit val versionDefaultFormat = jsonFormat2(VersionDefaultRequest)
 }
