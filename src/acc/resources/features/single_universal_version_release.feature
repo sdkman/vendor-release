@@ -22,7 +22,7 @@ Feature: Universal Candidate Release
   Scenario: Release a Universal Candidate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
     And the existing UNIVERSAL Default groovy Version is 2.3.5
-    When a JSON POST on the /release/universal endpoint:
+    When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -37,7 +37,7 @@ Feature: Universal Candidate Release
   Scenario: Attempt to Release a duplicate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
     And the existing UNIVERSAL Default groovy Version is 2.3.5
-    When a JSON POST on the /release/universal endpoint:
+    When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -45,7 +45,7 @@ Feature: Universal Candidate Release
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    And a JSON POST on the /release/universal endpoint:
+    And a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -58,7 +58,7 @@ Feature: Universal Candidate Release
 
   Scenario: Attempt to Release a Version for a non-existent Candidate
     Given Candidate groovy does not exist
-    When a JSON POST on the /release/universal endpoint:
+    When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -71,7 +71,7 @@ Feature: Universal Candidate Release
     And Candidate groovy Version 2.3.6 does not exists
 
   Scenario: Attempt to submit malformed JSON with no Candidate
-    When a JSON POST on the /release/universal endpoint:
+    When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "version" : "2.3.6",
@@ -83,7 +83,7 @@ Feature: Universal Candidate Release
     And the message containing "Object is missing required member 'candidate'" is received
 
   Scenario: Attempt to submit malformed JSON with no Version
-    When a JSON POST on the /release/universal endpoint:
+    When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -95,7 +95,7 @@ Feature: Universal Candidate Release
     And the message containing "Object is missing required member 'version'" is received
 
   Scenario: Attempt to submit malformed JSON with no URL
-    When a JSON POST on the /release/universal endpoint:
+    When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "groovy",

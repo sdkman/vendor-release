@@ -25,7 +25,7 @@ trait ApiRoutes extends Directives with CandidatesRepo with VersionsRepo with Ht
 
   val Universal = "UNIVERSAL"
 
-  val apiRoute = path("release" / "multi") {
+  val apiRoute = path("release" / "versions") {
     post {
       entity(as[MultiPlatformReleaseRequest]) { req =>
         println(req)
@@ -34,7 +34,7 @@ trait ApiRoutes extends Directives with CandidatesRepo with VersionsRepo with Ht
         }
       }
     }
-  } ~ path("release" / "universal") {
+  } ~ path("release" / "version") {
     post {
       entity(as[UniversalPlatformReleaseRequest]) { req =>
         complete {
