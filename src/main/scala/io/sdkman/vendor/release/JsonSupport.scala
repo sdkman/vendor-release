@@ -16,6 +16,7 @@
 package io.sdkman.vendor.release
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import io.sdkman.vendor.release.routes.VersionReleaseRequest
 import spray.json.DefaultJsonProtocol
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {

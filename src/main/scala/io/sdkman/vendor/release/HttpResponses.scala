@@ -17,6 +17,7 @@ package io.sdkman.vendor.release
 
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes.{BadRequest, Conflict, Created}
+import io.sdkman.vendor.release.routes.VersionReleaseRequest
 
 import scala.concurrent.Future
 

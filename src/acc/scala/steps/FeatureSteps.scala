@@ -16,10 +16,9 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import io.sdkman.vendor.release.JsonSupport
 import org.scalatest.Matchers
 
-class FeatureSteps extends ScalaDsl with EN with Matchers with JsonSupport {
+class FeatureSteps extends ScalaDsl with EN with Matchers {
 
   Then( """^the status received is (.*) (.*)$""") { (code: Int, status: String) =>
     withClue(s"The response body was: ${World.response.body}:") {

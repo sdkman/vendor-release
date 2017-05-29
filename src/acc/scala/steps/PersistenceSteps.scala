@@ -63,4 +63,8 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
   Given( """^Candidate (.*) does not exist$""") { (candidate: String) =>
     Mongo.candidateExists(candidate) shouldBe false
   }
+
+  Given("""^an alive OK entry in the application collection$""") { () =>
+    Mongo.insertAliveOk()
+  }
 }

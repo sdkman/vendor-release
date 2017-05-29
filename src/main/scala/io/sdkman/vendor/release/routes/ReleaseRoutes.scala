@@ -13,33 +13,32 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package io.sdkman.vendor.release
+package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.server.Directives
 import io.sdkman.vendor.release.repos.{CandidatesRepo, Version, VersionsRepo}
+import io.sdkman.vendor.release.{HttpResponses, JsonSupport}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ApiRoutes extends Directives with CandidatesRepo with VersionsRepo with HttpResponses with JsonSupport {
+trait ReleaseRoutes extends Directives with CandidatesRepo with VersionsRepo with HttpResponses with JsonSupport {
 
   val Universal = "UNIVERSAL"
 
-  val apiRoute = path("release" / "versions") {
-    path("release" / "version") {
-      post {
-        entity(as[VersionReleaseRequest]) { req =>
-          val platform = req.platform.getOrElse(Universal)
-          complete {
-            val candidateFO = findCandidate(req.candidate)
-            val versionFO = findVersion(req.candidate, req.version, platform)
-            for {
-              candidateO <- candidateFO
-              versionO <- versionFO
-            } yield {
-              candidateO.fold(badRequestResponseF(req)) { _ =>
-                versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
-                  .map(_ => createdResponse(req.candidate, req.version, platform)))(_ => conflictResponseF(req))
-              }
+  val releaseRoutes = path("release" / "version") {
+    post {
+      entity(as[VersionReleaseRequest]) { req =>
+        val platform = req.platform.getOrElse(Universal)
+        complete {
+          val candidateFO = findCandidate(req.candidate)
+          val versionFO = findVersion(req.candidate, req.version, platform)
+          for {
+            candidateO <- candidateFO
+            versionO <- versionFO
+          } yield {
+            candidateO.fold(badRequestResponseF(req)) { _ =>
+              versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
+                .map(_ => createdResponse(req.candidate, req.version, platform)))(_ => conflictResponseF(req))
             }
           }
         }
