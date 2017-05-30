@@ -36,9 +36,11 @@ trait ReleaseRoutes extends Directives with CandidatesRepo with VersionsRepo wit
             candidateO <- candidateFO
             versionO <- versionFO
           } yield {
-            candidateO.fold(badRequestResponseF(req)) { _ =>
+            candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
               versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
-                .map(_ => createdResponse(req.candidate, req.version, platform)))(_ => conflictResponseF(req))
+                .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
+                conflictResponseF(req.candidate, req.version)
+              }
             }
           }
         }

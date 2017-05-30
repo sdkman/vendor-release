@@ -20,8 +20,8 @@ Feature: Default Candidate Version
     Given the Client is Authorised and Authenticated as "groovy"
 
   Scenario: Mark an existing Candidate Version as Default
-    Given an existing groovy UNIVERSAL Version 2.3.5 exists
-    And an existing groovy UNIVERSAL Version 2.3.5 exists
+    Given an existing UNIVERSAL groovy Version 2.3.5 exists
+    And an existing UNIVERSAL groovy Version 2.3.6 exists
     And the existing Default UNIVERSAL groovy Version is 2.3.5
     When a JSON PUT on the /default/version endpoint:
     """
@@ -34,7 +34,6 @@ Feature: Default Candidate Version
     And the message "Defaulted: groovy 2.3.6" is received
     And the Default groovy Version has changed to 2.3.6
 
-  @pending
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default UNIVERSAL groovy Version is 2.3.5
     And Candidate "groovy" Version "2.3.6" does not exists
@@ -48,7 +47,6 @@ Feature: Default Candidate Version
     Then the status received is 400 "BAD_REQUEST"
     And the message "Invalid candidate version: groovy 2.3.6" is received
 
-  @pending
   Scenario: Attempt to mark a non-existent Candidate Default
     Given Candidate "groovy" does not exist
     When a JSON PUT on the /default/version endpoint:

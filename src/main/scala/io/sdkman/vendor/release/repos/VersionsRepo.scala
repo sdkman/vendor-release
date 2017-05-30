@@ -40,6 +40,12 @@ trait VersionsRepo extends MongoConnectivity {
       .toFuture
       .map(_.headOption)
 
+  def findAllVersions(candidate: String, version: String): Future[Seq[Version]] =
+    versionsCollection
+      .find(and(equal("candidate", candidate), equal("version", version)))
+      .map(doc => doc: Version)
+      .toFuture()
+
 }
 
 case class Version(candidate: String, version: String, platform: String, url: String)

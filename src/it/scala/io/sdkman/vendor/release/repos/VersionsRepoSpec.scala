@@ -42,6 +42,18 @@ class VersionsRepoSpec extends WordSpec with Matchers with BeforeAndAfter with S
         }
       }
     }
+
+    "attempt to find all Versions by candidate and version" when {
+      "more than one version is available" in {
+        Mongo.insertVersion(Version(candidate, version, "LINUX_64", url))
+        Mongo.insertVersion(Version(candidate, version, "MAC_OSX", url))
+
+        whenReady(repo.findAllVersions(candidate, version)) { versions =>
+          versions shouldBe 'nonEmpty
+          versions.size shouldBe 2
+        }
+      }
+    }
   }
 
   before {
