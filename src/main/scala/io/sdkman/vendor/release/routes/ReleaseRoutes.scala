@@ -21,7 +21,12 @@ import io.sdkman.vendor.release.repos.{CandidatesRepo, Version, VersionsRepo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ReleaseRoutes extends Directives with CandidatesRepo with VersionsRepo with HttpResponses with JsonSupport {
+trait ReleaseRoutes extends Directives
+  with CandidatesRepo
+  with VersionsRepo
+  with HttpResponses
+  with JsonSupport
+  with PlatformValidation {
 
   val Universal = "UNIVERSAL"
 
@@ -29,17 +34,19 @@ trait ReleaseRoutes extends Directives with CandidatesRepo with VersionsRepo wit
     post {
       entity(as[VersionReleaseRequest]) { req =>
         val platform = req.platform.getOrElse(Universal)
-        complete {
-          val candidateFO = findCandidate(req.candidate)
-          val versionFO = findVersion(req.candidate, req.version, platform)
-          for {
-            candidateO <- candidateFO
-            versionO <- versionFO
-          } yield {
-            candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
-              versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
-                .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
-                conflictResponseF(req.candidate, req.version)
+        validatePlatform(platform) {
+          complete {
+            val candidateFO = findCandidate(req.candidate)
+            val versionFO = findVersion(req.candidate, req.version, platform)
+            for {
+              candidateO <- candidateFO
+              versionO <- versionFO
+            } yield {
+              candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
+                versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
+                  .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
+                  conflictResponseF(req.candidate, req.version)
+                }
               }
             }
           }
