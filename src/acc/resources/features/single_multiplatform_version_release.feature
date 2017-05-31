@@ -19,7 +19,7 @@ Feature: Multi-Platform Candidate Release
   Background:
     Given the Client is Authorised and Authenticated as groovy
 
-  Scenario: Release a Multi-Platform Candidate Version
+  Scenario: Release a single Multi-Platform binary Version
     Given an existing LINUX_64 java Version 8u121-zulu exists
     And the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
@@ -35,3 +35,28 @@ Feature: Multi-Platform Candidate Release
     And java Version 8u121-zulu with URL http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
     And the message "Released: java 8u131-zulu for LINUX_64" is received
 
+  Scenario: Release multiple Multi-Platform binaries of the same Version
+    Given an existing LINUX_64 java Version 8u121-zulu exists
+    And the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "LINUX_64"
+          |}
+    """
+    Then the status received is 201 CREATED
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz",
+          |  "platform" : "MAC_OSX"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And java Version 8u131-zulu with URL http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u131-zulu with URL http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-maxosx.tar.gz was published as MAC_OSX
