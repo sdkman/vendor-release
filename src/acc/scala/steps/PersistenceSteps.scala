@@ -41,6 +41,17 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
         url = s"http://somecandidate.org/$candidate/$version"))
   }
 
+  Given( """^the (.*) candidate (.*) with default version (.*) already exists$""") { (platform: String, candidate: String, version: String) =>
+    Mongo.insertCandidate(
+      Candidate(
+        candidate = candidate,
+        name = candidate.capitalize,
+        description = s"$candidate description",
+        default = version,
+        websiteUrl = s"http://somecandidate.org/$candidate",
+        distribution = platform))
+  }
+
   Given( """^the existing Default (.*) (.*) Version is (.*)$""") { (platform: String, candidate: String, version: String) =>
     Mongo.insertCandidate(
       Candidate(

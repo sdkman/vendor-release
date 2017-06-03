@@ -21,14 +21,16 @@ import steps.World._
 
 class SecuritySteps extends ScalaDsl with EN with Matchers {
 
-  And( """^the Client is not Authorised and Authenticated$""") { () =>
+  And( """^the Consumer does not have a valid Auth Token""") { () =>
     token = "invalid_token"
-    consumer = "invalid_consumer"
   }
 
-  And( """^the Client is Authorised and Authenticated as (.*)$""") { (principal: String) =>
+  And( """^the Consumer has a valid Auth Token""") { () =>
     token = "default_token"
-    consumer = principal
+  }
+
+  And( """^the Consumer (.*) is making a request$""") { (c: String) =>
+    consumer = c
   }
 
 }

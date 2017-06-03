@@ -17,7 +17,8 @@
 Feature: Multi-Platform Candidate Release
 
   Background:
-    Given the Client is Authorised and Authenticated as groovy
+    Given the Consumer java is making a request
+    And the Consumer has a valid Auth Token
 
   Scenario: Release a single Multi-Platform binary Version
     Given an existing LINUX_64 java Version 8u121-zulu exists

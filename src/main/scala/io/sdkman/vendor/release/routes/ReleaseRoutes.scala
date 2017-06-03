@@ -26,26 +26,29 @@ trait ReleaseRoutes extends Directives
   with VersionsRepo
   with HttpResponses
   with JsonSupport
-  with PlatformValidation {
+  with PlatformValidation
+  with Authorisation {
 
   val Universal = "UNIVERSAL"
 
   val releaseRoutes = path("release" / "version") {
     post {
       entity(as[VersionReleaseRequest]) { req =>
-        val platform = req.platform.getOrElse(Universal)
-        validatePlatform(platform) {
-          complete {
-            val candidateFO = findCandidate(req.candidate)
-            val versionFO = findVersion(req.candidate, req.version, platform)
-            for {
-              candidateO <- candidateFO
-              versionO <- versionFO
-            } yield {
-              candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
-                versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
-                  .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
-                  conflictResponseF(req.candidate, req.version)
+        authorised(req.candidate) {
+          val platform = req.platform.getOrElse(Universal)
+          validatePlatform(platform) {
+            complete {
+              val candidateFO = findCandidate(req.candidate)
+              val versionFO = findVersion(req.candidate, req.version, platform)
+              for {
+                candidateO <- candidateFO
+                versionO <- versionFO
+              } yield {
+                candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
+                  versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
+                    .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
+                    conflictResponseF(req.candidate, req.version)
+                  }
                 }
               }
             }

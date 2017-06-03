@@ -25,16 +25,16 @@ object Http {
 
   def get(endpoint: String) = httpCallWithOptions { http =>
     http(s"$host$endpoint").headers(
-      "access_token" -> World.token,
-      "consumer" -> World.consumer,
+      "Auth-Token" -> World.token,
+      "Consumer" -> World.consumer,
       "Content-Type" -> "application/json"
     ).asString
   }
 
   def post(endpoint: String, payload: String) = httpCallWithOptions { http =>
     http(s"$host$endpoint").headers(
-      "access_token" -> World.token,
-      "consumer" -> World.consumer,
+      "Auth-Token" -> World.token,
+      "Consumer" -> World.consumer,
       "Accept" -> "application/json",
       "Content-Type" -> "application/json"
     ).postData(payload).asString
@@ -42,8 +42,8 @@ object Http {
 
   def put(endpoint: String, payload: String) = httpCallWithOptions { http =>
     http(s"$host$endpoint").headers(
-      "access_token" -> World.token,
-      "consumer" -> World.consumer,
+      "Auth-Token" -> World.token,
+      "Consumer" -> World.consumer,
       "Accept" -> "application/json",
       "Content-Type" -> "application/json"
     ).put(payload).asString

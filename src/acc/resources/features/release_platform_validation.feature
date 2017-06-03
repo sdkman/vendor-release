@@ -1,5 +1,9 @@
 Feature: Release Platform Validation
 
+  Background:
+    Given the Consumer java is making a request
+    And the Consumer has a valid Auth Token
+
   Scenario: The Linux 64 bit Platform is valid
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:

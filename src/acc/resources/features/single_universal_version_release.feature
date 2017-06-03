@@ -17,7 +17,8 @@
 Feature: Universal Candidate Release
 
   Background:
-    Given the Client is Authorised and Authenticated as groovy
+    Given the Consumer groovy is making a request
+    And the Consumer has a valid Auth Token
 
   Scenario: Release a Universal Candidate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
