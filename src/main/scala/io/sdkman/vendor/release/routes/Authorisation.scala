@@ -10,7 +10,7 @@ trait Authorisation {
 
   val ConsumerHeader = "Consumer"
 
-  val AuthTokenHeader = "Auth-Token"
+  val AuthTokenHeader = "Service-Token"
 
   def authorised(candidate: String): Directive0 = authorize { rc =>
     val headers = rc.request.headers

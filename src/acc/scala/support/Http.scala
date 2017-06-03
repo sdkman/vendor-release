@@ -17,39 +17,28 @@ package support
 
 import steps.World
 
-import scalaj.http.{BaseHttp, HttpOptions, HttpRequest, HttpResponse, Http => HttpClient}
+import scalaj.http.{BaseHttp, HttpOptions, HttpResponse}
 
 object Http {
 
   val host = "http://vendor-release:9000"
 
-  def get(endpoint: String) = httpCallWithOptions { http =>
-    http(s"$host$endpoint").headers(
-      "Auth-Token" -> World.token,
-      "Consumer" -> World.consumer,
-      "Content-Type" -> "application/json"
-    ).asString
-  }
+  def get(endpoint: String) =
+    withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).asString)
 
-  def post(endpoint: String, payload: String) = httpCallWithOptions { http =>
-    http(s"$host$endpoint").headers(
-      "Auth-Token" -> World.token,
-      "Consumer" -> World.consumer,
-      "Accept" -> "application/json",
-      "Content-Type" -> "application/json"
-    ).postData(payload).asString
-  }
+  def post(endpoint: String, payload: String) =
+    withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).postData(payload).asString)
 
-  def put(endpoint: String, payload: String) = httpCallWithOptions { http =>
-    http(s"$host$endpoint").headers(
-      "Auth-Token" -> World.token,
-      "Consumer" -> World.consumer,
-      "Accept" -> "application/json",
-      "Content-Type" -> "application/json"
-    ).put(payload).asString
-  }
+  def put(endpoint: String, payload: String) =
+    withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).put(payload).asString)
 
-  private def httpCallWithOptions(f: BaseHttp => HttpResponse[String]): HttpResponse[String] =
+  private def withConnectionOptions(f: BaseHttp => HttpResponse[String]): HttpResponse[String] =
     f(new BaseHttp(options = Seq(HttpOptions.connTimeout(1000), HttpOptions.readTimeout(5000))))
 
+  private def requiredHeaders = Map(
+    "Service-Token" -> World.token,
+    "Consumer" -> World.consumer,
+    "Accept" -> "application/json",
+    "Content-Type" -> "application/json"
+  )
 }
