@@ -15,7 +15,7 @@
   */
 package io.sdkman.vendor.release.repos
 
-import io.sdkman.vendor.release.MongoConnectivity
+import io.sdkman.vendor.release.{Configuration, MongoConnectivity}
 import org.mongodb.scala.Completed
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters.{and, equal}
@@ -23,6 +23,8 @@ import org.mongodb.scala.model.Filters.{and, equal}
 import scala.concurrent.Future
 
 trait VersionsRepo extends MongoConnectivity {
+
+  self: Configuration =>
 
   def saveVersion(v: Version): Future[Completed] =
     versionsCollection.insertOne(

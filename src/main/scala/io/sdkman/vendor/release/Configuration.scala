@@ -25,6 +25,10 @@ trait Configuration {
 
   lazy val servicePort = config.getInt("service.port")
 
+  lazy val serviceToken = config.getString("service.token")
+
+  lazy val serviceAdminConsumer = config.getString("service.adminConsumer")
+
   lazy val mongoUrl = config.getString("mongo.url")
 
   lazy val databaseName = config.getString("mongo.database")

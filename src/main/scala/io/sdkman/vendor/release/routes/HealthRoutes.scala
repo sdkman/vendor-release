@@ -20,13 +20,13 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
-import io.sdkman.vendor.release.MongoConnectivity
+import io.sdkman.vendor.release.{Configuration, MongoConnectivity}
 import org.mongodb.scala.Document
 import org.mongodb.scala.bson.BsonString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait HealthRoutes extends Directives with MongoConnectivity with LazyLogging {
+trait HealthRoutes extends Directives with Configuration with MongoConnectivity with LazyLogging {
   val healthRoutes = path("alive") {
     get {
       complete {

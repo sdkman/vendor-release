@@ -1,12 +1,13 @@
 package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.server.Directives
-import io.sdkman.vendor.release.HttpResponses
 import io.sdkman.vendor.release.repos.{CandidatesRepo, VersionsRepo}
+import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DefaultRoutes extends Directives
+  with Configuration
   with CandidatesRepo
   with VersionsRepo
   with JsonSupport

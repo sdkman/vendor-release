@@ -16,12 +16,14 @@
 package io.sdkman.vendor.release
 
 import com.mongodb.ConnectionString
-import org.mongodb.scala.{MongoClient, MongoClientSettings, MongoCredential}
 import org.mongodb.scala.connection.ClusterSettings
+import org.mongodb.scala.{MongoClient, MongoClientSettings, MongoCredential}
 
 import scala.collection.JavaConverters._
 
-trait MongoConnectivity extends Configuration {
+trait MongoConnectivity {
+
+  self: Configuration =>
 
   def credential = MongoCredential.createCredential(userName, databaseName, password.toCharArray)
 

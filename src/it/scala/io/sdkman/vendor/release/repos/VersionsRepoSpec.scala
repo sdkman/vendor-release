@@ -1,12 +1,13 @@
 package io.sdkman.vendor.release.repos
 
+import io.sdkman.vendor.release.Configuration
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfter, Matchers, OptionValues, WordSpec}
 import support.Mongo
 
 class VersionsRepoSpec extends WordSpec with Matchers with BeforeAndAfter with ScalaFutures with OptionValues with Eventually with IntegrationPatience {
 
-  val repo = new VersionsRepo {}
+  val repo = new VersionsRepo with Configuration {}
 
   val candidate = "java"
   val version = "8u111"

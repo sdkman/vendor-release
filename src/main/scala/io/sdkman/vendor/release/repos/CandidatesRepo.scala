@@ -15,7 +15,7 @@
   */
 package io.sdkman.vendor.release.repos
 
-import io.sdkman.vendor.release.MongoConnectivity
+import io.sdkman.vendor.release.{Configuration, MongoConnectivity}
 import org.mongodb.scala._
 import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.Updates.set
@@ -24,6 +24,8 @@ import org.mongodb.scala.result.UpdateResult
 import scala.concurrent.Future
 
 trait CandidatesRepo extends MongoConnectivity {
+
+  self: Configuration =>
 
   def findCandidate(candidate: String): Future[Option[Candidate]] =
     candidatesCollection
