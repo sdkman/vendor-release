@@ -7,11 +7,17 @@ services:
     image: sdkman/vendor-release:latest
     ports:
       - "9000:9000"
-    volumes:
-      - $PWD/wait-for-it.sh:/opt/docker/wait-for-it.sh
-    command: bash -c "/opt/docker/wait-for-it.sh -t 60 'mongo:27017'"
+    depends_on:
+      - mongo-init
+
+  mongo-init:
+    container_name: mongo-init
+    image: mongo:3.2
     depends_on:
       - mongo
+    volumes:
+      - $PWD/wait-for-it.sh:/wait-for-it.sh
+    command: bash -c "/wait-for-it.sh -h mongo -p 27017 -t 30 -- mongo --host mongo --port 27017 --eval 'db.version()'"
 
   mongo:
     container_name: mongo
@@ -23,24 +29,30 @@ services:
     image: nightscape/docker-sbt:latest
     working_dir: /work
     user: ${USER_ID}
+    environment:
+      SBT_CACHE: "/sbt"
+      IVY_CACHE: "/ivy2"
     volumes:
       - ${PWD}:/work
-      - ${CACHE_DIR}/.ivy2:/ivy2
-      - ${CACHE_DIR}/.sbt:/sbt
+      - ${HOME}/.ivy2:/ivy2
+      - ${HOME}/.sbt:/sbt
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/bin/docker
     depends_on:
-      - mongo
+      - mongo-init
     command: ./sbtw it:test
 
   vendor_release_acc_tests:
     image: nightscape/docker-sbt:latest
     working_dir: /work
     user: ${USER_ID}
+    environment:
+      SBT_CACHE: "/sbt"
+      IVY_CACHE: "/ivy2"
     volumes:
       - ${PWD}:/work
-      - ${CACHE_DIR}/.ivy2:/ivy2
-      - ${CACHE_DIR}/.sbt:/sbt
+      - ${HOME}/.sbt:/sbt
+      - ${HOME}/.ivy2:/ivy2
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/bin/docker
     depends_on:
