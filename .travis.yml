@@ -12,7 +12,7 @@ script:
   - ./compose run --rm vendor_release_it_tests
   - ./compose run --rm vendor_release_acc_tests
 after_success:
-  - docker push sdkman/vendor-release:1.0.0-SNAPSHOT
+  - docker push sdkman/vendor-release:3.0.1
 cache:
   directories:
   - "$HOME/.sbt"
