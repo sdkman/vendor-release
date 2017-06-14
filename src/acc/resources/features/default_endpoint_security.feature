@@ -27,7 +27,7 @@ Feature: Default Endpoint Security
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 403 "FORBIDDEN"
@@ -43,7 +43,7 @@ Feature: Default Endpoint Security
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 403 "FORBIDDEN"
@@ -58,7 +58,7 @@ Feature: Default Endpoint Security
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 202 "ACCEPTED"
@@ -73,7 +73,7 @@ Feature: Default Endpoint Security
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 202 "ACCEPTED"

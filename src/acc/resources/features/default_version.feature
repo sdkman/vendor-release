@@ -28,7 +28,7 @@ Feature: Default Candidate Version
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 202 ACCEPTED
@@ -42,7 +42,7 @@ Feature: Default Candidate Version
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 400 "BAD_REQUEST"
@@ -54,7 +54,7 @@ Feature: Default Candidate Version
     """
           |{
           |   "candidate" : "groovy",
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 400 "BAD_REQUEST"
@@ -64,7 +64,7 @@ Feature: Default Candidate Version
     When a JSON PUT on the /default/version endpoint:
     """
           |{
-          |   "default" : "2.3.6"
+          |   "version" : "2.3.6"
           |}
     """
     Then the status received is 400 "BAD_REQUEST"
@@ -80,4 +80,4 @@ Feature: Default Candidate Version
     """
     Then the status received is 400 "BAD_REQUEST"
     And the message containing "The request content was malformed" is received
-    And the message containing "Object is missing required member 'default'" is received
+    And the message containing "Object is missing required member 'version'" is received

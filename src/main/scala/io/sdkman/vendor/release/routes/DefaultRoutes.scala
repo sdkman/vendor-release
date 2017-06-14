@@ -19,7 +19,7 @@ trait DefaultRoutes extends Directives
       entity(as[VersionDefaultRequest]) { req =>
         authorised(req.candidate) {
           val candidateFO = findCandidate(req.candidate)
-          val versionsF = findAllVersions(req.candidate, req.default)
+          val versionsF = findAllVersions(req.candidate, req.version)
           complete {
             for {
               candidateO <- candidateFO
@@ -27,9 +27,9 @@ trait DefaultRoutes extends Directives
             } yield {
               candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
                 versions.headOption.map { v =>
-                  updateDefaultVersion(req.candidate, req.default)
-                    .map(_ => acceptedResponse(s"Defaulted: ${req.candidate} ${req.default}"))
-                }.getOrElse(badRequestResponseF(s"Invalid candidate version: ${req.candidate} ${req.default}"))
+                  updateDefaultVersion(req.candidate, req.version)
+                    .map(_ => acceptedResponse(s"Defaulted: ${req.candidate} ${req.version}"))
+                }.getOrElse(badRequestResponseF(s"Invalid candidate version: ${req.candidate} ${req.version}"))
               }
             }
           }
@@ -39,4 +39,4 @@ trait DefaultRoutes extends Directives
   }
 }
 
-case class VersionDefaultRequest(candidate: String, default: String)
+case class VersionDefaultRequest(candidate: String, version: String)
