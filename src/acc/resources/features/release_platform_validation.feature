@@ -56,4 +56,4 @@ Feature: Release Platform Validation
           |}
     """
     Then the status received is 400 BAD_REQUEST
-    And the message "Invalid platform: SOLARIS" is received
+    And the message containing "Invalid platform: SOLARIS" is received

@@ -59,5 +59,3 @@ trait ReleaseRoutes extends Directives
     }
   }
 }
-
-case class VersionReleaseRequest(candidate: String, version: String, url: String, platform: Option[String])

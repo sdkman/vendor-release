@@ -15,21 +15,28 @@
   */
 package io.sdkman.vendor.release
 
-import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.model.{HttpResponse, StatusCode}
+import io.sdkman.vendor.release.routes.{ApiResponse, JsonSupport}
+import spray.json._
 
 import scala.concurrent.Future
 
-trait HttpResponses {
-  def acceptedResponse(m: String) = HttpResponse(Accepted, entity = m)
+trait HttpResponses extends JsonSupport {
 
-  def conflictResponse(c: String, v: String) = HttpResponse(Conflict, entity = s"Duplicate: $c $v already exists")
+  import ApiResponseJsonProtocol._
+
+  def acceptedResponse(m: String) = HttpResponse(Accepted, entity = apiResponse(Accepted, m))
+
+  def conflictResponse(c: String, v: String) = HttpResponse(Conflict, entity = apiResponse(Conflict, s"Duplicate: $c $v already exists"))
 
   def conflictResponseF(c: String, v: String) = Future.successful(conflictResponse(c, v))
 
-  def createdResponse(c: String, v: String, p: String) = HttpResponse(Created, entity = s"Released: $c $v for $p")
+  def createdResponse(c: String, v: String, p: String) = HttpResponse(Created, entity = apiResponse(Created, s"Released: $c $v for $p"))
 
-  def badRequestResponse(m: String) = HttpResponse(BadRequest, entity = m)
+  def badRequestResponse(m: String) = HttpResponse(BadRequest, entity = apiResponse(BadRequest, m))
 
   def badRequestResponseF(m: String) = Future.successful(badRequestResponse(m))
+
+  private def apiResponse(status: StatusCode, message: String) = ApiResponse(status.intValue, message).toJson.compactPrint
 }

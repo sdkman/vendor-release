@@ -38,5 +38,3 @@ trait DefaultRoutes extends Directives
     }
   }
 }
-
-case class VersionDefaultRequest(candidate: String, version: String)

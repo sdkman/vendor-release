@@ -4,4 +4,4 @@ Feature: Health Check endpoint
 		Given an alive OK entry in the application collection
 		When a GET request on the /alive endpoint
 		Then the status received is 200 OK
-		And the message "OK" is received
+		And the message containing "OK" is received
