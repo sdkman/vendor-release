@@ -23,14 +23,6 @@ lazy val dockerSettings = Seq(
   packageName := "sdkman/vendor-release"
 )
 
-lazy val IntegrationTest = config("it") extend Test
-
-lazy val itSettings = Defaults.itSettings ++ Seq(
-  parallelExecution in IntegrationTest := false,
-  testOptions in IntegrationTest += Tests.Argument(
-    TestFrameworks.ScalaTest, "-F", Option(System.getProperty("itTimeScale")).getOrElse("1"))
-)
-
 lazy val AcceptanceTest = config("acc") extend IntegrationTest
 parallelExecution in AcceptanceTest := false
 
@@ -42,8 +34,6 @@ resolvers ++= Seq(
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % scalaTestVersion % Test
 )
-
-val itDependencies = Seq()
 
 val accDependencies = Seq(
   "org.scalatest" %% "scalatest" % scalaTestVersion % AcceptanceTest,
@@ -61,11 +51,11 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
   "io.sdkman" %% "sdkman-mongodb-persistence" % "0.9"
-) ++ testDependencies ++ itDependencies ++ accDependencies
+) ++ testDependencies ++ accDependencies
 
 lazy val `vendor-release` = (project in file("."))
   .enablePlugins(DockerPlugin, JavaServerAppPackaging)
   .configs(IntegrationTest)
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
-  .settings(commonSettings ++ dockerSettings ++ itSettings: _*)
+  .settings(commonSettings ++ dockerSettings: _*)

@@ -25,23 +25,6 @@ services:
     ports:
       - "27017:27017"
 
-  vendor_release_it_tests:
-    image: nightscape/docker-sbt:latest
-    working_dir: /work
-    user: ${USER_ID}
-    environment:
-      SBT_CACHE: "/sbt"
-      IVY_CACHE: "/ivy2"
-    volumes:
-      - ${PWD}:/work
-      - ${HOME}/.ivy2:/ivy2
-      - ${HOME}/.sbt:/sbt
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/bin/docker
-    depends_on:
-      - mongo-init
-    command: ./sbtw it:test
-
   vendor_release_acc_tests:
     image: nightscape/docker-sbt:latest
     working_dir: /work
