@@ -6,7 +6,7 @@ services:
 language: scala
 
 before_install:
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - sbt docker:publishLocal
 script:
   - ./compose run --rm vendor_release_acc_tests
