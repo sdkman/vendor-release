@@ -34,6 +34,11 @@ lazy val itSettings = Defaults.itSettings ++ Seq(
 lazy val AcceptanceTest = config("acc") extend IntegrationTest
 parallelExecution in AcceptanceTest := false
 
+resolvers ++= Seq(
+  Resolver.bintrayRepo("sdkman", "maven"),
+  Resolver.jcenterRepo
+)
+
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % scalaTestVersion % Test
 )
@@ -55,7 +60,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
-  "org.mongodb.scala" %% "mongo-scala-driver" % "1.1.1"
+  "io.sdkman" %% "sdkman-mongodb-persistence" % "0.9"
 ) ++ testDependencies ++ itDependencies ++ accDependencies
 
 lazy val `vendor-release` = (project in file("."))

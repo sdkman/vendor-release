@@ -2,9 +2,10 @@ package support
 
 import java.util.concurrent.TimeUnit
 
-import io.sdkman.vendor.release.repos.{Candidate, Version}
+import io.sdkman.repos.{Candidate, Version}
 import org.mongodb.scala.bson.BsonString
 import org.mongodb.scala.bson.collection.immutable.Document
+import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.{MongoClient, ScalaObservable, _}
 
@@ -52,32 +53,23 @@ object Mongo {
         "distribution" -> c.distribution))
       .results()
 
-  def candidateExists(candidate: String): Boolean = Await.result(
-    candidatesCollection
-      .find(and(equal("candidate", candidate)))
-      .first
-      .toFuture()
-      .map(_.nonEmpty), 5.seconds)
+  def candidateExists(candidate: String): Boolean =
+    find(candidatesCollection, and(equal("candidate", candidate)))
 
-  def versionExists(candidate: String, version: String): Boolean = Await.result(
-    versionsCollection
-      .find(and(equal("candidate", candidate), equal("version", version)))
-      .first
-      .toFuture()
-      .map(_.nonEmpty), 5.seconds)
+  def versionExists(candidate: String, version: String): Boolean =
+    find(versionsCollection, and(equal("candidate", candidate), equal("version", version)))
 
-  def isDefault(candidate: String, version: String): Boolean = Await.result(
-    candidatesCollection
-      .find(and(equal("candidate", candidate), equal("default", version)))
-      .first
-      .toFuture()
-      .map(_.nonEmpty), 5.seconds)
+  def isDefault(candidate: String, version: String): Boolean =
+    find(candidatesCollection, and(equal("candidate", candidate), equal("default", version)))
 
-  def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean = Await.result(
-    versionsCollection
-      .find(and(equal("candidate", candidate), equal("version", version), equal("platform", platform)))
+  def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
+    find(versionsCollection, and(equal("candidate", candidate), equal("version", version), equal("platform", platform)))
+
+  private def find(collection: MongoCollection[Document], predicate: Bson) = Await.result(
+    collection
+      .find(predicate)
       .first
-      .toFuture()
+      .headOption
       .map(_.nonEmpty), 5.seconds)
 
   def dropAllCollections() = {

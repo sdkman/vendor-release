@@ -16,7 +16,7 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import io.sdkman.vendor.release.repos.{Candidate, Version}
+import io.sdkman.repos.{Candidate, Version}
 import org.scalatest.Matchers
 import support.Mongo
 

@@ -1,15 +1,18 @@
 package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.server.Directives
-import io.sdkman.vendor.release.repos.{CandidatesRepo, VersionsRepo}
+import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
+import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DefaultRoutes extends Directives
-  with Configuration
   with CandidatesRepo
   with VersionsRepo
+  with MongoConnectivity
+  with Configuration
+  with MongoConfiguration
   with JsonSupport
   with HttpResponses
   with Authorisation {
@@ -19,7 +22,7 @@ trait DefaultRoutes extends Directives
       entity(as[VersionDefaultRequest]) { req =>
         authorised(req.candidate) {
           val candidateFO = findCandidate(req.candidate)
-          val versionsF = findAllVersions(req.candidate, req.version)
+          val versionsF = findAllVersionsByCandidateVersion(req.candidate, req.version)
           complete {
             for {
               candidateO <- candidateFO

@@ -16,15 +16,18 @@
 package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.server.Directives
+import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
+import io.sdkman.repos.{CandidatesRepo, Version, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
-import io.sdkman.vendor.release.repos.{CandidatesRepo, Version, VersionsRepo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ReleaseRoutes extends Directives
-  with Configuration
   with CandidatesRepo
   with VersionsRepo
+  with MongoConnectivity
+  with MongoConfiguration
+  with Configuration
   with HttpResponses
   with JsonSupport
   with PlatformValidation
