@@ -1,5 +1,5 @@
 #
-#  Copyright 2017 Marco Vermeulen
+#  Copyright 2018 Marco Vermeulen
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ Feature: Multi-Platform Candidate Release
   Background:
     Given the Consumer java is making a request
     And the Consumer has a valid Auth Token
+    And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
+    And the URI /zulu8.21.0.1-jdk8.0.131-macosx.tar.gz is available for download
 
   Scenario: Release a single Multi-Platform binary Version
     Given an existing LINUX_64 java Version 8u121-zulu exists
@@ -28,12 +30,12 @@ Feature: Multi-Platform Candidate Release
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u121-zulu with URL http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u121-zulu with URL http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
     And the message "Released: java 8u131-zulu for LINUX_64" is received
 
   Scenario: Release multiple Multi-Platform binaries of the same Version
@@ -44,7 +46,7 @@ Feature: Multi-Platform Candidate Release
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
@@ -54,10 +56,10 @@ Feature: Multi-Platform Candidate Release
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz",
+          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz",
           |  "platform" : "MAC_OSX"
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
-    And java Version 8u131-zulu with URL http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-maxosx.tar.gz was published as MAC_OSX
+    And java Version 8u131-zulu with URL http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u131-zulu with URL http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX

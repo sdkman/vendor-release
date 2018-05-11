@@ -1,5 +1,5 @@
 #
-#  Copyright 2017 Marco Vermeulen
+#  Copyright 2018 Marco Vermeulen
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ Feature: Universal Candidate Release
   Background:
     Given the Consumer groovy is making a request
     And the Consumer has a valid Auth Token
+    And the URI /groovy-binary-2.3.6.zip is available for download
 
   Scenario: Release a Universal Candidate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -28,11 +29,11 @@ Feature: Universal Candidate Release
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 201 CREATED
-    And groovy Version 2.3.6 with URL https://dl.bintray.com/groovy/maven/apache-groovy-binary-2.4.11.zip was published as UNIVERSAL
+    And groovy Version 2.3.6 with URL https://wiremock:8080/groovy-binary-2.3.6.zip was published as UNIVERSAL
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
   Scenario: Attempt to Release a duplicate Version
@@ -43,7 +44,7 @@ Feature: Universal Candidate Release
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     And a JSON POST on the /release/version endpoint:
@@ -51,7 +52,7 @@ Feature: Universal Candidate Release
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 409 CONFLICT
@@ -64,7 +65,7 @@ Feature: Universal Candidate Release
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 400 BAD_REQUEST
@@ -76,7 +77,7 @@ Feature: Universal Candidate Release
     """
           |{
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 400 BAD_REQUEST
@@ -88,7 +89,7 @@ Feature: Universal Candidate Release
     """
           |{
           |  "candidate" : "groovy",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 400 BAD_REQUEST

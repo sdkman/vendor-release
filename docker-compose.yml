@@ -9,6 +9,7 @@ services:
       - "9000:9000"
     depends_on:
       - mongo-init
+      - wiremock
 
   mongo-init:
     container_name: mongo-init
@@ -24,6 +25,12 @@ services:
     image: mongo:3.2
     ports:
       - "27017:27017"
+
+  wiremock:
+    container_name: wiremock
+    image: rodolpheche/wiremock:latest
+    ports:
+      - "8080:8080"
 
   vendor_release_acc_tests:
     image: nightscape/docker-sbt:latest

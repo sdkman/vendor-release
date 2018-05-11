@@ -5,7 +5,7 @@
   * you may not use this file except in compliance with the License.
   * You may obtain a copy of the License at
   *
-  * http://www.apache.org/licenses/LICENSE-2.0
+  * 	http://www.apache.org/licenses/LICENSE-2.0
   *
   * Unless required by applicable law or agreed to in writing, software
   * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,20 +16,32 @@
 package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import cucumber.api.scala.ScalaDsl
-import support.Mongo
+import com.github.tomakehurst.wiremock.client.WireMock._
+import cucumber.api.scala.{EN, ScalaDsl}
+import org.scalatest.Matchers
 
-class Env extends ScalaDsl {
+
+class StubSteps extends ScalaDsl with EN with Matchers {
 
   val WiremockHost = "wiremock"
 
   val WiremockPort = 8080
 
   Before() { s =>
-    Mongo.dropAllCollections()
+    WireMock.configureFor(WiremockHost, WiremockPort)
   }
 
-  After() { s =>
-    WireMock.reset()
+  And( """^the URI (.*) is available for download$""") { uri: String =>
+
+    stubFor(get(urlEqualTo(uri)).willReturn(
+      aResponse()
+        .withStatus(200)
+        .withHeader("Content-Type", "application/zip")
+        .withBodyFile(uri.substring(1))))
+  }
+
+  And( """^the URI (.*) is not available for download$""") { uri: String =>
+    stubFor(get(urlEqualTo(uri))
+      .willReturn(aResponse().withStatus(404)))
   }
 }

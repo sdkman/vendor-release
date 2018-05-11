@@ -1,5 +1,5 @@
 #
-#  Copyright 2014 Marco Vermeulen
+#  Copyright 2018 Marco Vermeulen
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 Feature: Release Endpoint Security
 
+  Background:
+    Given the URI /groovy-binary-2.3.6.zip is available for download
+
   Scenario: The Release endpoints can NOT be Accessed without a valid Auth Token
     Given the Consumer groovy is making a request
     And the Consumer does not have a valid Auth Token
@@ -24,7 +27,7 @@ Feature: Release Endpoint Security
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 403 "FORBIDDEN"
@@ -37,7 +40,7 @@ Feature: Release Endpoint Security
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 403 "FORBIDDEN"
@@ -51,7 +54,7 @@ Feature: Release Endpoint Security
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 201 "CREATED"
@@ -65,7 +68,7 @@ Feature: Release Endpoint Security
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
-          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |  "url" : "http://wiremock:8080/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is 201 "CREATED"

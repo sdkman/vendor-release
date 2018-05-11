@@ -40,7 +40,8 @@ val accDependencies = Seq(
   "io.cucumber" %% "cucumber-scala" % cucumberVersion % AcceptanceTest,
   "io.cucumber" % "cucumber-junit" % cucumberVersion % AcceptanceTest,
   "com.novocode" % "junit-interface" % "0.11" % AcceptanceTest,
-  "org.scalaj" %% "scalaj-http" % scalajHttpVersion % AcceptanceTest
+  "org.scalaj" %% "scalaj-http" % scalajHttpVersion % AcceptanceTest,
+  "com.github.tomakehurst" % "wiremock" % "2.2.2" % AcceptanceTest
 )
 
 libraryDependencies ++= Seq(

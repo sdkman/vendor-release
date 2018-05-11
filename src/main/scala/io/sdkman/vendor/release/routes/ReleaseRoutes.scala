@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 Marco Vermeulen
+  * Copyright 2018 Marco Vermeulen
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.server.Directives
+import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.repos.{CandidatesRepo, Version, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
@@ -30,7 +31,8 @@ trait ReleaseRoutes extends Directives
   with Configuration
   with HttpResponses
   with JsonSupport
-  with PlatformValidation
+  with Validation
+  with UrlValidation
   with Authorisation {
 
   val Universal = "UNIVERSAL"
@@ -41,17 +43,19 @@ trait ReleaseRoutes extends Directives
         authorised(req.candidate) {
           val platform = req.platform.getOrElse(Universal)
           validatePlatform(platform) {
-            complete {
-              val candidateFO = findCandidate(req.candidate)
-              val versionFO = findVersion(req.candidate, req.version, platform)
-              for {
-                candidateO <- candidateFO
-                versionO <- versionFO
-              } yield {
-                candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
-                  versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
-                    .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
-                    conflictResponseF(req.candidate, req.version)
+            validateUrl(req.url) {
+              complete {
+                val candidateFO = findCandidate(req.candidate)
+                val versionFO = findVersion(req.candidate, req.version, platform)
+                for {
+                  candidateO <- candidateFO
+                  versionO <- versionFO
+                } yield {
+                  candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
+                    versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
+                      .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
+                      conflictResponseF(req.candidate, req.version)
+                    }
                   }
                 }
               }
