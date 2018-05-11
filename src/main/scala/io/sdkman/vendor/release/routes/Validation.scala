@@ -17,7 +17,7 @@ trait Validation {
     validate(SupportedPlatforms.contains(platform), ApiResponse(400, s"Invalid platform: $platform").toJson.compactPrint)
 
   def validateUrl(url: String): Directive0 =
-    validate(!resourceAvailable(url), ApiResponse(400, s"URL cannot be resolved: $url").toJson.compactPrint)
+    validate(resourceAvailable(url), ApiResponse(400, s"URL cannot be resolved: $url").toJson.compactPrint)
 
   case class Error(code: Int, message: String)
 }
