@@ -14,8 +14,6 @@ val commonSettings = Seq(
   scalaVersion := "2.12.5"
 )
 
-version := Source.fromFile("version").getLines.mkString
-
 lazy val dockerSettings = Seq(
   dockerBaseImage := "openjdk:8",
   maintainer in Docker := "Marco Vermeulen <marco@sdkman.io>",
@@ -62,3 +60,16 @@ lazy val `vendor-release` = (project in file("."))
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(commonSettings ++ dockerSettings: _*)
 
+import ReleaseTransformations._
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,              // : ReleaseStep
+  inquireVersions,                        // : ReleaseStep
+  runClean,                               // : ReleaseStep
+  setReleaseVersion,                      // : ReleaseStep
+  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
+  tagRelease,                             // : ReleaseStep
+  ReleaseStep(releaseStepTask(publish in Docker)), // : ReleaseStep, checks whether `publishTo` is properly set up
+  setNextVersion,                         // : ReleaseStep
+  commitNextVersion,                      // : ReleaseStep
+  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+)
