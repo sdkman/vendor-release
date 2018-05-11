@@ -61,3 +61,9 @@ lazy val `vendor-release` = (project in file("."))
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(commonSettings ++ dockerSettings: _*)
+
+bintrayOrganization := Some("sdkman")
+
+bintrayReleaseOnPublish in ThisBuild := true
+
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
