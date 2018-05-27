@@ -47,7 +47,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
         candidate = candidate,
         name = candidate.capitalize,
         description = s"$candidate description",
-        default = version,
+        default = Some(version),
         websiteUrl = s"http://somecandidate.org/$candidate",
         distribution = platform))
   }
@@ -58,7 +58,18 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
         candidate = candidate,
         name = candidate.capitalize,
         description = s"$candidate description",
-        default = version,
+        default = Some(version),
+        websiteUrl = s"http://somecandidate.org/$candidate",
+        distribution = platform))
+  }
+
+  Given( """^the existing (.*) (.*) Version has no Default$""") { (platform: String, candidate: String) =>
+    Mongo.insertCandidate(
+      Candidate(
+        candidate = candidate,
+        name = candidate.capitalize,
+        description = s"$candidate description",
+        default = None,
         websiteUrl = s"http://somecandidate.org/$candidate",
         distribution = platform))
   }
@@ -75,7 +86,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
     }
   }
 
-  Given( """^Candidate (.*) does not exist$""") { (candidate: String) =>
+  Given( """^Candidate (.*) does not exist$""") { candidate: String =>
     withClue(s"The exists: $candidate") {
       Mongo.candidateExists(candidate) shouldBe false
     }

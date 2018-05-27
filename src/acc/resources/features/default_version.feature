@@ -60,6 +60,21 @@ Feature: Default Candidate Version
     Then the status received is 400 "BAD_REQUEST"
     And the message "Invalid candidate: groovy" is received
 
+  Scenario: Attempt to mark a Non-Default Candidate Default
+    Given the existing UNIVERSAL groovy Version has no Default
+    And an existing UNIVERSAL groovy Version 2.3.6 exists
+    When a JSON PUT on the /default/version endpoint:
+    """
+          |{
+          |   "candidate" : "groovy",
+          |   "version" : "2.3.6"
+          |}
+    """
+    Then the status received is 202 ACCEPTED
+    And the message "Defaulted: groovy 2.3.6" is received
+    And the Default groovy Version has changed to 2.3.6
+
+
   Scenario: Attempt to submit malformed JSON with no candidate
     When a JSON PUT on the /default/version endpoint:
     """
