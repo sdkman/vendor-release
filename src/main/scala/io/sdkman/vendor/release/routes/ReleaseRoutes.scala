@@ -16,7 +16,6 @@
 package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.server.Directives
-import com.typesafe.scalalogging.LazyLogging
 import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.repos.{CandidatesRepo, Version, VersionsRepo}
@@ -34,7 +33,6 @@ trait ReleaseRoutes extends Directives
   with JsonSupport
   with Validation
   with UrlValidation
-  with LazyLogging
   with Authorisation {
 
   val Universal = "UNIVERSAL"
