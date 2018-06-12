@@ -30,12 +30,12 @@ Feature: Multi-Platform Candidate Release
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u121-zulu with URL http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u121-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
     And the message "Released: java 8u131-zulu for LINUX_64" is received
 
   Scenario: Release multiple Multi-Platform binaries of the same Version
@@ -46,7 +46,7 @@ Feature: Multi-Platform Candidate Release
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
@@ -56,10 +56,10 @@ Feature: Multi-Platform Candidate Release
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz",
           |  "platform" : "MAC_OSX"
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
-    And java Version 8u131-zulu with URL http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX

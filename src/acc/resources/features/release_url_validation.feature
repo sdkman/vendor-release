@@ -28,7 +28,7 @@ Feature: Release URL Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
@@ -42,9 +42,9 @@ Feature: Release URL Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.999-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.999-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
     Then the status received is 400 BAD_REQUEST
-    And the message "URL cannot be resolved: http://wiremock:8080/zulu8.21.0.1-jdk8.0.999-linux_x64.tar.gz" is received
+    And the message "URL cannot be resolved: http://localhost:8080/zulu8.21.0.1-jdk8.0.999-linux_x64.tar.gz" is received

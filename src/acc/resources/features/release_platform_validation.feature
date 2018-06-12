@@ -28,7 +28,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
@@ -42,7 +42,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "MAC_OSX"
           |}
     """
@@ -55,7 +55,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "WINDOWS_64"
           |}
     """
@@ -68,7 +68,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://wiremock:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "SOLARIS"
           |}
     """

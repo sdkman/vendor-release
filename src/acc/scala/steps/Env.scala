@@ -15,21 +15,26 @@
   */
 package steps
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.configureFor
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import cucumber.api.scala.ScalaDsl
 import support.Mongo
 
 class Env extends ScalaDsl {
 
-  val WiremockHost = "wiremock"
+  val WireMockHost = "localhost"
 
-  val WiremockPort = 8080
+  val WireMockPort = 8080
+
+  configureFor(WireMockHost, WireMockPort)
+
+  lazy val wireMockServer = new WireMockServer(wireMockConfig().port(WireMockPort))
+  wireMockServer.start()
 
   Before() { s =>
     Mongo.dropAllCollections()
-  }
-
-  After() { s =>
     WireMock.reset()
   }
 }

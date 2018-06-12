@@ -5,10 +5,17 @@ services:
 
 language: scala
 
-before_install:
+before_script:
+  - docker run --rm -d -p="27017:27017" --name=mongo mongo:3.2
   - sbt docker:publishLocal
+  - docker run --rm -d --network=host --name=vendor-release sdkman/vendor-release:latest
+
 script:
-  - ./compose run --rm vendor_release_acc_tests
+  - sbt acc:test
+
+after_script:
+  - docker rm -f mongo vendor-release
+
 cache:
   directories:
   - "$HOME/.sbt"
