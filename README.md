@@ -7,13 +7,13 @@ Used by Vendors for releasing new Candidate Versions on SDKMAN!
 ### Run locally
 
     $ docker run --rm -d -p="27017:27017" --name=mongo mongo:3.2
-    $ ./sbtw run
+    $ sbt run
 
 ### Test
 
-    $ ./sbtw acc:test
+    $ sbt acc:test
 
 ### Release
 
-    $ ./sbtw release
+    $ sbt release
 
