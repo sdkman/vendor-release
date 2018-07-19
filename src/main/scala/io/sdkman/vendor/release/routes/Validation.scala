@@ -18,4 +18,6 @@ trait Validation {
   def validateUrl(url: String): Directive0 =
     validate(resourceAvailable(url), ApiResponse(400, s"URL cannot be resolved: $url").toJson.compactPrint)
 
+  def validateVersion(version: String): Directive0 =
+    validate(15 >= version.length, ApiResponse(400, s"Version length exceeds 15 chars: $version").toJson.compactPrint)
 }
