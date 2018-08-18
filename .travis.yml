@@ -5,10 +5,6 @@ services:
 
 language: scala
 
-scala: 2.12.6
-
-jdk: openjdk10
-
 before_script:
   - docker run --rm -d -p="27017:27017" --name=mongo mongo:3.2
   - sbt docker:publishLocal
