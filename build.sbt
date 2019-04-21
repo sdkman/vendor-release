@@ -7,11 +7,11 @@ val scalaTestVersion = "3.0.1"
 val scalajHttpVersion = "2.3.0"
 val cucumberVersion = "2.0.1"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.8"
 
 val commonSettings = Seq(
   organization := "io.sdkman",
-  scalaVersion := "2.12.6"
+  scalaVersion := "2.12.8"
 )
 
 lazy val dockerSettings = Seq(
