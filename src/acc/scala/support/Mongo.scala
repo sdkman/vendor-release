@@ -2,83 +2,65 @@ package support
 
 import java.util.concurrent.TimeUnit
 
-import io.sdkman.repos.{Candidate, Version}
-import org.mongodb.scala.bson.BsonString
+import io.sdkman.repos.{Application, Candidate, Version}
+import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
+import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
+import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.bson.collection.immutable.Document
-import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model.Filters.{and, equal}
 import org.mongodb.scala.{MongoClient, ScalaObservable, _}
 
 import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.{Duration, _}
+import scala.concurrent.duration.Duration
 
 object Mongo {
 
   import Helpers._
 
+  val codecRegistry = fromRegistries(
+    fromProviders(
+      classOf[Version],
+      classOf[Candidate],
+      classOf[Application]),
+    DEFAULT_CODEC_REGISTRY)
+
   lazy val mongoClient = MongoClient("mongodb://localhost:27017")
 
-  lazy val db = mongoClient.getDatabase("sdkman")
+  lazy val db = mongoClient.getDatabase("sdkman").withCodecRegistry(codecRegistry)
 
-  lazy val appCollection = db.getCollection("application")
+  lazy val appCollection: MongoCollection[Application] = db.getCollection("application")
 
-  def insertAliveOk() = appCollection.insertOne(Document("alive" -> "OK")).results()
+  def insertAliveOk() = appCollection.insertOne(Application("OK", "", "")).results()
 
-  lazy val versionsCollection = db.getCollection("versions")
+  lazy val versionsCollection: MongoCollection[Version] = db.getCollection("versions")
 
-  lazy val candidatesCollection = db.getCollection("candidates")
+  lazy val candidatesCollection: MongoCollection[Candidate] = db.getCollection("candidates")
 
-  def insertVersions(vs: Seq[Version]) = vs.foreach(insertVersion)
+  def insertVersions(vs: Seq[Version]) = versionsCollection.insertMany(vs).results()
 
-  def insertVersion(v: Version) =
-    versionsCollection.insertOne(
-      Document(
-        "candidate" -> v.candidate,
-        "version" -> v.version,
-        "platform" -> v.platform,
-        "url" -> v.url))
-      .results()
+  def insertVersion(v: Version) = versionsCollection.insertOne(v).results()
 
-  def insertCandidates(cs: Seq[Candidate]) = cs.foreach(insertCandidate)
+  def insertCandidates(cs: Seq[Candidate]) = candidatesCollection.insertMany(cs).results()
 
-  def insertCandidate(c: Candidate) =
-    candidatesCollection.insertOne(
-      Document(
-        "candidate" -> c.candidate,
-        "name" -> c.name,
-        "description" -> c.description,
-        "default" -> c.default,
-        "websiteUrl" -> c.websiteUrl,
-        "distribution" -> c.distribution))
-      .results()
+  def insertCandidate(c: Candidate) = candidatesCollection.insertOne(c).results()
 
   def candidateExists(candidate: String): Boolean =
-    find(candidatesCollection, and(equal("candidate", candidate)))
+    candidatesCollection.find(equal("candidate", candidate)).results().nonEmpty
 
   def versionExists(candidate: String, version: String): Boolean =
-    find(versionsCollection, and(equal("candidate", candidate), equal("version", version)))
+    versionsCollection.find(and(equal("candidate", candidate), equal("version", version))).results().nonEmpty
 
   def isDefault(candidate: String, version: String): Boolean =
-    find(candidatesCollection, and(equal("candidate", candidate), equal("default", version)))
+    candidatesCollection.find(and(equal("candidate", candidate), equal("default", version))).results().nonEmpty
 
   def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
-    find(versionsCollection, and(equal("candidate", candidate), equal("version", version), equal("platform", platform)))
-
-  private def find(collection: MongoCollection[Document], predicate: Bson) = Await.result(
-    collection
-      .find(predicate)
-      .first
-      .headOption
-      .map(_.nonEmpty), 5.seconds)
+    versionsCollection.find(and(equal("candidate", candidate), equal("version", version), equal("platform", platform))).results().nonEmpty
 
   def dropAllCollections() = {
     appCollection.drop().results()
     versionsCollection.drop().results()
     candidatesCollection.drop().results()
   }
-
-  private def field(n: String, d: Document) = d.get[BsonString](n).map(_.asString.getValue).get
 }
 
 object Helpers {

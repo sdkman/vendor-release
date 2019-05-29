@@ -22,8 +22,6 @@ import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.vendor.release.Configuration
-import org.mongodb.scala.Document
-import org.mongodb.scala.bson.BsonString
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -31,10 +29,10 @@ trait HealthRoutes extends Directives with Configuration with MongoConnectivity 
   val healthRoutes = path("alive") {
     get {
       complete {
-        appCollection.find().first().head.map { doc =>
-          extractAlive(doc).fold(HttpResponse(ServiceUnavailable)) { bson =>
-            logger.info(s"/alive 200 response: ${bson.getValue}")
-            HttpResponse(OK, entity = ByteString(bson.getValue))
+        appCollection.find().headOption.map { maybeApp =>
+          maybeApp.fold(HttpResponse(ServiceUnavailable)) { app =>
+            logger.info(s"/alive 200 response: ${app.alive}")
+            HttpResponse(OK, entity = ByteString(app.alive))
           }
         }.recover {
           case e =>
@@ -44,7 +42,4 @@ trait HealthRoutes extends Directives with Configuration with MongoConnectivity 
       }
     }
   }
-
-  private def extractAlive(doc: Document) = doc.get[BsonString]("alive")
-
 }
