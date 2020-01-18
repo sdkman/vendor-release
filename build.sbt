@@ -2,16 +2,16 @@ import scala.io.Source
 
 name := "vendor-release"
 
-val akkaHttpVersion = "10.0.2"
-val scalaTestVersion = "3.0.1"
+val akkaHttpVersion = "10.1.11"
+val scalaTestVersion = "3.1.0"
 val scalajHttpVersion = "2.3.0"
 val cucumberVersion = "2.0.1"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.10"
 
 val commonSettings = Seq(
   organization := "io.sdkman",
-  scalaVersion := "2.12.8"
+  scalaVersion := "2.12.10"
 )
 
 lazy val dockerSettings = Seq(
@@ -45,7 +45,8 @@ val accDependencies = Seq(
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-  "com.typesafe.akka" %% "akka-slf4j" % "2.4.16",
+  "com.typesafe.akka" %% "akka-stream" % "2.6.1",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.6.1",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
