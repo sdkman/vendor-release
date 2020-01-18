@@ -25,20 +25,29 @@ import io.sdkman.vendor.release.Configuration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait HealthRoutes extends Directives with Configuration with MongoConnectivity with MongoConfiguration with LazyLogging {
+trait HealthRoutes
+    extends Directives
+    with Configuration
+    with MongoConnectivity
+    with MongoConfiguration
+    with LazyLogging {
   val healthRoutes = path("alive") {
     get {
       complete {
-        appCollection.find().headOption.map { maybeApp =>
-          maybeApp.fold(HttpResponse(ServiceUnavailable)) { app =>
-            logger.info(s"/alive 200 response: ${app.alive}")
-            HttpResponse(OK, entity = ByteString(app.alive))
+        appCollection
+          .find()
+          .headOption
+          .map { maybeApp =>
+            maybeApp.fold(HttpResponse(ServiceUnavailable)) { app =>
+              logger.info(s"/alive 200 response: ${app.alive}")
+              HttpResponse(OK, entity = ByteString(app.alive))
+            }
           }
-        }.recover {
-          case e =>
-            logger.error(s"/alive 503 response ${e.getMessage}")
-            HttpResponse(ServiceUnavailable, entity = ByteString(e.getMessage))
-        }
+          .recover {
+            case e =>
+              logger.error(s"/alive 503 response ${e.getMessage}")
+              HttpResponse(ServiceUnavailable, entity = ByteString(e.getMessage))
+          }
       }
     }
   }

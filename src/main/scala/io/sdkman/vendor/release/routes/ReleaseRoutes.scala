@@ -24,18 +24,19 @@ import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ReleaseRoutes extends Directives
-  with CandidatesRepo
-  with VersionsRepo
-  with MongoConnectivity
-  with MongoConfiguration
-  with Configuration
-  with HttpResponses
-  with JsonSupport
-  with Validation
-  with UrlValidation
-  with LazyLogging
-  with Authorisation {
+trait ReleaseRoutes
+    extends Directives
+    with CandidatesRepo
+    with VersionsRepo
+    with MongoConnectivity
+    with MongoConfiguration
+    with Configuration
+    with HttpResponses
+    with JsonSupport
+    with Validation
+    with UrlValidation
+    with LazyLogging
+    with Authorisation {
 
   val Universal = "UNIVERSAL"
 
@@ -49,16 +50,19 @@ trait ReleaseRoutes extends Directives
               validateUrl(req.url) {
                 complete {
                   val candidateFO = findCandidate(req.candidate)
-                  val versionFO = findVersion(req.candidate, req.version, platform)
+                  val versionFO   = findVersion(req.candidate, req.version, platform)
                   for {
                     candidateO <- candidateFO
-                    versionO <- versionFO
+                    versionO   <- versionFO
                   } yield {
-                    candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
-                      versionO.fold(saveVersion(Version(req.candidate, req.version, platform, req.url))
-                        .map(_ => createdResponse(req.candidate, req.version, platform))) { _ =>
-                        conflictResponseF(req.candidate, req.version)
-                      }
+                    candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
+                      _ =>
+                        versionO.fold(
+                          saveVersion(Version(req.candidate, req.version, platform, req.url))
+                            .map(_ => createdResponse(req.candidate, req.version, platform))
+                        ) { _ =>
+                          conflictResponseF(req.candidate, req.version)
+                        }
                     }
                   }
                 }

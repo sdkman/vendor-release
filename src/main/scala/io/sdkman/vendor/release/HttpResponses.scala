@@ -28,15 +28,18 @@ trait HttpResponses extends JsonSupport {
 
   def acceptedResponse(m: String) = HttpResponse(Accepted, entity = apiResponse(Accepted, m))
 
-  def conflictResponse(c: String, v: String) = HttpResponse(Conflict, entity = apiResponse(Conflict, s"Duplicate: $c $v already exists"))
+  def conflictResponse(c: String, v: String) =
+    HttpResponse(Conflict, entity = apiResponse(Conflict, s"Duplicate: $c $v already exists"))
 
   def conflictResponseF(c: String, v: String) = Future.successful(conflictResponse(c, v))
 
-  def createdResponse(c: String, v: String, p: String) = HttpResponse(Created, entity = apiResponse(Created, s"Released: $c $v for $p"))
+  def createdResponse(c: String, v: String, p: String) =
+    HttpResponse(Created, entity = apiResponse(Created, s"Released: $c $v for $p"))
 
   def badRequestResponse(m: String) = HttpResponse(BadRequest, entity = apiResponse(BadRequest, m))
 
   def badRequestResponseF(m: String) = Future.successful(badRequestResponse(m))
 
-  private def apiResponse(status: StatusCode, message: String) = ApiResponse(status.intValue, message).toJson.compactPrint
+  private def apiResponse(status: StatusCode, message: String) =
+    ApiResponse(status.intValue, message).toJson.compactPrint
 }

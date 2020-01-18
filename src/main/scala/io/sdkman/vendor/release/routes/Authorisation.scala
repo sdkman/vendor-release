@@ -14,10 +14,13 @@ trait Authorisation {
 
   def authorised(candidate: String): Directive0 = authorize { rc =>
     val headers = rc.request.headers
-    headers.exists(hasValidAuthTokenHeader) && headers.exists(implicit h => isValidConsumer(candidate))
+    headers.exists(hasValidAuthTokenHeader) && headers.exists(
+      implicit h => isValidConsumer(candidate)
+    )
   }
 
-  private def hasValidAuthTokenHeader(h: HttpHeader) = h.name() == AuthTokenHeader && h.value() == serviceToken
+  private def hasValidAuthTokenHeader(h: HttpHeader) =
+    h.name() == AuthTokenHeader && h.value() == serviceToken
 
   private def isValidConsumer(c: String)(implicit h: HttpHeader) =
     h.name() == ConsumerHeader && h.value() == serviceAdminConsumer || h.value() == c

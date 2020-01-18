@@ -16,7 +16,15 @@
 package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import spray.json.{DefaultJsonProtocol, DeserializationException, JsNumber, JsObject, JsString, JsValue, RootJsonFormat}
+import spray.json.{
+  DefaultJsonProtocol,
+  DeserializationException,
+  JsNumber,
+  JsObject,
+  JsString,
+  JsValue,
+  RootJsonFormat
+}
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val versionReleaseFormat = jsonFormat4(VersionReleaseRequest)
@@ -25,9 +33,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   object ApiResponseJsonProtocol extends DefaultJsonProtocol {
     implicit object ApiReponseJsonFormat extends RootJsonFormat[ApiResponse] {
-      def write(ar: ApiResponse) = JsObject(
-        "status" -> JsNumber(ar.status),
-        "message" -> JsString(ar.message))
+      def write(ar: ApiResponse) =
+        JsObject("status" -> JsNumber(ar.status), "message" -> JsString(ar.message))
       def read(value: JsValue) = {
         value.asJsObject.getFields("status", "message") match {
           case Seq(JsNumber(status), JsString(message)) =>
