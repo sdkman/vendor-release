@@ -17,7 +17,6 @@ package io.sdkman.vendor.release
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.stream.ActorMaterializer
 import io.sdkman.vendor.release.routes.{DefaultRoutes, HealthRoutes, ReleaseRoutes}
 
 import scala.concurrent.{Await, Future}
