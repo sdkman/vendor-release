@@ -27,7 +27,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class HttpServer extends Configuration with ReleaseRoutes with DefaultRoutes with HealthRoutes {
 
   implicit lazy val actorSystem = ActorSystem("vendor-release-service")
-  implicit lazy val materializer = ActorMaterializer()
 
   val routes = healthRoutes ~ releaseRoutes ~ defaultRoutes
 
