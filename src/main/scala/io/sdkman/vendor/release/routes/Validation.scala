@@ -10,7 +10,7 @@ trait Validation {
   import ApiResponseJsonProtocol._
   import spray.json._
 
-  val SupportedPlatforms = Seq("LINUX_64", "LINUX_32", "MAC_OSX", "WINDOWS_64", "UNIVERSAL")
+  val SupportedPlatforms = Seq("LINUX_64", "LINUX_32", "LINUX_ARM64", "LINUX_ARM32", "MAC_OSX", "WINDOWS_64", "UNIVERSAL")
 
   def validatePlatform(platform: String): Directive0 =
     validate(
