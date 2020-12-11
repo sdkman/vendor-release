@@ -27,6 +27,7 @@ Feature: Release Version Validation
     """
           |{
           |  "candidate" : "java",
+          |  "vendor" : "open",
           |  "version" : "8u131-zulu",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64"
