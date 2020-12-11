@@ -6,7 +6,8 @@ case class VersionReleaseRequest(
     candidate: String,
     version: String,
     url: String,
-    platform: Option[String]
+    platform: Option[String],
+    vendor: Option[String]
 )
 
 case class ApiResponse(status: Int, message: String)
