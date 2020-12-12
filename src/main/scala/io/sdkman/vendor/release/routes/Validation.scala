@@ -26,7 +26,7 @@ trait Validation {
 
   def validateVersion(version: String): Directive0 =
     validate(
-      15 >= version.length,
-      ApiResponse(400, s"Version length exceeds 15 chars: $version").toJson.compactPrint
+      17 >= version.length,
+      ApiResponse(400, s"Version length exceeds 17 chars: $version").toJson.compactPrint
     )
 }
