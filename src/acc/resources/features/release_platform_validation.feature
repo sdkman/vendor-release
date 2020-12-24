@@ -34,8 +34,46 @@ Feature: Release Platform Validation
     """
     Then the status received is 201 CREATED
 
+  Scenario: The Linux 32 bit Platform is valid
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "LINUX_32"
+          |}
+    """
+    Then the status received is 201 CREATED
 
-  Scenario: The Mac OSX Platform is valid
+  Scenario: The Linux ARM32 bit Platform is valid
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "LINUX_ARM32"
+          |}
+    """
+    Then the status received is 201 CREATED
+
+  Scenario: The Linux ARM64 bit Platform is valid
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "LINUX_ARM64"
+          |}
+    """
+    Then the status received is 201 CREATED
+
+  Scenario: The Mac OSX X64 Platform is valid
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
@@ -44,6 +82,19 @@ Feature: Release Platform Validation
           |  "version" : "8u131-zulu",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "MAC_OSX"
+          |}
+    """
+    Then the status received is 201 CREATED
+
+  Scenario: The Mac OSX ARM64 Platform is valid
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "MAC_ARM64"
           |}
     """
     Then the status received is 201 CREATED
