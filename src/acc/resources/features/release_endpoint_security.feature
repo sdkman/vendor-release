@@ -20,7 +20,7 @@ Feature: Release Endpoint Security
     Given the URI /groovy-2.3.6.zip is available for download
 
   Scenario: The Release endpoints can NOT be Accessed without a valid Auth Token
-    Given the Consumer groovy is making a request
+    Given the Consumer for groovy is making a request
     And the Consumer does not have a valid Auth Token
     When a JSON POST on the /release/version endpoint:
     """
@@ -33,7 +33,7 @@ Feature: Release Endpoint Security
     Then the status received is 403 "FORBIDDEN"
 
   Scenario: The Release endpoints can NOT be Accessed by an invalid Consumer
-    Given the Consumer scala is making a request
+    Given the Consumer for scala is making a request
     And the Consumer has a valid Auth Token
     When a JSON POST on the /release/version endpoint:
     """
@@ -46,7 +46,7 @@ Feature: Release Endpoint Security
     Then the status received is 403 "FORBIDDEN"
 
   Scenario: The Release endpoints CAN be Accessed when Authorised as valid Consumer
-    Given the Consumer groovy is making a request
+    Given the Consumer for groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     When a JSON POST on the /release/version endpoint:
@@ -60,7 +60,7 @@ Feature: Release Endpoint Security
     Then the status received is 201 "CREATED"
 
   Scenario: The Release endpoints CAN be Accessed when Authorised as Administrator
-    Given the Consumer default_admin is making a request
+    Given the Consumer for default_admin is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     When a JSON POST on the /release/version endpoint:

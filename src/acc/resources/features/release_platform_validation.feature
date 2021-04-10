@@ -17,7 +17,7 @@
 Feature: Release Platform Validation
 
   Background:
-    Given the Consumer java is making a request
+    Given the Consumer for java is making a request
     And the Consumer has a valid Auth Token
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
 

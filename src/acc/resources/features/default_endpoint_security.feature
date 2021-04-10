@@ -17,7 +17,7 @@
 Feature: Default Endpoint Security
 
   Scenario: The Default endpoints can NOT be Accessed without a valid Auth Token
-    Given the Consumer groovy is making a request
+    Given the Consumer for groovy is making a request
     And the Consumer does not have a valid Auth Token
     And the Consumer does not have a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -33,7 +33,7 @@ Feature: Default Endpoint Security
     Then the status received is 403 "FORBIDDEN"
 
   Scenario: The Default endpoints can NOT by an invalid Consumer
-    Given the Consumer scala is making a request
+    Given the Consumer for scala is making a request
     And the Consumer has a valid Auth Token
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -49,7 +49,7 @@ Feature: Default Endpoint Security
     Then the status received is 403 "FORBIDDEN"
 
   Scenario: The Default endpoints CAN be Accessed when Authorised as valid Consumer
-    Given the Consumer groovy is making a request
+    Given the Consumer for groovy is making a request
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
@@ -64,7 +64,7 @@ Feature: Default Endpoint Security
     Then the status received is 202 "ACCEPTED"
 
   Scenario: The Default endpoints CAN be Accessed when Authorised as Administrator
-    Given the Consumer default_admin is making a request
+    Given the Consumer for default_admin is making a request
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
