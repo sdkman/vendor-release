@@ -58,8 +58,9 @@ trait ReleaseRoutes
                     candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
                       _ =>
                         versionO.fold(
-                          saveVersion(Version(req.candidate, req.version, platform, req.url, req.vendor))
-                            .map(_ => createdResponse(req.candidate, req.version, platform))
+                          saveVersion(
+                            Version(req.candidate, req.version, platform, req.url, req.vendor)
+                          ).map(_ => createdResponse(req.candidate, req.version, platform))
                         ) { _ =>
                           conflictResponseF(req.candidate, req.version)
                         }
