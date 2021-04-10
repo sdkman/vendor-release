@@ -23,6 +23,8 @@ trait Authorisation {
     h.name() == AuthTokenHeader && h.value() == serviceToken
 
   private def isValidConsumer(c: String)(implicit h: HttpHeader) =
-    h.name() == ConsumerHeader && h.value() == serviceAdminConsumer || h.value() == c
+    h.name() == ConsumerHeader &&
+      h.value().split('|').contains(c) ||
+      h.value() == serviceAdminConsumer
 
 }

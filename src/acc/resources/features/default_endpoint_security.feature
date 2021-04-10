@@ -63,6 +63,21 @@ Feature: Default Endpoint Security
     """
     Then the status received is 202 "ACCEPTED"
 
+  Scenario: The Default endpoints CAN be Accessed when Authorised as valid list of Consumers
+    Given the Consumer for grails|groovy is making a request
+    And the Consumer has a valid Auth Token
+    And an existing UNIVERSAL groovy Version 2.3.5 exists
+    And an existing UNIVERSAL groovy Version 2.3.6 exists
+    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    When a JSON PUT on the /default/version endpoint:
+    """
+          |{
+          |   "candidate" : "groovy",
+          |   "version" : "2.3.6"
+          |}
+    """
+    Then the status received is 202 "ACCEPTED"
+
   Scenario: The Default endpoints CAN be Accessed when Authorised as Administrator
     Given the Consumer for default_admin is making a request
     And the Consumer has a valid Auth Token

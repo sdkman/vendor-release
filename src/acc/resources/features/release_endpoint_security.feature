@@ -59,6 +59,20 @@ Feature: Release Endpoint Security
     """
     Then the status received is 201 "CREATED"
 
+  Scenario: The Release endpoints CAN be Accessed when Authorised with valid list of Consumers
+    Given the Consumer for grails|groovy is making a request
+    And the Consumer has a valid Auth Token
+    And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
+          |}
+    """
+    Then the status received is 201 "CREATED"
+
   Scenario: The Release endpoints CAN be Accessed when Authorised as Administrator
     Given the Consumer for default_admin is making a request
     And the Consumer has a valid Auth Token
