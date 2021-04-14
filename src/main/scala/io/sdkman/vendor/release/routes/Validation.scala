@@ -33,6 +33,14 @@ trait Validation {
       ApiResponse(400, s"URL cannot be resolved: $url").toJson.compactPrint
     )
 
+  def validateUrl(url: Option[String]): Directive0 =
+    url
+      .map { u =>
+        validate(
+          resourceAvailable(u),
+          ApiResponse(400, s"URL cannot be resolved: $u").toJson.compactPrint
+        )
+      } getOrElse pass
   def validateVersion(version: String): Directive0 =
     validate(
       17 >= version.length,

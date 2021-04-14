@@ -32,6 +32,10 @@ class HttpSteps extends ScalaDsl with EN with Matchers {
     response = support.Http.put(endpoint, payload.stripMargin)
   }
 
+  When( """^a JSON PATCH on the (.*) endpoint:$""") { (endpoint: String, payload: String) =>
+    response = support.Http.patch(endpoint, payload.stripMargin)
+  }
+
   And( """^the (.*) endpoint is accessed$""") { (endpoint: String) =>
     response = support.Http.get(endpoint)
   }

@@ -53,8 +53,11 @@ object Mongo {
   def isDefault(candidate: String, version: String): Boolean =
     candidatesCollection.find(and(equal("candidate", candidate), equal("default", version))).results().nonEmpty
 
+  def versionVisible(candidate: String, version: String): Boolean =
+    versionsCollection.find(and(equal("candidate", candidate), equal("version", version), equal("visible", true))).results().nonEmpty
+
   def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
-    versionsCollection.find(and(equal("candidate", candidate), equal("version", version), equal("platform", platform))).results().nonEmpty
+    versionsCollection.find(and(equal("candidate", candidate), equal("version", version), equal("platform", platform), equal("url", url))).results().nonEmpty
 
   def dropAllCollections() = {
     appCollection.drop().results()
