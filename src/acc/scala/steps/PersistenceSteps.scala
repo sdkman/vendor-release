@@ -28,6 +28,18 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
     }
   }
 
+  Then( """^(.*) Version (.*) is hidden""") { (candidate: String, version: String) =>
+    withClue("Version is not hidden") {
+      Mongo.versionVisible(candidate, version) shouldBe false
+    }
+  }
+
+  Then( """^(.*) Version (.*) is visible$""") { (candidate: String, version: String) =>
+    withClue("Version is not hidden") {
+      Mongo.versionVisible(candidate, version) shouldBe true
+    }
+  }
+
   Given( """^a (.*) (.*) Version (.*) with URL (.*) already exists$""") { (platform: String, candidate: String, version: String, url: String) =>
     Mongo.insertVersion(Version(candidate, version, platform, s"http://somecandidate.org/$candidate/$version"))
   }
@@ -38,7 +50,9 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
         candidate = candidate,
         version = version,
         platform = platform,
-        url = s"http://somecandidate.org/$candidate/$version"))
+        url = s"http://somecandidate.org/$candidate/$version",
+        visible = Some(true))
+    )
   }
 
   Given( """^the (.*) candidate (.*) with default version (.*) already exists$""") { (platform: String, candidate: String, version: String) =>

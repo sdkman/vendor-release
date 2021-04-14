@@ -32,6 +32,11 @@ object Http {
   def put(endpoint: String, payload: String) =
     withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).put(payload).asString)
 
+  def patch(endpoint: String, payload: String) =
+    withConnectionOptions(http =>
+      http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("PATCH").asString
+    )
+
   private def withConnectionOptions(f: BaseHttp => HttpResponse[String]): HttpResponse[String] =
     f(new BaseHttp(options = Seq(HttpOptions.connTimeout(1000), HttpOptions.readTimeout(5000))))
 

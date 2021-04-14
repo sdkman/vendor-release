@@ -23,7 +23,7 @@ import spray.json._
 class FeatureSteps extends ScalaDsl with EN with Matchers with JsonSupport {
 
   Then( """^the status received is (.*) (.*)$""") { (code: Int, status: String) =>
-    withClue(s"The response code was: ${World.response.code}:") {
+    withClue(s"The response code was: ${World.response.code} with message: '${World.response.body}':") {
       World.response.code shouldBe code
     }
   }

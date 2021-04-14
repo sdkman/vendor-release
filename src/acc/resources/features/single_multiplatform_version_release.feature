@@ -22,7 +22,7 @@ Feature: Multi-Platform Candidate Release
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the URI /zulu8.21.0.1-jdk8.0.131-macosx.tar.gz is available for download
 
-  Scenario: Release a single Multi-Platform binary Version
+  Scenario: Release a single multi-platform binary Version
     Given an existing LINUX_64 java Version 8u121-zulu exists
     And the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
@@ -35,10 +35,10 @@ Feature: Multi-Platform Candidate Release
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u121-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
     And the message "Released: java 8u131-zulu for LINUX_64" is received
 
-  Scenario: Release multiple Multi-Platform binaries of the same Version
+  Scenario: Release multiple multi-platform binaries of the same Version
     Given an existing LINUX_64 java Version 8u121-zulu exists
     And the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:

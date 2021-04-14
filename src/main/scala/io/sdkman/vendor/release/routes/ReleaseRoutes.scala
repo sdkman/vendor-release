@@ -42,7 +42,7 @@ trait ReleaseRoutes
 
   val releaseRoutes = path("release" / "version") {
     post {
-      entity(as[VersionReleaseRequest]) { req =>
+      entity(as[PostReleaseRequest]) { req =>
         authorised(req.candidate) {
           val platform = req.platform.getOrElse(Universal)
           validatePlatform(platform) {
@@ -63,6 +63,42 @@ trait ReleaseRoutes
                           ).map(_ => createdResponse(req.candidate, req.version, platform))
                         ) { _ =>
                           conflictResponseF(req.candidate, req.version)
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } ~ patch {
+      entity(as[PatchReleaseRequest]) { req =>
+        authorised(req.candidate) {
+          val platform = req.platform.getOrElse(Universal)
+          validatePlatform(platform) {
+            validateVersion(req.version) {
+              validateUrl(req.url) {
+                complete {
+                  val candidateFO = findCandidate(req.candidate)
+                  val versionFO   = findVersion(req.candidate, req.version, platform)
+                  for {
+                    candidateO <- candidateFO
+                    versionO   <- versionFO
+                  } yield {
+                    candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
+                      _ =>
+                        versionO.fold(badRequestResponseF(s"Invalid version: ${req.version}")) {
+                          version =>
+                            val updated = Version(
+                              version.candidate,
+                              version.version,
+                              version.platform,
+                              req.url getOrElse version.url,
+                              req.vendor orElse version.vendor,
+                              req.visible orElse version.visible
+                            )
+                            updateVersion(version, updated).map(_ => noContentResponse())
                         }
                     }
                   }
