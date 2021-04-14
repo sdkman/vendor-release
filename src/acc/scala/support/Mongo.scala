@@ -18,11 +18,9 @@ object Mongo {
   import Helpers._
 
   val codecRegistry = fromRegistries(
-    fromProviders(
-      classOf[Version],
-      classOf[Candidate],
-      classOf[Application]),
-    DEFAULT_CODEC_REGISTRY)
+    fromProviders(classOf[Version], classOf[Candidate], classOf[Application]),
+    DEFAULT_CODEC_REGISTRY
+  )
 
   lazy val mongoClient = MongoClient("mongodb://localhost:27017")
 
@@ -48,16 +46,35 @@ object Mongo {
     candidatesCollection.find(equal("candidate", candidate)).results().nonEmpty
 
   def versionExists(candidate: String, version: String): Boolean =
-    versionsCollection.find(and(equal("candidate", candidate), equal("version", version))).results().nonEmpty
+    versionsCollection
+      .find(and(equal("candidate", candidate), equal("version", version)))
+      .results()
+      .nonEmpty
 
   def isDefault(candidate: String, version: String): Boolean =
-    candidatesCollection.find(and(equal("candidate", candidate), equal("default", version))).results().nonEmpty
+    candidatesCollection
+      .find(and(equal("candidate", candidate), equal("default", version)))
+      .results()
+      .nonEmpty
 
   def versionVisible(candidate: String, version: String): Boolean =
-    versionsCollection.find(and(equal("candidate", candidate), equal("version", version), equal("visible", true))).results().nonEmpty
+    versionsCollection
+      .find(and(equal("candidate", candidate), equal("version", version), equal("visible", true)))
+      .results()
+      .nonEmpty
 
   def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
-    versionsCollection.find(and(equal("candidate", candidate), equal("version", version), equal("platform", platform), equal("url", url))).results().nonEmpty
+    versionsCollection
+      .find(
+        and(
+          equal("candidate", candidate),
+          equal("version", version),
+          equal("platform", platform),
+          equal("url", url)
+        )
+      )
+      .results()
+      .nonEmpty
 
   def dropAllCollections() = {
     appCollection.drop().results()
@@ -68,7 +85,8 @@ object Mongo {
 
 object Helpers {
 
-  implicit class DocumentObservable[C](val observable: Observable[Document]) extends ImplicitObservable[Document] {
+  implicit class DocumentObservable[C](val observable: Observable[Document])
+      extends ImplicitObservable[Document] {
     override val converter: (Document) => String = (doc) => doc.toJson
   }
 

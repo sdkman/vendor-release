@@ -22,85 +22,102 @@ import support.Mongo
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers {
 
-  Then( """^(.*) Version (.*) with URL (.*) was published as (.*)$""") { (candidate: String, version: String, url: String, platform: String) =>
-    withClue("Version was not published") {
-      Mongo.versionPublished(candidate, version, url, platform) shouldBe true
-    }
+  Then("""^(.*) Version (.*) with URL (.*) was published as (.*)$""") {
+    (candidate: String, version: String, url: String, platform: String) =>
+      withClue("Version was not published") {
+        Mongo.versionPublished(candidate, version, url, platform) shouldBe true
+      }
   }
 
-  Then( """^(.*) Version (.*) is hidden""") { (candidate: String, version: String) =>
+  Then("""^(.*) Version (.*) is hidden""") { (candidate: String, version: String) =>
     withClue("Version is not hidden") {
       Mongo.versionVisible(candidate, version) shouldBe false
     }
   }
 
-  Then( """^(.*) Version (.*) is visible$""") { (candidate: String, version: String) =>
+  Then("""^(.*) Version (.*) is visible$""") { (candidate: String, version: String) =>
     withClue("Version is not hidden") {
       Mongo.versionVisible(candidate, version) shouldBe true
     }
   }
 
-  Given( """^a (.*) (.*) Version (.*) with URL (.*) already exists$""") { (platform: String, candidate: String, version: String, url: String) =>
-    Mongo.insertVersion(Version(candidate, version, platform, s"http://somecandidate.org/$candidate/$version"))
+  Given("""^a (.*) (.*) Version (.*) with URL (.*) already exists$""") {
+    (platform: String, candidate: String, version: String, url: String) =>
+      Mongo.insertVersion(
+        Version(candidate, version, platform, s"http://somecandidate.org/$candidate/$version")
+      )
   }
 
-  Given( """^an existing (.*) (.*) Version (.*) exists""") { (platform: String, candidate: String, version: String) =>
-    Mongo.insertVersion(
-      Version(
-        candidate = candidate,
-        version = version,
-        platform = platform,
-        url = s"http://somecandidate.org/$candidate/$version",
-        visible = Some(true))
-    )
+  Given("""^an existing (.*) (.*) Version (.*) exists""") {
+    (platform: String, candidate: String, version: String) =>
+      Mongo.insertVersion(
+        Version(
+          candidate = candidate,
+          version = version,
+          platform = platform,
+          url = s"http://somecandidate.org/$candidate/$version",
+          visible = Some(true)
+        )
+      )
   }
 
-  Given( """^the (.*) candidate (.*) with default version (.*) already exists$""") { (platform: String, candidate: String, version: String) =>
-    Mongo.insertCandidate(
-      Candidate(
-        candidate = candidate,
-        name = candidate.capitalize,
-        description = s"$candidate description",
-        default = Some(version),
-        websiteUrl = s"http://somecandidate.org/$candidate",
-        distribution = platform))
+  Given("""^the (.*) candidate (.*) with default version (.*) already exists$""") {
+    (platform: String, candidate: String, version: String) =>
+      Mongo.insertCandidate(
+        Candidate(
+          candidate = candidate,
+          name = candidate.capitalize,
+          description = s"$candidate description",
+          default = Some(version),
+          websiteUrl = s"http://somecandidate.org/$candidate",
+          distribution = platform
+        )
+      )
   }
 
-  Given( """^the existing Default (.*) (.*) Version is (.*)$""") { (platform: String, candidate: String, version: String) =>
-    Mongo.insertCandidate(
-      Candidate(
-        candidate = candidate,
-        name = candidate.capitalize,
-        description = s"$candidate description",
-        default = Some(version),
-        websiteUrl = s"http://somecandidate.org/$candidate",
-        distribution = platform))
+  Given("""^the existing Default (.*) (.*) Version is (.*)$""") {
+    (platform: String, candidate: String, version: String) =>
+      Mongo.insertCandidate(
+        Candidate(
+          candidate = candidate,
+          name = candidate.capitalize,
+          description = s"$candidate description",
+          default = Some(version),
+          websiteUrl = s"http://somecandidate.org/$candidate",
+          distribution = platform
+        )
+      )
   }
 
-  Given( """^the existing (.*) (.*) Version has no Default$""") { (platform: String, candidate: String) =>
-    Mongo.insertCandidate(
-      Candidate(
-        candidate = candidate,
-        name = candidate.capitalize,
-        description = s"$candidate description",
-        default = None,
-        websiteUrl = s"http://somecandidate.org/$candidate",
-        distribution = platform))
+  Given("""^the existing (.*) (.*) Version has no Default$""") {
+    (platform: String, candidate: String) =>
+      Mongo.insertCandidate(
+        Candidate(
+          candidate = candidate,
+          name = candidate.capitalize,
+          description = s"$candidate description",
+          default = None,
+          websiteUrl = s"http://somecandidate.org/$candidate",
+          distribution = platform
+        )
+      )
   }
 
-  Then( """^the Default (.*) Version has changed to (.*)$""") { (candidate: String, version: String) =>
-    withClue(s"The default $candidate version was not changed to $version") {
-      Mongo.isDefault(candidate, version) shouldBe true
-    }
+  Then("""^the Default (.*) Version has changed to (.*)$""") {
+    (candidate: String, version: String) =>
+      withClue(s"The default $candidate version was not changed to $version") {
+        Mongo.isDefault(candidate, version) shouldBe true
+      }
   }
 
-  Given( """^Candidate (.*) Version (.*) does not exists$""") { (candidate: String, version: String) =>
-    withClue(s"$candidate $version does not exist") {
-      Mongo.versionExists(candidate, version) shouldBe false
-    }
+  Given("""^Candidate (.*) Version (.*) does not exists$""") {
+    (candidate: String, version: String) =>
+      withClue(s"$candidate $version does not exist") {
+        Mongo.versionExists(candidate, version) shouldBe false
+      }
   }
 
-  Given( """^Candidate (.*) does not exist$""") { candidate: String =>
+  Given("""^Candidate (.*) does not exist$""") { candidate: String =>
     withClue(s"The exists: $candidate") {
       Mongo.candidateExists(candidate) shouldBe false
     }

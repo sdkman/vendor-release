@@ -27,14 +27,19 @@ object Http {
     withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).asString)
 
   def post(endpoint: String, payload: String) =
-    withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).postData(payload).asString)
+    withConnectionOptions(
+      http => http(s"$host$endpoint").headers(requiredHeaders).postData(payload).asString
+    )
 
   def put(endpoint: String, payload: String) =
-    withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).put(payload).asString)
+    withConnectionOptions(
+      http => http(s"$host$endpoint").headers(requiredHeaders).put(payload).asString
+    )
 
   def patch(endpoint: String, payload: String) =
-    withConnectionOptions(http =>
-      http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("PATCH").asString
+    withConnectionOptions(
+      http =>
+        http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("PATCH").asString
     )
 
   private def withConnectionOptions(f: BaseHttp => HttpResponse[String]): HttpResponse[String] =
@@ -42,8 +47,8 @@ object Http {
 
   private def requiredHeaders = Map(
     "Service-Token" -> World.token,
-    "Consumer" -> World.consumer,
-    "Accept" -> "application/json",
-    "Content-Type" -> "application/json"
+    "Consumer"      -> World.consumer,
+    "Accept"        -> "application/json",
+    "Content-Type"  -> "application/json"
   )
 }

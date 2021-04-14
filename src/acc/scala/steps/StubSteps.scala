@@ -19,19 +19,24 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.Matchers
 
-
 class StubSteps extends ScalaDsl with EN with Matchers {
 
-  And( """^the URI (.*) is available for download$""") { uri: String =>
-    stubFor(get(urlEqualTo(uri))
-      .willReturn(aResponse()
-        .withHeader("content-type", "application/octet-stream")
-        .withBodyFile(uri.tail)
-        .withStatus(200)))
+  And("""^the URI (.*) is available for download$""") { uri: String =>
+    stubFor(
+      get(urlEqualTo(uri))
+        .willReturn(
+          aResponse()
+            .withHeader("content-type", "application/octet-stream")
+            .withBodyFile(uri.tail)
+            .withStatus(200)
+        )
+    )
   }
 
-  And( """^the URI (.*) is not available for download$""") { uri: String =>
-    stubFor(get(urlEqualTo(uri))
-      .willReturn(aResponse().withStatus(404)))
+  And("""^the URI (.*) is not available for download$""") { uri: String =>
+    stubFor(
+      get(urlEqualTo(uri))
+        .willReturn(aResponse().withStatus(404))
+    )
   }
 }
