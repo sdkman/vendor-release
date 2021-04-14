@@ -4,7 +4,7 @@ name := "vendor-release"
 
 val akkaHttpVersion = "10.1.11"
 val scalaTestVersion = "3.1.0"
-val scalajHttpVersion = "2.3.0"
+val scalajHttpVersion = "2.4.2"
 val cucumberVersion = "2.0.1"
 
 scalaVersion := "2.12.10"
@@ -50,7 +50,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
-  "io.sdkman" %% "sdkman-mongodb-persistence" % "1.3",
+  "io.sdkman" %% "sdkman-mongodb-persistence" % "1.7",
   "io.sdkman" %% "sdkman-url-validator" % "0.2.4"
 ) ++ testDependencies ++ accDependencies
 
