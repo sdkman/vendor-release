@@ -24,7 +24,7 @@ Feature: Update a Version
 
   Scenario: Change the URL of an existing universal Candidate Version
     Given the Consumer for groovy is making a request
-    And the URI /groovy-2.3.6.zip is available for download
+    And the URI /groovy-x.y.z.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
     When a JSON PATCH on the /release/version endpoint:

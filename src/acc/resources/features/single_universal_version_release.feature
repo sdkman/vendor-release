@@ -19,7 +19,7 @@ Feature: Universal Candidate Release
   Background:
     Given the Consumer for groovy is making a request
     And the Consumer has a valid Auth Token
-    And the URI /groovy-binary-2.3.6.zip is available for download
+    And the URI /groovy-2.3.6.zip is available for download
 
   Scenario: Release a Universal Candidate Version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
