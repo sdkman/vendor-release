@@ -2,7 +2,7 @@ import scala.io.Source
 
 name := "vendor-release"
 
-val akkaHttpVersion = "10.1.11"
+val akkaHttpVersion = "10.2.4"
 val scalaTestVersion = "3.1.0"
 val scalajHttpVersion = "2.4.2"
 val cucumberVersion = "2.0.1"
