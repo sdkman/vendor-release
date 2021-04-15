@@ -42,7 +42,7 @@ trait ReleaseRoutes
 
   val Universal = "UNIVERSAL"
 
-  val releaseRoutes = path("release" / "version") {
+  val releaseRoutes = pathPrefix("release" / "version") {
     post {
       entity(as[PostReleaseRequest]) { req =>
         validate(req.candidate, req.version, req.platform, Some(req.url)) {
@@ -84,6 +84,19 @@ trait ReleaseRoutes
                 existing.map(noContentResponseF()) getOrElse badRequestResponseF(
                   s"Does not exist: ${req.candidate} ${req.version} $platform"
                 )
+            }
+          }
+        }
+      }
+    } ~ delete {
+      path(Segment / Segment / Segment) { (candidate, version, platform) =>
+        validate(candidate, version, Some(platform), None) {
+          complete {
+            deleteVersion(candidate, version, platform).map {
+              case result if result.getDeletedCount == 1 =>
+                okResponse(s"Deleted: $candidate $version $platform")
+              case _ =>
+                notFoundResponse(s"Not found: $candidate $version $platform")
             }
           }
         }
