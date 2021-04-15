@@ -15,7 +15,6 @@ Feature: Update a Version
           |   "candidate" : "groovy",
           |   "version" : "2.3.6",
           |   "platform": "UNIVERSAL",
-          |   "url" : "http://localhost:8080/groovy-2.3.6.zip",
           |   "visible": false
           |}
     """
@@ -51,7 +50,6 @@ Feature: Update a Version
           |   "candidate" : "java",
           |   "version" : "8.0.131-zulu",
           |   "platform": "LINUX_64",
-          |   "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |   "visible": false
           |}
     """
