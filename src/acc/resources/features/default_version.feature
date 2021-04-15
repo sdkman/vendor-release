@@ -37,7 +37,7 @@ Feature: Default Candidate Version
 
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default UNIVERSAL groovy Version is 2.3.5
-    And Candidate "groovy" Version "2.3.6" does not exists
+    And the groovy version 2.3.6 UNIVERSAL does not exist
     When a JSON PUT on the /default/version endpoint:
     """
           |{

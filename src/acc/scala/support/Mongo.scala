@@ -45,9 +45,11 @@ object Mongo {
   def candidateExists(candidate: String): Boolean =
     candidatesCollection.find(equal("candidate", candidate)).results().nonEmpty
 
-  def versionExists(candidate: String, version: String): Boolean =
+  def versionExists(candidate: String, version: String, platform: String): Boolean =
     versionsCollection
-      .find(and(equal("candidate", candidate), equal("version", version)))
+      .find(
+        and(equal("candidate", candidate), equal("version", version), equal("platform", platform))
+      )
       .results()
       .nonEmpty
 

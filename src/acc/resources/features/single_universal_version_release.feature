@@ -56,7 +56,7 @@ Feature: Universal Candidate Release
           |}
     """
     Then the status received is 409 CONFLICT
-    And the message "Duplicate: groovy 2.3.6 already exists" is received
+    And the message "Duplicate: groovy 2.3.6 UNIVERSAL already exists" is received
 
   Scenario: Attempt to Release a Version for a non-existent Candidate
     Given Candidate groovy does not exist
@@ -70,7 +70,7 @@ Feature: Universal Candidate Release
     """
     Then the status received is 400 BAD_REQUEST
     And the message "Invalid candidate: groovy" is received
-    And Candidate groovy Version 2.3.6 does not exists
+    And the groovy version 2.3.6 UNIVERSAL does not exist
 
   Scenario: Attempt to submit malformed JSON with no Candidate
     When a JSON POST on the /release/version endpoint:
