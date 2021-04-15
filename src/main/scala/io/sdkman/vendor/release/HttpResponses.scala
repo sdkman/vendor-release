@@ -37,8 +37,6 @@ trait HttpResponses extends JsonSupport {
   def createdResponse(c: String, v: String, p: String) =
     HttpResponse(Created, entity = apiResponse(Created, s"Released: $c $v for $p"))
 
-  def noContentResponse() = HttpResponse(NoContent)
-
   def noContentResponseF()(implicit ec: ExecutionContext): Future[Any] => Future[HttpResponse] =
     f => f.map(_ => HttpResponse(NoContent))
 
