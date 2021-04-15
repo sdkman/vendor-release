@@ -36,6 +36,10 @@ class HttpSteps extends ScalaDsl with EN with Matchers {
     response = support.Http.patch(endpoint, payload.stripMargin)
   }
 
+  When("""^a DELETE on the (.*) endpoint$""") { (endpoint: String) =>
+    response = support.Http.delete(endpoint)
+  }
+
   And("""^the (.*) endpoint is accessed$""") { (endpoint: String) =>
     response = support.Http.get(endpoint)
   }

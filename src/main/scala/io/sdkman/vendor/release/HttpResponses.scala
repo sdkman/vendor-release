@@ -26,6 +26,8 @@ trait HttpResponses extends JsonSupport {
 
   import ApiResponseJsonProtocol._
 
+  def okResponse(m: String) = HttpResponse(OK, entity = apiResponse(OK, m))
+
   def acceptedResponse(m: String) = HttpResponse(Accepted, entity = apiResponse(Accepted, m))
 
   def conflictResponse(c: String, v: String, p: String) =
@@ -43,6 +45,11 @@ trait HttpResponses extends JsonSupport {
   def badRequestResponse(m: String) = HttpResponse(BadRequest, entity = apiResponse(BadRequest, m))
 
   def badRequestResponseF(m: String) = Future.successful(badRequestResponse(m))
+
+  def notFoundResponse(m: String) = HttpResponse(NotFound, entity = apiResponse(NotFound, m))
+
+  def internalServerErrorResponse(m: String) =
+    HttpResponse(InternalServerError, entity = apiResponse(InternalServerError, m))
 
   private def apiResponse(status: StatusCode, message: String) =
     ApiResponse(status.intValue, message).toJson.compactPrint
