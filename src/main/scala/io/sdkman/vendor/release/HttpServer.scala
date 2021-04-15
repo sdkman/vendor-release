@@ -25,11 +25,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class HttpServer extends Configuration with ReleaseRoutes with DefaultRoutes with HealthRoutes {
 
-  implicit lazy val actorSystem = ActorSystem("vendor-release-service")
+  implicit lazy val actorSystem: ActorSystem = ActorSystem("vendor-release-service")
 
   val routes = healthRoutes ~ releaseRoutes ~ defaultRoutes
 
-  def start(): Future[Http.ServerBinding] = Http().bindAndHandle(routes, serviceHost, servicePort)
+  def start(): Future[Http.ServerBinding] =
+    Http().newServerAt(serviceHost, servicePort).bindFlow(routes)
 
   def shutdown(): Unit = {
     Await.ready(actorSystem.terminate(), 5.seconds)
