@@ -21,17 +21,15 @@ trait Validation {
     "UNIVERSAL"
   )
 
-  def validatePlatform(platform: String): Directive0 =
-    validate(
-      SupportedPlatforms.contains(platform),
-      ApiResponse(400, s"Invalid platform: $platform").toJson.compactPrint
-    )
-
-  def validateUrl(url: String): Directive0 =
-    validate(
-      resourceAvailable(url),
-      ApiResponse(400, s"URL cannot be resolved: $url").toJson.compactPrint
-    )
+  def validatePlatform(platform: Option[String]): Directive0 =
+    platform
+      .map(
+        p =>
+          validate(
+            SupportedPlatforms.contains(p),
+            ApiResponse(400, s"Invalid platform: $p").toJson.compactPrint
+          )
+      ) getOrElse pass
 
   def validateUrl(url: Option[String]): Directive0 =
     url
@@ -41,6 +39,7 @@ trait Validation {
           ApiResponse(400, s"URL cannot be resolved: $u").toJson.compactPrint
         )
       } getOrElse pass
+
   def validateVersion(version: String): Directive0 =
     validate(
       17 >= version.length,

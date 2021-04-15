@@ -15,14 +15,16 @@
   */
 package io.sdkman.vendor.release.routes
 
-import akka.http.scaladsl.server.Directives
+import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.server.{Directives, Route, StandardRoute}
 import com.typesafe.scalalogging.LazyLogging
 import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
-import io.sdkman.repos.{CandidatesRepo, Version, VersionsRepo}
+import io.sdkman.repos.{Candidate, CandidatesRepo, Version, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait ReleaseRoutes
     extends Directives
@@ -43,71 +45,79 @@ trait ReleaseRoutes
   val releaseRoutes = path("release" / "version") {
     post {
       entity(as[PostReleaseRequest]) { req =>
-        authorised(req.candidate) {
-          val platform = req.platform.getOrElse(Universal)
-          validatePlatform(platform) {
-            validateVersion(req.version) {
-              validateUrl(req.url) {
-                complete {
-                  val candidateFO = findCandidate(req.candidate)
-                  val versionFO   = findVersion(req.candidate, req.version, platform)
-                  for {
-                    candidateO <- candidateFO
-                    versionO   <- versionFO
-                  } yield {
-                    candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
-                      _ =>
-                        versionO.fold(
-                          saveVersion(
-                            Version(req.candidate, req.version, platform, req.url, req.vendor)
-                          ).map(_ => createdResponse(req.candidate, req.version, platform))
-                        ) { _ =>
-                          conflictResponseF(req.candidate, req.version)
-                        }
-                    }
-                  }
+        validate(req.candidate, req.version, req.platform, Some(req.url)) {
+          complete {
+            onFinding(req.candidate, req.version, req.platform) {
+              (candidateO, versionO, platform) =>
+                candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
+                  candidate =>
+                    versionO.fold(
+                      saveVersion(
+                        Version(req.candidate, req.version, platform, req.url, req.vendor)
+                      ).map(_ => createdResponse(req.candidate, req.version, platform))
+                    )(v => conflictResponseF(candidate.candidate, v.version, platform))
                 }
-              }
             }
           }
         }
       }
     } ~ patch {
       entity(as[PatchReleaseRequest]) { req =>
-        authorised(req.candidate) {
-          val platform = req.platform.getOrElse(Universal)
-          validatePlatform(platform) {
-            validateVersion(req.version) {
-              validateUrl(req.url) {
-                complete {
-                  val candidateFO = findCandidate(req.candidate)
-                  val versionFO   = findVersion(req.candidate, req.version, platform)
-                  for {
-                    candidateO <- candidateFO
-                    versionO   <- versionFO
-                  } yield {
-                    candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
-                      _ =>
-                        versionO.fold(badRequestResponseF(s"Invalid version: ${req.version}")) {
-                          version =>
-                            val updated = Version(
-                              version.candidate,
-                              version.version,
-                              version.platform,
-                              req.url getOrElse version.url,
-                              req.vendor orElse version.vendor,
-                              req.visible orElse version.visible
-                            )
-                            updateVersion(version, updated).map(_ => noContentResponse())
-                        }
-                    }
-                  }
-                }
-              }
+        validate(req.candidate, req.version, req.platform, req.url) {
+          complete {
+            onFinding(req.candidate, req.version, req.platform) {
+              (candidateO, versionO, platform) =>
+                val existing = for {
+                  candidate       <- candidateO
+                  existingVersion <- versionO
+                } yield updateVersion(
+                  existingVersion,
+                  Version(
+                    candidate.candidate,
+                    existingVersion.version,
+                    platform,
+                    req.url getOrElse existingVersion.url,
+                    req.vendor orElse existingVersion.vendor,
+                    req.visible orElse existingVersion.visible
+                  )
+                )
+                existing.map(noContentResponseF()) getOrElse badRequestResponseF(
+                  s"Does not exist: ${req.candidate} ${req.version} $platform"
+                )
             }
           }
         }
       }
     }
+  }
+
+  private def validate(
+      candidate: String,
+      version: String,
+      platform: Option[String],
+      url: Option[String]
+  )(
+      route: StandardRoute
+  ): Route = {
+    authorised(candidate) {
+      validatePlatform(platform) {
+        validateVersion(version) {
+          validateUrl(url)(route)
+        }
+      }
+    }
+  }
+
+  private def onFinding(candidate: String, version: String, platform: Option[String])(
+      f: (Option[Candidate], Option[Version], String) => Future[HttpResponse]
+  ) = {
+    val resolvedPlatform = platform.getOrElse(Universal)
+    val candidateFO      = findCandidate(candidate)
+    val versionFO        = findVersion(candidate, version, resolvedPlatform)
+    for {
+      candidateO <- candidateFO
+      versionO   <- versionFO
+      response   <- f(candidateO, versionO, resolvedPlatform)
+    } yield response
   }
 }
