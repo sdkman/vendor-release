@@ -72,3 +72,19 @@ Feature: Update Version
     """
     Then the status received is 204 NO_CONTENT
     And java Version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published as LINUX_64
+
+    Scenario: Reject a non-existent Version
+      Given the Consumer for groovy is making a request
+      And Candidate groovy does not exist
+      And the groovy version 2.3.6 UNIVERSAL does not exist
+      When a JSON PATCH on the /release/version endpoint:
+    """
+          |{
+          |   "candidate" : "groovy",
+          |   "version" : "2.3.6",
+          |   "platform": "UNIVERSAL",
+          |   "visible": false
+          |}
+    """
+      Then the status received is 400 BAD_REQUEST
+      And the message "Does not exist: groovy 2.3.6 UNIVERSAL" is received
