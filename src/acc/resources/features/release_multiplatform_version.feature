@@ -14,7 +14,7 @@
 #  limitations under the License.
 #
 
-Feature: Multi-Platform Candidate Release
+Feature: Release Multi-Platform Version
 
   Background:
     Given the Consumer for java|jmc is making a request

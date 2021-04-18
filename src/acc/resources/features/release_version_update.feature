@@ -1,4 +1,4 @@
-Feature: Update Version
+Feature: Update Release Version
 
   Background:
     And the Consumer has a valid Auth Token

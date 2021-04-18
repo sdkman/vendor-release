@@ -1,4 +1,4 @@
-Feature: Delete Version
+Feature: Delete Release Version
 
   Background:
     And the Consumer has a valid Auth Token

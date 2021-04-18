@@ -14,7 +14,7 @@
 #  limitations under the License.
 #
 
-Feature: Universal Candidate Release
+Feature: Release Universal Version
 
   Background:
     Given the Consumer for groovy is making a request
