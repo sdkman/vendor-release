@@ -18,15 +18,15 @@ package steps
 import scalaj.http.{HttpRequest, HttpResponse}
 
 object World {
-  var request: HttpRequest           = null
-  var response: HttpResponse[String] = null
+  var request: HttpRequest           = _
+  var response: HttpResponse[String] = _
 
   var consumer: String = "invalid_consumer"
   var token: String    = "invalid_token"
 
   var vendor: Option[String] = None
 
-  def reset() = {
+  def reset(): Unit = {
     request = null
     response = null
     consumer = "invalid_consumer"

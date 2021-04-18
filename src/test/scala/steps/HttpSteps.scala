@@ -16,7 +16,7 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import steps.World._
 
 class HttpSteps extends ScalaDsl with EN with Matchers {

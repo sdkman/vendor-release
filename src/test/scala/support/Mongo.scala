@@ -17,30 +17,31 @@ object Mongo {
 
   import Helpers._
 
-  val codecRegistry = fromRegistries(
+  private val codecRegistry = fromRegistries(
     fromProviders(classOf[Version], classOf[Candidate], classOf[Application]),
     DEFAULT_CODEC_REGISTRY
   )
 
-  lazy val mongoClient = MongoClient("mongodb://localhost:27017")
+  private lazy val mongoClient = MongoClient("mongodb://localhost:27017")
 
-  lazy val db = mongoClient.getDatabase("sdkman").withCodecRegistry(codecRegistry)
+  private lazy val db = mongoClient.getDatabase("sdkman").withCodecRegistry(codecRegistry)
 
   lazy val appCollection: MongoCollection[Application] = db.getCollection("application")
 
-  def insertAliveOk() = appCollection.insertOne(Application("OK", "", "")).results()
+  def insertAliveOk(): Seq[Completed] = appCollection.insertOne(Application("OK", "", "")).results()
 
-  lazy val versionsCollection: MongoCollection[Version] = db.getCollection("versions")
+  private lazy val versionsCollection: MongoCollection[Version] = db.getCollection("versions")
 
-  lazy val candidatesCollection: MongoCollection[Candidate] = db.getCollection("candidates")
+  private lazy val candidatesCollection: MongoCollection[Candidate] = db.getCollection("candidates")
 
-  def insertVersions(vs: Seq[Version]) = versionsCollection.insertMany(vs).results()
+  def insertVersions(vs: Seq[Version]): Seq[Completed] = versionsCollection.insertMany(vs).results()
 
-  def insertVersion(v: Version) = versionsCollection.insertOne(v).results()
+  def insertVersion(v: Version): Seq[Completed] = versionsCollection.insertOne(v).results()
 
-  def insertCandidates(cs: Seq[Candidate]) = candidatesCollection.insertMany(cs).results()
+  def insertCandidates(cs: Seq[Candidate]): Seq[Completed] =
+    candidatesCollection.insertMany(cs).results()
 
-  def insertCandidate(c: Candidate) = candidatesCollection.insertOne(c).results()
+  def insertCandidate(c: Candidate): Seq[Completed] = candidatesCollection.insertOne(c).results()
 
   def candidateExists(candidate: String): Boolean =
     candidatesCollection.find(equal("candidate", candidate)).results().nonEmpty
@@ -87,7 +88,7 @@ object Mongo {
       .flatMap(_.vendor)
       .headOption
 
-  def dropAllCollections() = {
+  def dropAllCollections(): Seq[Completed] = {
     appCollection.drop().results()
     versionsCollection.drop().results()
     candidatesCollection.drop().results()
@@ -98,23 +99,23 @@ object Helpers {
 
   implicit class DocumentObservable[C](val observable: Observable[Document])
       extends ImplicitObservable[Document] {
-    override val converter: (Document) => String = (doc) => doc.toJson
+    override val converter: Document => String = doc => doc.toJson
   }
 
   implicit class GenericObservable[C](val observable: Observable[C]) extends ImplicitObservable[C] {
-    override val converter: (C) => String = (doc) => doc.toString
+    override val converter: C => String = doc => doc.toString
   }
 
   trait ImplicitObservable[C] {
     val observable: Observable[C]
-    val converter: (C) => String
+    val converter: C => String
 
     def results(): Seq[C] = Await.result(observable.toFuture(), Duration(10, TimeUnit.SECONDS))
 
-    def headResult() = Await.result(observable.head(), Duration(10, TimeUnit.SECONDS))
+    def headResult(): C = Await.result(observable.head(), Duration(10, TimeUnit.SECONDS))
 
     def printResults(initial: String = ""): Unit = {
-      if (initial.length > 0) print(initial)
+      if (initial.nonEmpty) print(initial)
       results().foreach(res => println(converter(res)))
     }
 

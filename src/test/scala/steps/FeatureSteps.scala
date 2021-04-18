@@ -17,7 +17,7 @@ package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import io.sdkman.vendor.release.routes.{ApiResponse, JsonSupport}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import spray.json._
 
 class FeatureSteps extends ScalaDsl with EN with Matchers with JsonSupport {

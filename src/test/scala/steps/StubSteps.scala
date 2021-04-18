@@ -17,7 +17,7 @@ package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 class StubSteps extends ScalaDsl with EN with Matchers {
 

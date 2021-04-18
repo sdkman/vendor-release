@@ -23,27 +23,27 @@ object Http {
 
   val host = "http://localhost:9000"
 
-  def get(endpoint: String) =
+  def get(endpoint: String): HttpResponse[String] =
     withConnectionOptions(http => http(s"$host$endpoint").headers(requiredHeaders).asString)
 
-  def post(endpoint: String, payload: String) =
+  def post(endpoint: String, payload: String): HttpResponse[String] =
     withConnectionOptions(
       http =>
         http(s"$host$endpoint").headers(requiredHeaders ++ vendorHeader).postData(payload).asString
     )
 
-  def put(endpoint: String, payload: String) =
+  def put(endpoint: String, payload: String): HttpResponse[String] =
     withConnectionOptions(
       http => http(s"$host$endpoint").headers(requiredHeaders).put(payload).asString
     )
 
-  def patch(endpoint: String, payload: String) =
+  def patch(endpoint: String, payload: String): HttpResponse[String] =
     withConnectionOptions(
       http =>
         http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("PATCH").asString
     )
 
-  def delete(endpoint: String, payload: String) =
+  def delete(endpoint: String, payload: String): HttpResponse[String] =
     withConnectionOptions(
       http =>
         http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("DELETE").asString
