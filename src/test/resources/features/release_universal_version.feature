@@ -17,7 +17,7 @@
 Feature: Release Universal Version
 
   Background:
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And the URI /groovy-2.3.6.zip is available for download
 

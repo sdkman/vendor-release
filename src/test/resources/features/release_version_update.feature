@@ -4,7 +4,7 @@ Feature: Update Release Version
     And the Consumer has a valid Auth Token
 
   Scenario: Hide an existing visible universal Candidate Version
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the URI /groovy-2.3.6.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
@@ -22,7 +22,7 @@ Feature: Update Release Version
     And groovy Version 2.3.6 is hidden
 
   Scenario: Change the URL of an existing universal Candidate Version
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the URI /groovy-x.y.z.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
@@ -39,7 +39,7 @@ Feature: Update Release Version
     And groovy Version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL
 
   Scenario: Hide an existing visible multi-platform Candidate Version
-    Given the Consumer for java is making a request
+    Given the Consumer for candidate java is making a request
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
     And an existing LINUX_64 java Version 8.0.131-zulu exists
@@ -57,7 +57,7 @@ Feature: Update Release Version
     And java Version 8.0.131-zulu is hidden
 
   Scenario: Change the URL of an existing multi-platform Candidate Version
-    Given the Consumer for java is making a request
+    Given the Consumer for candidate java is making a request
     And the URI /zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz is available for download
     And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
     And an existing LINUX_64 java Version 8.0.131-zulu exists
@@ -74,7 +74,7 @@ Feature: Update Release Version
     And java Version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published as LINUX_64
 
     Scenario: Reject a non-existent Version
-      Given the Consumer for groovy is making a request
+      Given the Consumer for candidate groovy is making a request
       And Candidate groovy does not exist
       And the groovy version 2.3.6 UNIVERSAL does not exist
       When a JSON PATCH on the /release/version endpoint:

@@ -17,7 +17,7 @@
 Feature: Release Version Validation
 
   Background:
-    Given the Consumer for java is making a request
+    Given the Consumer for candidate java is making a request
     And the Consumer has a valid Auth Token
 
   Scenario: The Version has a valid length

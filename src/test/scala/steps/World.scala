@@ -21,15 +21,15 @@ object World {
   var request: HttpRequest           = _
   var response: HttpResponse[String] = _
 
-  var consumer: String = "invalid_consumer"
-  var token: String    = "invalid_token"
+  var candidates: String = _
+  var token: String      = _
 
-  var vendor: Option[String] = None
+  var vendor: Option[String] = _
 
   def reset(): Unit = {
     request = null
     response = null
-    consumer = "invalid_consumer"
+    candidates = "invalid_candidates"
     token = "invalid_token"
     vendor = None
   }

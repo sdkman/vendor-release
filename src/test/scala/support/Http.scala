@@ -54,7 +54,7 @@ object Http {
 
   private def requiredHeaders = Map(
     "Service-Token" -> World.token,
-    "Consumer"      -> World.consumer,
+    "Candidates"    -> World.candidates,
     "Accept"        -> "application/json",
     "Content-Type"  -> "application/json"
   )

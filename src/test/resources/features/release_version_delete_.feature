@@ -4,7 +4,7 @@ Feature: Delete Release Version
     And the Consumer has a valid Auth Token
 
   Scenario: An existing Version is deleted permanently
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the UNIVERSAL candidate groovy with default version 2.3.7 already exists
     And an existing UNIVERSAL groovy Version 2.3.7 exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
@@ -21,7 +21,7 @@ Feature: Delete Release Version
     And the groovy version 2.3.6 UNIVERSAL does not exist
 
   Scenario: A Default Version cannot be deleted
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
     When a JSON DELETE on the /release/version endpoint:
@@ -37,7 +37,7 @@ Feature: Delete Release Version
     And the groovy version 2.3.6 UNIVERSAL still exists
 
   Scenario: A non-existent Version cannot be deleted
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the groovy version 2.3.6 UNIVERSAL does not exist
     When a JSON DELETE on the /release/version endpoint:
     """

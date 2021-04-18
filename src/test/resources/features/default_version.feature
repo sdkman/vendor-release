@@ -17,7 +17,7 @@
 Feature: Default Candidate Version
 
   Background:
-    Given the Consumer for groovy is making a request
+    Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
 
   Scenario: Mark an existing Candidate Version as Default

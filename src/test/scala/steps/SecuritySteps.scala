@@ -29,8 +29,8 @@ class SecuritySteps extends ScalaDsl with EN with Matchers {
     token = "default_token"
   }
 
-  And("""^the Consumer for (.*) is making a request$""") { (c: String) =>
-    consumer = c
+  And("""^the Consumer for candidate (.*) is making a request$""") { (c: String) =>
+    candidates = c
   }
 
   And("""^Vendor header '(.*)' is passed with the request$""") { (v: String) =>

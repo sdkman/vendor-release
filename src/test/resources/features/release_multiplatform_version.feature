@@ -17,7 +17,7 @@
 Feature: Release Multi-Platform Version
 
   Background:
-    Given the Consumer for java|jmc is making a request
+    Given the Consumer for candidate java|jmc is making a request
     And the Consumer has a valid Auth Token
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the URI /zulu8.21.0.1-jdk8.0.131-macosx.tar.gz is available for download

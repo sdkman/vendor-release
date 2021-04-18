@@ -8,22 +8,21 @@ trait Authorisation {
 
   self: Directives with Configuration =>
 
-  val ConsumerHeader = "Consumer"
+  val CandidatesHeader = "Candidates"
 
   val AuthTokenHeader = "Service-Token"
 
   def authorised(candidate: String): Directive0 = authorize { rc =>
     val headers = rc.request.headers
-    headers.exists(hasValidAuthTokenHeader) && headers.exists(
-      implicit h => isValidConsumer(candidate)
-    )
+    headers.exists(hasValidAuthTokenHeader) &&
+    headers.exists(isValidConsumer(candidate))
   }
 
   private def hasValidAuthTokenHeader(h: HttpHeader) =
     h.name() == AuthTokenHeader && h.value() == serviceToken
 
-  private def isValidConsumer(c: String)(implicit h: HttpHeader) =
-    h.name() == ConsumerHeader &&
+  private def isValidConsumer(c: String)(h: HttpHeader) =
+    h.name() == CandidatesHeader &&
       h.value().split('|').contains(c) ||
       h.value() == serviceAdminConsumer
 
