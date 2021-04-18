@@ -1,5 +1,3 @@
-import scala.io.Source
-
 name := "vendor-release"
 
 val akkaHttpVersion = "10.2.4"
@@ -21,8 +19,7 @@ lazy val dockerSettings = Seq(
   packageName := "sdkman/vendor-release"
 )
 
-lazy val AcceptanceTest = config("acc") extend IntegrationTest
-parallelExecution in AcceptanceTest := false
+parallelExecution in Test := false
 
 resolvers ++= Seq(
   Resolver.bintrayRepo("sdkman", "maven"),
@@ -30,16 +27,12 @@ resolvers ++= Seq(
 )
 
 val testDependencies = Seq(
-  "org.scalatest" %% "scalatest" % scalaTestVersion % Test
-)
-
-val accDependencies = Seq(
-  "org.scalatest" %% "scalatest" % scalaTestVersion % AcceptanceTest,
-  "io.cucumber" %% "cucumber-scala" % cucumberVersion % AcceptanceTest,
-  "io.cucumber" % "cucumber-junit" % cucumberVersion % AcceptanceTest,
-  "com.novocode" % "junit-interface" % "0.11" % AcceptanceTest,
-  "org.scalaj" %% "scalaj-http" % scalajHttpVersion % AcceptanceTest,
-  "com.github.tomakehurst" % "wiremock" % "2.2.2" % AcceptanceTest
+  "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
+  "io.cucumber" %% "cucumber-scala" % cucumberVersion % Test,
+  "io.cucumber" % "cucumber-junit" % cucumberVersion % Test,
+  "com.novocode" % "junit-interface" % "0.11" % Test,
+  "org.scalaj" %% "scalaj-http" % scalajHttpVersion % Test,
+  "com.github.tomakehurst" % "wiremock" % "2.2.2" % Test
 )
 
 libraryDependencies ++= Seq(
@@ -52,16 +45,13 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-json" % "1.3.2",
   "io.sdkman" %% "sdkman-mongodb-persistence" % "1.9",
   "io.sdkman" %% "sdkman-url-validator" % "0.2.4"
-) ++ testDependencies ++ accDependencies
+) ++ testDependencies
 
 lazy val `vendor-release` = (project in file("."))
   .enablePlugins(DockerPlugin, JavaServerAppPackaging)
-  .configs(IntegrationTest)
-  .configs(AcceptanceTest)
-  .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(commonSettings ++ dockerSettings: _*)
 
-import ReleaseTransformations._
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
