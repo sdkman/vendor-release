@@ -31,6 +31,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit val patchReleaseFormat = jsonFormat6(PatchReleaseRequest)
 
+  implicit val deleteReleaseFormat = jsonFormat3(DeleteReleaseRequest)
+
   implicit val versionDefaultFormat = jsonFormat2(VersionDefaultRequest)
 
   object ApiResponseJsonProtocol extends DefaultJsonProtocol {

@@ -89,14 +89,14 @@ trait ReleaseRoutes
         }
       }
     } ~ delete {
-      path(Segment / Segment / Segment) { (candidate, version, platform) =>
-        validate(candidate, version, Some(platform), None) {
+      entity(as[DeleteReleaseRequest]) { req =>
+        validate(req.candidate, req.version, Some(req.platform), None) {
           complete {
-            deleteVersion(candidate, version, platform).map {
+            deleteVersion(req.candidate, req.version, req.platform).map {
               case result if result.getDeletedCount == 1 =>
-                okResponse(s"Deleted: $candidate $version $platform")
+                okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
               case _ =>
-                notFoundResponse(s"Not found: $candidate $version $platform")
+                notFoundResponse(s"Not found: ${req.candidate} ${req.version} ${req.platform}")
             }
           }
         }

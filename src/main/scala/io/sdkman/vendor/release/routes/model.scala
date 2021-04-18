@@ -19,4 +19,10 @@ case class PatchReleaseRequest(
     visible: Option[Boolean]
 )
 
+case class DeleteReleaseRequest(
+    candidate: String,
+    version: String,
+    platform: String
+)
+
 case class ApiResponse(status: Int, message: String)

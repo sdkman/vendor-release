@@ -42,9 +42,9 @@ object Http {
         http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("PATCH").asString
     )
 
-  def delete(endpoint: String) =
+  def delete(endpoint: String, payload: String) =
     withConnectionOptions(
-      http => http(s"$host$endpoint").headers(requiredHeaders).method("DELETE").asString
+      http => http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("DELETE").asString
     )
 
   private def withConnectionOptions(f: BaseHttp => HttpResponse[String]): HttpResponse[String] =
