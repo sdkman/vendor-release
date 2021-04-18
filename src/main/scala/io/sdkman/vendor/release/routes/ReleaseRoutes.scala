@@ -92,11 +92,16 @@ trait ReleaseRoutes
       entity(as[DeleteReleaseRequest]) { req =>
         validate(req.candidate, req.version, Some(req.platform), None) {
           complete {
-            deleteVersion(req.candidate, req.version, req.platform).map {
-              case result if result.getDeletedCount == 1 =>
-                okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
+            findCandidate(req.candidate).flatMap {
+              case Some(Candidate(_, _, _, Some(default), _, _)) if default == req.version =>
+                conflictResponseF(req.candidate, req.version, req.platform)
               case _ =>
-                notFoundResponse(s"Not found: ${req.candidate} ${req.version} ${req.platform}")
+                deleteVersion(req.candidate, req.version, req.platform).map {
+                  case result if result.getDeletedCount == 1 =>
+                    okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
+                  case _ =>
+                    notFoundResponse(s"Not found: ${req.candidate} ${req.version} ${req.platform}")
+                }
             }
           }
         }

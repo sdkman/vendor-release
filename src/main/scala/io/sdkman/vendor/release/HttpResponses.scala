@@ -31,7 +31,7 @@ trait HttpResponses extends JsonSupport {
   def acceptedResponse(m: String) = HttpResponse(Accepted, entity = apiResponse(Accepted, m))
 
   def conflictResponse(c: String, v: String, p: String) =
-    HttpResponse(Conflict, entity = apiResponse(Conflict, s"Duplicate: $c $v $p already exists"))
+    HttpResponse(Conflict, entity = apiResponse(Conflict, s"Conflict: $c $v $p"))
 
   def conflictResponseF(c: String, v: String, p: String) =
     Future.successful(conflictResponse(c, v, p))

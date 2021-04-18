@@ -117,6 +117,13 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers {
       }
   }
 
+  Given("""^the (.*) version (.*) (.*) still exists$""") {
+    (candidate: String, version: String, platform: String) =>
+      withClue(s"$candidate $version does not exist") {
+        Mongo.versionExists(candidate, version, platform) shouldBe true
+      }
+  }
+
   Given("""^Candidate (.*) does not exist$""") { candidate: String =>
     withClue(s"The exists: $candidate") {
       Mongo.candidateExists(candidate) shouldBe false

@@ -56,7 +56,7 @@ Feature: Release Universal Version
           |}
     """
     Then the status received is 409 CONFLICT
-    And the message "Duplicate: groovy 2.3.6 UNIVERSAL already exists" is received
+    And the message "Conflict: groovy 2.3.6 UNIVERSAL" is received
 
   Scenario: Attempt to Release a Version for a non-existent Candidate
     Given Candidate groovy does not exist
