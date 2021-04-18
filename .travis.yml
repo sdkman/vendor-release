@@ -12,7 +12,7 @@ before_script:
   - docker run --rm -d --network=host --name=vendor-release sdkman/vendor-release:latest
 
 script:
-  - sbt acc:test
+  - sbt test
 
 after_script:
   - docker rm -f mongo vendor-release
