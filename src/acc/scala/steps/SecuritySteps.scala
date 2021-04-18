@@ -33,4 +33,8 @@ class SecuritySteps extends ScalaDsl with EN with Matchers {
     consumer = c
   }
 
+  And("""^Vendor header '(.*)' is passed with the request$""") { (v: String) =>
+    vendor = Some(v)
+  }
+
 }

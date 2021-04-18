@@ -17,15 +17,30 @@ package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import io.sdkman.repos.{Candidate, Version}
-import org.scalatest.Matchers
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
 import support.Mongo
 
-class PersistenceSteps extends ScalaDsl with EN with Matchers {
+class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues {
 
   Then("""^(.*) Version (.*) with URL (.*) was published as (.*)$""") {
     (candidate: String, version: String, url: String, platform: String) =>
       withClue("Version was not published") {
         Mongo.versionPublished(candidate, version, url, platform) shouldBe true
+      }
+  }
+
+  Then("""^the (.*) (.*) Version (.*) has a vendor of '(.*)'$""") {
+    (platform: String, candidate: String, version: String, vendor: String) =>
+      withClue(s"Vendor does not match $vendor") {
+        Mongo.versionVendor(candidate, version, platform).value shouldBe vendor
+      }
+  }
+
+  Then("""^the (.*) (.*) Version (.*) has no vendor$""") {
+    (platform: String, candidate: String, version: String) =>
+      withClue(s"Should not have a vendor") {
+        Mongo.versionVendor(candidate, version, platform) shouldBe None
       }
   }
 

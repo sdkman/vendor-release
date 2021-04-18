@@ -78,6 +78,15 @@ object Mongo {
       .results()
       .nonEmpty
 
+  def versionVendor(candidate: String, version: String, platform: String): Option[String] =
+    versionsCollection
+      .find(
+        and(equal("candidate", candidate), equal("version", version), equal("platform", platform))
+      )
+      .results()
+      .flatMap(_.vendor)
+      .headOption
+
   def dropAllCollections() = {
     appCollection.drop().results()
     versionsCollection.drop().results()

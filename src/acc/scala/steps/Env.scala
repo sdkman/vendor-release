@@ -36,5 +36,6 @@ class Env extends ScalaDsl {
   Before() { s =>
     Mongo.dropAllCollections()
     WireMock.reset()
+    World.reset()
   }
 }

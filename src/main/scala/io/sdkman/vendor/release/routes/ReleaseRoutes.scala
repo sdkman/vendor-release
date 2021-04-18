@@ -45,18 +45,26 @@ trait ReleaseRoutes
   val releaseRoutes = pathPrefix("release" / "version") {
     post {
       entity(as[PostReleaseRequest]) { req =>
-        validate(req.candidate, req.version, req.platform, Some(req.url)) {
-          complete {
-            onFinding(req.candidate, req.version, req.platform) {
-              (candidateO, versionO, platform) =>
-                candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
-                  candidate =>
-                    versionO.fold(
-                      saveVersion(
-                        Version(req.candidate, req.version, platform, req.url, req.vendor)
-                      ).map(_ => createdResponse(req.candidate, req.version, platform))
-                    )(v => conflictResponseF(candidate.candidate, v.version, platform))
-                }
+        optionalHeaderValueByName("Vendor") { vendorHeader =>
+          validate(req.candidate, req.version, req.platform, Some(req.url)) {
+            complete {
+              onFinding(req.candidate, req.version, req.platform) {
+                (candidateO, versionO, platform) =>
+                  candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
+                    candidate =>
+                      versionO.fold(
+                        saveVersion(
+                          Version(
+                            req.candidate,
+                            req.version,
+                            platform,
+                            req.url,
+                            vendorHeader orElse req.vendor
+                          )
+                        ).map(_ => createdResponse(req.candidate, req.version, platform))
+                      )(v => conflictResponseF(candidate.candidate, v.version, platform))
+                  }
+              }
             }
           }
         }

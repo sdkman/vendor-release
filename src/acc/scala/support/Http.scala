@@ -28,7 +28,8 @@ object Http {
 
   def post(endpoint: String, payload: String) =
     withConnectionOptions(
-      http => http(s"$host$endpoint").headers(requiredHeaders).postData(payload).asString
+      http =>
+        http(s"$host$endpoint").headers(requiredHeaders ++ vendorHeader).postData(payload).asString
     )
 
   def put(endpoint: String, payload: String) =
@@ -44,7 +45,8 @@ object Http {
 
   def delete(endpoint: String, payload: String) =
     withConnectionOptions(
-      http => http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("DELETE").asString
+      http =>
+        http(s"$host$endpoint").headers(requiredHeaders).postData(payload).method("DELETE").asString
     )
 
   private def withConnectionOptions(f: BaseHttp => HttpResponse[String]): HttpResponse[String] =
@@ -56,4 +58,9 @@ object Http {
     "Accept"        -> "application/json",
     "Content-Type"  -> "application/json"
   )
+
+  private def vendorHeader =
+    World.vendor
+      .map(v => "Vendor" -> v)
+      .toMap[String, String]
 }

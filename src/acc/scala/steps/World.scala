@@ -21,7 +21,16 @@ object World {
   var request: HttpRequest           = null
   var response: HttpResponse[String] = null
 
-  var consumer = "invalid_consumer"
-  var token    = "invalid_token"
+  var consumer: String = "invalid_consumer"
+  var token: String    = "invalid_token"
 
+  var vendor: Option[String] = None
+
+  def reset() = {
+    request = null
+    response = null
+    consumer = "invalid_consumer"
+    token = "invalid_token"
+    vendor = None
+  }
 }
