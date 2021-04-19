@@ -18,7 +18,7 @@ Feature: Release Version Vendor selection
           |}
     """
     Then the status received is 201 "CREATED"
-    And the UNIVERSAL groovy Version 2.3.6 has a vendor of 'oci'
+    And the UNIVERSAL groovy Version 2.3.6-oci has a vendor of 'oci'
 
   Scenario: A Vendor header is passed from upstream
     Given the Consumer for candidate groovy is making a request
@@ -35,7 +35,7 @@ Feature: Release Version Vendor selection
           |}
     """
     Then the status received is 201 "CREATED"
-    And the UNIVERSAL groovy Version 2.3.6 has a vendor of 'oci'
+    And the UNIVERSAL groovy Version 2.3.6-oci has a vendor of 'oci'
 
   Scenario: Both a Vendor header and field are passed from upstream
     Given the Consumer for candidate groovy is making a request
@@ -53,7 +53,7 @@ Feature: Release Version Vendor selection
           |}
     """
     Then the status received is 201 "CREATED"
-    And the UNIVERSAL groovy Version 2.3.6 has a vendor of 'apache'
+    And the UNIVERSAL groovy Version 2.3.6-apache has a vendor of 'apache'
 
   Scenario: No Vendor header or field is passed from upstream
     Given the Consumer for candidate groovy is making a request

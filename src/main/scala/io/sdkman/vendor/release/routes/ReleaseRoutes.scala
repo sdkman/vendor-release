@@ -52,16 +52,19 @@ trait ReleaseRoutes
                 (candidateO, versionO, platform) =>
                   candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
                     candidate =>
+                      //TODO: undo version-vendor concatenation once vendor domain is established
+                      val vendor  = vendorHeader orElse req.vendor
+                      val version = req.version + vendor.map(v => s"-$v").getOrElse("")
                       versionO.fold(
                         saveVersion(
                           Version(
-                            req.candidate,
-                            req.version,
-                            platform,
-                            req.url,
-                            vendorHeader orElse req.vendor
+                            candidate = req.candidate,
+                            version = version,
+                            platform = platform,
+                            url = req.url,
+                            vendor = vendor
                           )
-                        ).map(_ => createdResponse(req.candidate, req.version, platform))
+                        ).map(_ => createdResponse(req.candidate, version, platform))
                       )(v => conflictResponseF(candidate.candidate, v.version, platform))
                   }
               }
