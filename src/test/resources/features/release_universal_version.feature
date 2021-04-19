@@ -29,6 +29,7 @@ Feature: Release Universal Version
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
+          |  "platform": "UNIVERSAL",
           |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
           |}
     """
@@ -44,6 +45,7 @@ Feature: Release Universal Version
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
+          |  "platform" : "UNIVERSAL",
           |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
           |}
     """
@@ -52,6 +54,7 @@ Feature: Release Universal Version
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
+          |  "platform" : "UNIVERSAL",
           |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
           |}
     """
@@ -65,6 +68,7 @@ Feature: Release Universal Version
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
+          |  "platform" : "UNIVERSAL",
           |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
           |}
     """
@@ -77,7 +81,8 @@ Feature: Release Universal Version
     """
           |{
           |  "version" : "2.3.6",
-          |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
           |}
     """
     Then the status received is 400 BAD_REQUEST
@@ -89,7 +94,8 @@ Feature: Release Universal Version
     """
           |{
           |  "candidate" : "groovy",
-          |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
           |}
     """
     Then the status received is 400 BAD_REQUEST
@@ -101,9 +107,25 @@ Feature: Release Universal Version
     """
           |{
           |  "candidate" : "groovy",
-          |  "version" : "2.3.6"
+          |  "version" : "2.3.6",
+          |  "platform" : "UNIVERSAL"
           |}
     """
     Then the status received is 400 BAD_REQUEST
     And the message containing "The request content was malformed" is received
     And the message containing "Object is missing required member 'url'" is received
+
+  Scenario: Omit the platform to infer UNIVERSAL
+    Given an existing UNIVERSAL groovy Version 2.3.5 exists
+    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL
+    And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
