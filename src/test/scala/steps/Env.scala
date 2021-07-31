@@ -17,21 +17,25 @@ package steps
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.configureFor
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
+import com.typesafe.scalalogging.LazyLogging
 import cucumber.api.scala.ScalaDsl
+import io.sdkman.vendor.release.HttpServer
 import support.Mongo
 
-class Env extends ScalaDsl {
+class Env extends ScalaDsl with LazyLogging {
 
-  val WireMockHost = "localhost"
-
-  val WireMockPort = 8080
-
-  configureFor(WireMockHost, WireMockPort)
-
-  lazy val wireMockServer = new WireMockServer(wireMockConfig().port(WireMockPort))
+  val wireMockServer = new WireMockServer(options().port(8080))
   wireMockServer.start()
+
+  val app = new HttpServer()
+  app.start()
+
+  sys.addShutdownHook {
+    logger.info("Shutting down test server...")
+    app.shutdown()
+    wireMockServer.stop()
+  }
 
   Before() { s =>
     Mongo.dropAllCollections()
