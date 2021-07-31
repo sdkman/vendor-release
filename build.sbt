@@ -22,8 +22,8 @@ lazy val dockerSettings = Seq(
 parallelExecution in Test := false
 
 resolvers ++= Seq(
-  Resolver.bintrayRepo("sdkman", "maven"),
-  Resolver.jcenterRepo
+  Resolver.mavenCentral,
+  "jitpack" at "https://jitpack.io"
 )
 
 val testDependencies = Seq(
@@ -43,8 +43,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
-  "io.sdkman" %% "sdkman-mongodb-persistence" % "1.9",
-  "io.sdkman" %% "sdkman-url-validator" % "0.2.4"
+  "com.github.sdkman" % "sdkman-mongodb-persistence" % "1.9",
+  "com.github.sdkman" % "sdkman-url-validator" % "0.2.4"
 ) ++ testDependencies
 
 lazy val `vendor-release` = (project in file("."))
