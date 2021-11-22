@@ -19,7 +19,6 @@ Feature: Default Endpoint Security
   Scenario: The Default endpoints can NOT be Accessed without a valid Auth Token
     Given the Consumer for candidate groovy is making a request
     And the Consumer does not have a valid Auth Token
-    And the Consumer does not have a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists
     And the UNIVERSAL candidate groovy with default version 2.3.5 already exists
@@ -34,7 +33,6 @@ Feature: Default Endpoint Security
 
   Scenario: The Default endpoints can NOT by an invalid Consumer
     Given the Consumer for candidate scala is making a request
-    And the Consumer has a valid Auth Token
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
     And an existing UNIVERSAL groovy Version 2.3.6 exists

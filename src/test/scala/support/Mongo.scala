@@ -2,7 +2,7 @@ package support
 
 import java.util.concurrent.TimeUnit
 
-import io.sdkman.repos.{Application, Candidate, Version}
+import io.sdkman.model.{Application, Candidate, Version}
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
@@ -51,6 +51,21 @@ object Mongo {
       .find(
         and(equal("candidate", candidate), equal("version", version), equal("platform", platform))
       )
+      .results()
+      .nonEmpty
+
+  def checksumExists(candidate: String, version: String, platform: String, algorithm: String, checksum: String): Boolean =
+    versionsCollection
+      .find(
+        and(equal("candidate", candidate), equal("version", version), equal("platform", platform))
+      )
+      .first()
+      .map { v =>
+        v.checksums
+      }
+      .filter { c =>
+        c.get(algorithm) == checksum
+      }
       .results()
       .nonEmpty
 

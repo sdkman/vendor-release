@@ -16,7 +16,7 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import io.sdkman.repos.{Candidate, Version}
+import io.sdkman.model.{Candidate, Version}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import support.Mongo
@@ -147,5 +147,12 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
 
   Given("""^an alive OK entry in the application collection$""") { () =>
     Mongo.insertAliveOk()
+  }
+
+  Then("""^(.*) Version (.*) on platform (.*) has a checksum \"(.*)\" using algorithm (.*)$""") {
+    (candidate: String, version: String, platform: String, checksum: String, algorithm: String) =>
+      withClue("Checksum not found") {
+        Mongo.checksumExists(candidate, version, platform, algorithm, checksum) shouldBe true
+      }
   }
 }

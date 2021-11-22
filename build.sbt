@@ -43,7 +43,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
-  "com.github.sdkman" % "sdkman-mongodb-persistence" % "1.9",
+  "com.github.sdkman" % "sdkman-mongodb-persistence" % "2.1",
   "com.github.sdkman" % "sdkman-url-validator" % "0.2.4"
 ) ++ testDependencies
 
