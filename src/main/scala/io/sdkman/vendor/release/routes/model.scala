@@ -7,7 +7,8 @@ case class PostReleaseRequest(
     version: String,
     url: String,
     platform: Option[String],
-    vendor: Option[String]
+    vendor: Option[String],
+    checksums: Option[Map[String, String]] = None
 )
 
 case class PatchReleaseRequest(
@@ -16,7 +17,8 @@ case class PatchReleaseRequest(
     platform: Option[String],
     url: Option[String],
     vendor: Option[String],
-    visible: Option[Boolean]
+    visible: Option[Boolean],
+    checksums: Option[Map[String, String]] = None
 )
 
 case class DeleteReleaseRequest(

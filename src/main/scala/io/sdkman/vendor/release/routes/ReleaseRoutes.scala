@@ -20,7 +20,8 @@ import akka.http.scaladsl.server.{Directives, Route, StandardRoute}
 import com.typesafe.scalalogging.LazyLogging
 import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
-import io.sdkman.repos.{Candidate, CandidatesRepo, Version, VersionsRepo}
+import io.sdkman.model.{Candidate, Version}
+import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,7 +47,7 @@ trait ReleaseRoutes
     post {
       entity(as[PostReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>
-          validate(req.candidate, req.version, req.platform, Some(req.url)) {
+          validate(req.candidate, req.version, req.platform, Some(req.url), req.checksums) {
             complete {
               onFinding(req.candidate, req.version, req.platform) {
                 (candidateO, versionO, platform) =>
@@ -62,7 +63,8 @@ trait ReleaseRoutes
                             version = version,
                             platform = platform,
                             url = req.url,
-                            vendor = vendor
+                            vendor = vendor,
+                            checksums = req.checksums
                           )
                         ).map(_ => createdResponse(req.candidate, version, platform))
                       )(v => conflictResponseF(candidate.candidate, v.version, platform))
@@ -74,7 +76,7 @@ trait ReleaseRoutes
       }
     } ~ patch {
       entity(as[PatchReleaseRequest]) { req =>
-        validate(req.candidate, req.version, req.platform, req.url) {
+        validate(req.candidate, req.version, req.platform, req.url, req.checksums) {
           complete {
             onFinding(req.candidate, req.version, req.platform) {
               (candidateO, versionO, platform) =>
@@ -89,7 +91,8 @@ trait ReleaseRoutes
                     platform,
                     req.url getOrElse existingVersion.url,
                     req.vendor orElse existingVersion.vendor,
-                    req.visible orElse existingVersion.visible
+                    req.visible orElse existingVersion.visible,
+                    req.checksums orElse existingVersion.checksums
                   )
                 )
                 existing.map(noContentResponseF()) getOrElse badRequestResponseF(
@@ -101,7 +104,7 @@ trait ReleaseRoutes
       }
     } ~ delete {
       entity(as[DeleteReleaseRequest]) { req =>
-        validate(req.candidate, req.version, Some(req.platform), None) {
+        validate(req.candidate, req.version, Some(req.platform), None, None) {
           complete {
             findCandidate(req.candidate).flatMap {
               case Some(Candidate(_, _, _, Some(default), _, _)) if default == req.version =>
@@ -124,14 +127,19 @@ trait ReleaseRoutes
       candidate: String,
       version: String,
       platform: Option[String],
-      url: Option[String]
+      url: Option[String],
+      checksums: Option[Map[String,String]]
   )(
       route: StandardRoute
   ): Route = {
     authorised(candidate) {
       validatePlatform(platform) {
         validateVersion(version) {
-          validateUrl(url)(route)
+          validateUrl(url) {
+            validateChecksumAlgorithms(checksums) {
+              validateChecksums(checksums) (route)
+            }
+          }
         }
       }
     }
