@@ -22,13 +22,13 @@ trait Validation {
     "UNIVERSAL"
   )
 
-  val Algorithms = Map(
-    (MD5.id, "^[a-f0-9]{32}$"),
-    (SHA1.id, "^[a-f0-9]{40}$"),
-    (SHA224.id, "^[a-f0-9]{56}$"),
-    (SHA256.id, "^[a-f0-9]{64}$"),
-    (SHA384.id, "^[a-f0-9]{96}$"),
-    (SHA512.id, "^[a-f0-9]{128}$")
+  val AlgorithmRegex = Map(
+    MD5.id    -> "^[a-f0-9]{32}$",
+    SHA1.id   -> "^[a-f0-9]{40}$",
+    SHA224.id -> "^[a-f0-9]{56}$",
+    SHA256.id -> "^[a-f0-9]{64}$",
+    SHA384.id -> "^[a-f0-9]{96}$",
+    SHA512.id -> "^[a-f0-9]{128}$"
   )
 
   def validatePlatform(platform: Option[String]): Directive0 =
@@ -56,46 +56,38 @@ trait Validation {
       ApiResponse(400, s"Version length exceeds 17 chars: $version").toJson.compactPrint
     )
 
-  def validateChecksumAlgorithms(checksums: Option[Map[String,String]]): Directive0 =
-    checksums
-      .map { checksum =>
+  def validateChecksumAlgorithms(checksums: Option[Map[String, String]]): Directive0 =
+    checksums.map { csMap =>
+      val invalidAlgorithms = csMap.keys.filter(!AlgorithmRegex.contains(_))
 
-        val invalidAlgorithms = checksum.keys.filter { key =>
-            !Algorithms.contains(key)
-        }
+      validate(
+        check = invalidAlgorithms.isEmpty,
+        ApiResponse(400, s"Invalid algorithm(s): ${invalidAlgorithms.mkString(",")}").toJson.compactPrint
+      )
 
-        validate(
-          check = invalidAlgorithms.isEmpty,
-          ApiResponse(400, s"Invalid algorithm(s): ${invalidAlgorithms.mkString(", ")}").toJson.compactPrint)
-
-
-      } getOrElse pass
+    } getOrElse pass
 
   def validateChecksums(checksums: Option[Map[String, String]]): Directive0 =
     checksums
-      .map { checksum =>
-
-        val invalidChecksumAlgorithms = checksum.filter { entry =>
-          val regex = Algorithms.get(entry._1)
-          entry._2 == null || regex.isEmpty || !entry._2.matches(regex.get)
-        }.keys
-          .map { algorithm =>
-            algorithm match {
-              case MD5.id => (algorithm, MD5.priority)
-              case SHA1.id => (algorithm, SHA1.priority)
-              case SHA224.id => (algorithm, SHA224.priority)
-              case SHA256.id => (algorithm, SHA256.priority)
-              case SHA384.id => (algorithm, SHA384.priority)
-              case SHA512.id => (algorithm, SHA512.priority)
-              case _ => (algorithm,  Integer.MAX_VALUE)
-            }
+      .map { csMap =>
+        val invalidChecksumAlgorithms = csMap
+          .filter {
+            case (algorithm: String, hash: String) =>
+              hash == null ||
+                hash.isBlank ||
+                !hash.matches(AlgorithmRegex.getOrElse(algorithm, "NA"))
           }
-          .toSeq
-          .sortBy(kv => (kv._2.asInstanceOf[Integer], kv._1))
-          .map(_._1)
+          .keys
+          .toList
+          .sorted
 
-        validate(invalidChecksumAlgorithms.isEmpty,
-          ApiResponse(400, s"Invalid checksum for algorithm(s): ${invalidChecksumAlgorithms.mkString(", ")}").toJson.compactPrint)
+        validate(
+          invalidChecksumAlgorithms.isEmpty,
+          ApiResponse(
+            400,
+            s"Invalid checksum for algorithm(s): ${invalidChecksumAlgorithms.mkString(",")}"
+          ).toJson.compactPrint
+        )
 
       } getOrElse pass
 }

@@ -89,7 +89,7 @@ Feature: Release Version with checksums
           |}
     """
     Then the status received is 400 BAD_REQUEST
-    And the message containing "Invalid algorithm(s): MD4, SHA-500" is received
+    And the message containing "Invalid algorithm(s): MD4,SHA-500" is received
 
   Scenario: Attempt to submit malformed JSON with invalid checksums
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
@@ -113,7 +113,7 @@ Feature: Release Version with checksums
           |}
     """
     Then the status received is 400 BAD_REQUEST
-    And the message containing "Invalid checksum for algorithm(s): MD5, SHA-1, SHA-224, SHA-384, SHA-512" is received
+    And the message containing "Invalid checksum for algorithm(s): MD5,SHA-1,SHA-224,SHA-384,SHA-512" is received
 
   Scenario: Change the checksum of an existing Candidate Version
     Given the Consumer for candidate groovy is making a request
@@ -137,5 +137,3 @@ Feature: Release Version with checksums
     And groovy Version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "8f817c305a1bb15428b4aa29b844d75c" using algorithm MD5
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "01bfe9d471b7cb1f8321204e6fa05a574db3ae5b67c5bd2f17184ffd521387f1" using algorithm SHA-256
-
-
