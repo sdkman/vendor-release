@@ -19,7 +19,7 @@ Feature: Release Platform Validation
   Background:
     Given the Consumer for candidate java is making a request
     And the Consumer has a valid Auth Token
-    And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
+    And the URI /zulu8.21.0.1-jdk8.0.131.tar.gz is available for download
 
   Scenario: The Linux 64 bit Platform is valid
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
@@ -28,7 +28,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "LINUX_64"
           |}
     """
@@ -41,21 +41,34 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "LINUX_32"
           |}
     """
     Then the status received is 201 CREATED
 
-  Scenario: The Linux ARM32 bit Platform is valid
+  Scenario: The Linux ARM32 bit Soft Float Platform is valid
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
-          |  "platform" : "LINUX_ARM32"
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
+          |  "platform" : "LINUX_ARM32SF"
+          |}
+    """
+    Then the status received is 201 CREATED
+
+  Scenario: The Linux ARM32 bit Hard Float Platform is valid
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131-zulu",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
+          |  "platform" : "LINUX_ARM32HF"
           |}
     """
     Then the status received is 201 CREATED
@@ -67,7 +80,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "LINUX_ARM64"
           |}
     """
@@ -80,7 +93,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "MAC_OSX"
           |}
     """
@@ -93,7 +106,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "MAC_ARM64"
           |}
     """
@@ -106,7 +119,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "WINDOWS_64"
           |}
     """
@@ -119,7 +132,7 @@ Feature: Release Platform Validation
           |{
           |  "candidate" : "java",
           |  "version" : "8u131-zulu",
-          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
           |  "platform" : "SOLARIS"
           |}
     """
