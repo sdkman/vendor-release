@@ -134,11 +134,9 @@ trait ReleaseRoutes
   ): Route = {
     authorised(candidate) {
       validatePlatform(platform) {
-        validateVersion(version) {
-          validateUrl(url) {
-            validateChecksumAlgorithms(checksums) {
-              validateChecksums(checksums) (route)
-            }
+        validateUrl(url) {
+          validateChecksumAlgorithms(checksums) {
+            validateChecksums(checksums) (route)
           }
         }
       }

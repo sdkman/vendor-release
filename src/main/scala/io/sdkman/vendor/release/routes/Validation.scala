@@ -51,12 +51,6 @@ trait Validation {
         )
       } getOrElse pass
 
-  def validateVersion(version: String): Directive0 =
-    validate(
-      17 >= version.length,
-      ApiResponse(400, s"Version length exceeds 17 chars: $version").toJson.compactPrint
-    )
-
   def validateChecksumAlgorithms(checksums: Option[Map[String, String]]): Directive0 =
     checksums.map { csMap =>
       val invalidAlgorithms = csMap.keys.filter(!AlgorithmRegex.contains(_))
