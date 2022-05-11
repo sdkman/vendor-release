@@ -66,7 +66,12 @@ trait ReleaseRoutes
                             vendor = vendor,
                             checksums = req.checksums
                           )
-                        ).map(_ => createdResponse(req.candidate, version, platform))
+                        ).map(_ => {
+                          if (req.default.getOrElse(false)) {
+                            updateDefaultVersion(req.candidate, version)
+                          }
+                          createdResponse(req.candidate, version, platform)
+                        })
                       )(v => conflictResponseF(candidate.candidate, v.version, platform))
                   }
               }
