@@ -8,7 +8,8 @@ case class PostReleaseRequest(
     url: String,
     platform: Option[String],
     vendor: Option[String],
-    checksums: Option[Map[String, String]] = None
+    checksums: Option[Map[String, String]] = None,
+    default: Option[Boolean]
 )
 
 case class PatchReleaseRequest(
