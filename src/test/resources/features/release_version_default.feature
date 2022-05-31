@@ -20,18 +20,52 @@ Feature: Release Version Validation
     Given the Consumer for candidate java is making a request
     And the Consumer has a valid Auth Token
 
-  Scenario: The Version is marked as a default
+  Scenario: The Version is marked as a default explicitly
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
     """
           |{
           |  "candidate" : "java",
-          |  "vendor" : "open",
-          |  "version" : "8u131-zulu",
+          |  "vendor" : "zulu",
+          |  "version" : "8u131",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "LINUX_64",
+          |  "default" : true
+          |}
+    """
+    Then the status received is 201 CREATED
+    And the Default java Version is 8u131-zulu
+
+  Scenario: The Version is not marked as a default explicitly
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "vendor" : "zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64",
           |  "default" : false
           |}
     """
     Then the status received is 201 CREATED
+    And the Default java Version is 8u121-zulu
+
+  Scenario: The Version is not marked as a default implicitly
+    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
+    When a JSON POST on the /release/version endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "vendor" : "zulu",
+          |  "version" : "8u131",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
+          |  "platform" : "LINUX_64"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And the Default java Version is 8u121-zulu

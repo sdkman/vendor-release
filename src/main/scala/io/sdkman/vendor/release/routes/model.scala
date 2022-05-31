@@ -9,7 +9,7 @@ case class PostReleaseRequest(
     platform: Option[String],
     vendor: Option[String],
     checksums: Option[Map[String, String]] = None,
-    default: Option[Boolean]
+    default: Option[Boolean] = Some(false)
 )
 
 case class PatchReleaseRequest(

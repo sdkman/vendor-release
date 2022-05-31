@@ -56,7 +56,7 @@ trait ReleaseRoutes
                       //TODO: undo version-vendor concatenation once vendor domain is established
                       val vendor  = vendorHeader orElse req.vendor
                       val version = req.version + vendor.map(v => s"-$v").getOrElse("")
-                      versionO.fold(
+                      versionO.fold {
                         saveVersion(
                           Version(
                             candidate = req.candidate,
@@ -66,13 +66,15 @@ trait ReleaseRoutes
                             vendor = vendor,
                             checksums = req.checksums
                           )
-                        ).map(_ => {
-                          if (req.default.getOrElse(false)) {
-                            updateDefaultVersion(req.candidate, version)
+                        ).map { _ =>
+                            req.default.filter(d => d).map { _ =>
+                              updateDefaultVersion(req.candidate, version)
+                            }
                           }
-                          createdResponse(req.candidate, version, platform)
-                        })
-                      )(v => conflictResponseF(candidate.candidate, v.version, platform))
+                          .map { _ =>
+                            createdResponse(req.candidate, version, platform)
+                          }
+                      }(v => conflictResponseF(candidate.candidate, v.version, platform))
                   }
               }
             }
@@ -133,7 +135,7 @@ trait ReleaseRoutes
       version: String,
       platform: Option[String],
       url: Option[String],
-      checksums: Option[Map[String,String]]
+      checksums: Option[Map[String, String]]
   )(
       route: StandardRoute
   ): Route = {
@@ -141,7 +143,7 @@ trait ReleaseRoutes
       validatePlatform(platform) {
         validateUrl(url) {
           validateChecksumAlgorithms(checksums) {
-            validateChecksums(checksums) (route)
+            validateChecksums(checksums)(route)
           }
         }
       }
