@@ -33,7 +33,7 @@ Feature: Default Candidate Version
     """
     Then the status received is 202 ACCEPTED
     And the message "Defaulted: groovy 2.3.6" is received
-    And the Default groovy Version has changed to 2.3.6
+    And the Default groovy Version is 2.3.6
 
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default UNIVERSAL groovy Version is 2.3.5
@@ -72,7 +72,7 @@ Feature: Default Candidate Version
     """
     Then the status received is 202 ACCEPTED
     And the message "Defaulted: groovy 2.3.6" is received
-    And the Default groovy Version has changed to 2.3.6
+    And the Default groovy Version is 2.3.6
 
 
   Scenario: Attempt to submit malformed JSON with no candidate
