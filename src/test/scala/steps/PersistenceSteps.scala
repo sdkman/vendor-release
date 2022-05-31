@@ -118,7 +118,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       )
   }
 
-  Then("""^the Default (.*) Version has changed to (.*)$""") {
+  Then("""^the Default (.*) Version is (.*)$""") {
     (candidate: String, version: String) =>
       withClue(s"The default $candidate version was not changed to $version") {
         Mongo.isDefault(candidate, version) shouldBe true
