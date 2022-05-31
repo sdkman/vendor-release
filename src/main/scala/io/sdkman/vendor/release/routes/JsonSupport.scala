@@ -27,7 +27,7 @@ import spray.json.{
 }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val postReleaseFormat = jsonFormat6(PostReleaseRequest)
+  implicit val postReleaseFormat = jsonFormat7(PostReleaseRequest)
 
   implicit val patchReleaseFormat = jsonFormat7(PatchReleaseRequest)
 
