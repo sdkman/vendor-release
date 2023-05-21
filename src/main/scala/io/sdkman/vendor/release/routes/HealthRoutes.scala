@@ -17,7 +17,7 @@ package io.sdkman.vendor.release.routes
 
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.server.Directives
+import akka.http.scaladsl.server.{Directives, Route}
 import akka.util.ByteString
 import com.typesafe.scalalogging.LazyLogging
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
@@ -31,7 +31,7 @@ trait HealthRoutes
     with MongoConnectivity
     with MongoConfiguration
     with LazyLogging {
-  val healthRoutes = path("alive") {
+  val healthRoutes: Route = path("alive") {
     get {
       complete {
         appCollection

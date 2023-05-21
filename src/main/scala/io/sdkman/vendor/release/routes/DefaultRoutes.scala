@@ -1,6 +1,6 @@
 package io.sdkman.vendor.release.routes
 
-import akka.http.scaladsl.server.Directives
+import akka.http.scaladsl.server.{Directives, Route}
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
@@ -19,7 +19,7 @@ trait DefaultRoutes
     with HttpResponses
     with Authorisation {
 
-  val defaultRoutes = path("default" / "version") {
+  val defaultRoutes: Route = path("default" / "version") {
     put {
       entity(as[VersionDefaultRequest]) { req =>
         authorised(req.candidate) {

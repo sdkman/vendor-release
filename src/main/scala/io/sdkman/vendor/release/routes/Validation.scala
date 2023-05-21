@@ -11,7 +11,7 @@ trait Validation {
   import ApiResponseJsonProtocol._
   import spray.json._
 
-  val SupportedPlatforms = Seq(
+  private val SupportedPlatforms = Seq(
     "LINUX_64",
     "LINUX_32",
     "LINUX_ARM64",
@@ -23,7 +23,7 @@ trait Validation {
     "UNIVERSAL"
   )
 
-  val AlgorithmRegex = Map(
+  private val AlgorithmRegex = Map(
     MD5.id    -> "^[a-f0-9]{32}$",
     SHA1.id   -> "^[a-f0-9]{40}$",
     SHA224.id -> "^[a-f0-9]{56}$",
