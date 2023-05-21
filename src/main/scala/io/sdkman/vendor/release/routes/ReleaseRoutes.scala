@@ -67,7 +67,7 @@ trait ReleaseRoutes
                         )
                         for {
                           _ <- saveVersion(v)
-                          _ <- savePostgres(v)
+                          _ <- insertPostgres(v)
                           _ <- if (req.default.exists(d => d)) for {
                             _ <- updateDefaultVersion(c.candidate, version)
                             _ <- updateDefaultVersionPostgres(c.candidate, version)
@@ -88,20 +88,21 @@ trait ReleaseRoutes
             onFinding(req.candidate, req.version, req.platform) {
               (candidateO, versionO, platform) =>
                 val existing = for {
-                  candidate       <- candidateO
-                  existingVersion <- versionO
-                } yield updateVersion(
-                  existingVersion,
-                  Version(
-                    candidate.candidate,
-                    existingVersion.version,
+                  existingCandidate <- candidateO
+                  oldVersion        <- versionO
+                  newVersion = Version(
+                    existingCandidate.candidate,
+                    oldVersion.version,
                     platform,
-                    req.url getOrElse existingVersion.url,
-                    req.vendor orElse existingVersion.vendor,
-                    req.visible orElse existingVersion.visible,
-                    req.checksums orElse existingVersion.checksums
+                    req.url getOrElse oldVersion.url,
+                    req.vendor orElse oldVersion.vendor,
+                    req.visible orElse oldVersion.visible,
+                    req.checksums orElse oldVersion.checksums
                   )
-                )
+                } yield for {
+                  _   <- updateVersion(oldVersion, newVersion)
+                  res <- updatePostgres(oldVersion, newVersion)
+                } yield res
                 existing.map(noContentResponseF()) getOrElse badRequestResponseF(
                   s"Does not exist: ${req.candidate} ${req.version} $platform"
                 )
@@ -117,7 +118,11 @@ trait ReleaseRoutes
               case Some(Candidate(_, _, _, Some(default), _, _)) if default == req.version =>
                 conflictResponseF(req.candidate, req.version, req.platform)
               case _ =>
-                deleteVersion(req.candidate, req.version, req.platform).map {
+                val result = for {
+                  del <- deleteVersion(req.candidate, req.version, req.platform)
+                  _   <- deletePostgres(req.candidate, req.version, req.platform)
+                } yield del
+                result.map {
                   case result if result.getDeletedCount == 1 =>
                     okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
                   case _ =>
@@ -163,7 +168,14 @@ trait ReleaseRoutes
     } yield response
   }
 
-  private def savePostgres(v: Version): Future[Unit] = Future.successful(Unit)
+  private def insertPostgres(version: Version): Future[Unit] = Future.successful(Unit)
+
+  private def updatePostgres(oldVersion: Version, newVersion: Version): Future[Unit] =
+    Future.successful(Unit)
+
   private def updateDefaultVersionPostgres(candidate: String, version: String): Future[Unit] =
+    Future.successful(Unit)
+
+  private def deletePostgres(candidate: String, version: String, platform: String): Future[Unit] =
     Future.successful(Unit)
 }
