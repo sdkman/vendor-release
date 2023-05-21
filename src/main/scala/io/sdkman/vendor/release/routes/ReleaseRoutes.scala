@@ -52,29 +52,29 @@ trait ReleaseRoutes
               onFinding(req.candidate, req.version, req.platform) {
                 (candidateO, versionO, platform) =>
                   candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
-                    candidate =>
+                    c =>
                       //TODO: undo version-vendor concatenation once vendor domain is established
                       val vendor  = vendorHeader orElse req.vendor
                       val version = req.version + vendor.map(v => s"-$v").getOrElse("")
                       versionO.fold {
-                        saveVersion(
-                          Version(
-                            candidate = req.candidate,
-                            version = version,
-                            platform = platform,
-                            url = req.url,
-                            vendor = vendor,
-                            checksums = req.checksums
-                          )
-                        ).map { _ =>
-                            req.default.filter(d => d).map { _ =>
-                              updateDefaultVersion(req.candidate, version)
-                            }
-                          }
-                          .map { _ =>
-                            createdResponse(req.candidate, version, platform)
-                          }
-                      }(v => conflictResponseF(candidate.candidate, v.version, platform))
+                        val v = Version(
+                          candidate = c.candidate,
+                          version = version,
+                          platform = platform,
+                          url = req.url,
+                          vendor = vendor,
+                          checksums = req.checksums
+                        )
+                        for {
+                          _ <- saveVersion(v)
+                          _ <- savePostgres(v)
+                          _ <- if (req.default.exists(d => d)) for {
+                            _ <- updateDefaultVersion(c.candidate, version)
+                            _ <- updateDefaultVersionPostgres(c.candidate, version)
+                          } yield ()
+                          else Future.successful(Unit)
+                        } yield createdResponse(c.candidate, version, platform)
+                      }(v => conflictResponseF(c.candidate, v.version, platform))
                   }
               }
             }
@@ -162,4 +162,8 @@ trait ReleaseRoutes
       response   <- f(candidateO, versionO, resolvedPlatform)
     } yield response
   }
+
+  private def savePostgres(v: Version): Future[Unit] = Future.successful(Unit)
+  private def updateDefaultVersionPostgres(candidate: String, version: String): Future[Unit] =
+    Future.successful(Unit)
 }
