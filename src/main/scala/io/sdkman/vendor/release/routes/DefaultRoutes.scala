@@ -6,6 +6,7 @@ import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait DefaultRoutes
     extends Directives
@@ -33,6 +34,7 @@ trait DefaultRoutes
                 versions.headOption
                   .map { v =>
                     updateDefaultVersion(req.candidate, req.version)
+                      .flatMap(_ => updateDefaultVersionPostgres(req.candidate, req.version))
                       .map(_ => acceptedResponse(s"Defaulted: ${req.candidate} ${req.version}"))
                   }
                   .getOrElse(
@@ -47,4 +49,7 @@ trait DefaultRoutes
       }
     }
   }
+
+  private def updateDefaultVersionPostgres(candidate: String, version: String): Future[Unit] =
+    Future.successful(Unit)
 }
