@@ -27,19 +27,23 @@ import spray.json.{
 }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val postReleaseFormat = jsonFormat7(PostReleaseRequest)
+  implicit val postReleaseFormat: RootJsonFormat[PostReleaseRequest] =
+    jsonFormat7(PostReleaseRequest)
 
-  implicit val patchReleaseFormat = jsonFormat7(PatchReleaseRequest)
+  implicit val patchReleaseFormat: RootJsonFormat[PatchReleaseRequest] =
+    jsonFormat7(PatchReleaseRequest)
 
-  implicit val deleteReleaseFormat = jsonFormat3(DeleteReleaseRequest)
+  implicit val deleteReleaseFormat: RootJsonFormat[DeleteReleaseRequest] =
+    jsonFormat3(DeleteReleaseRequest)
 
-  implicit val versionDefaultFormat = jsonFormat2(VersionDefaultRequest)
+  implicit val versionDefaultFormat: RootJsonFormat[VersionDefaultRequest] =
+    jsonFormat2(VersionDefaultRequest)
 
   object ApiResponseJsonProtocol extends DefaultJsonProtocol {
     implicit object ApiReponseJsonFormat extends RootJsonFormat[ApiResponse] {
-      def write(ar: ApiResponse) =
+      def write(ar: ApiResponse): JsObject =
         JsObject("status" -> JsNumber(ar.status), "message" -> JsString(ar.message))
-      def read(value: JsValue) = {
+      def read(value: JsValue): ApiResponse = {
         value.asJsObject.getFields("status", "message") match {
           case Seq(JsNumber(status), JsString(message)) =>
             ApiResponse(status.intValue, message)

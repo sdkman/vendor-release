@@ -41,9 +41,9 @@ trait ReleaseRoutes
     with LazyLogging
     with Authorisation {
 
-  val Universal = "UNIVERSAL"
+  private val Universal = "UNIVERSAL"
 
-  val releaseRoutes = pathPrefix("release" / "version") {
+  val releaseRoutes: Route = pathPrefix("release" / "version") {
     post {
       entity(as[PostReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>

@@ -8,9 +8,9 @@ trait Authorisation {
 
   self: Directives with Configuration =>
 
-  val CandidatesHeader = "Candidates"
+  private val CandidatesHeader = "Candidates"
 
-  val AuthTokenHeader = "Service-Token"
+  private val AuthTokenHeader = "Service-Token"
 
   def authorised(candidate: String): Directive0 = authorize { rc =>
     val headers = rc.request.headers
