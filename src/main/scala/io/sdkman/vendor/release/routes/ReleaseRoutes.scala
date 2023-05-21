@@ -47,7 +47,7 @@ trait ReleaseRoutes
     post {
       entity(as[PostReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>
-          validate(req.candidate, req.version, req.platform, Some(req.url), req.checksums) {
+          validate(req.candidate, req.platform, Some(req.url), req.checksums) {
             complete {
               onFinding(req.candidate, req.version, req.platform) {
                 (candidateO, versionO, platform) =>
@@ -83,7 +83,7 @@ trait ReleaseRoutes
       }
     } ~ patch {
       entity(as[PatchReleaseRequest]) { req =>
-        validate(req.candidate, req.version, req.platform, req.url, req.checksums) {
+        validate(req.candidate, req.platform, req.url, req.checksums) {
           complete {
             onFinding(req.candidate, req.version, req.platform) {
               (candidateO, versionO, platform) =>
@@ -112,7 +112,7 @@ trait ReleaseRoutes
       }
     } ~ delete {
       entity(as[DeleteReleaseRequest]) { req =>
-        validate(req.candidate, req.version, Some(req.platform), None, None) {
+        validate(req.candidate, Some(req.platform), None, None) {
           complete {
             findCandidate(req.candidate).flatMap {
               case Some(Candidate(_, _, _, Some(default), _, _)) if default == req.version =>
@@ -137,7 +137,6 @@ trait ReleaseRoutes
 
   private def validate(
       candidate: String,
-      version: String,
       platform: Option[String],
       url: Option[String],
       checksums: Option[Map[String, String]]
