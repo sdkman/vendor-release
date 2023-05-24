@@ -44,7 +44,9 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.8",
   "io.spray" %% "spray-json" % "1.3.2",
   "com.github.sdkman" % "sdkman-mongodb-persistence" % "2.1",
-  "com.github.sdkman" % "sdkman-url-validator" % "0.2.4"
+  "com.github.sdkman" % "sdkman-url-validator" % "0.2.4",
+  "org.flywaydb" % "flyway-core" % "9.16.0",
+  "org.postgresql" % "postgresql" % "42.5.4"
 ) ++ testDependencies
 
 lazy val `vendor-release` = (project in file("."))
