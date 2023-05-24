@@ -15,11 +15,11 @@
   */
 package io.sdkman.vendor.release
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 trait Configuration {
 
-  lazy val config = ConfigFactory.load()
+  lazy val config: Config = ConfigFactory.load()
 
   lazy val serviceHost: String = config.getString("service.host")
 
