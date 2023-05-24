@@ -19,7 +19,7 @@ import com.typesafe.config.ConfigFactory
 
 trait Configuration {
 
-  private lazy val config = ConfigFactory.load()
+  lazy val config = ConfigFactory.load()
 
   lazy val serviceHost: String = config.getString("service.host")
 
