@@ -19,19 +19,19 @@ import com.typesafe.config.ConfigFactory
 
 trait Configuration {
 
-  lazy val config = ConfigFactory.load()
+  private lazy val config = ConfigFactory.load()
 
-  lazy val serviceHost = config.getString("service.host")
+  lazy val serviceHost: String = config.getString("service.host")
 
-  lazy val servicePort = config.getInt("service.port")
+  lazy val servicePort: Int = config.getInt("service.port")
 
-  lazy val serviceToken = config.getString("service.token")
+  lazy val serviceToken: String = config.getString("service.token")
 
-  lazy val serviceAdminConsumer = config.getString("service.adminConsumer")
+  lazy val serviceAdminConsumer: String = config.getString("service.adminConsumer")
 
-  lazy val jdbcUrl = config.getString("jdbc.url")
+  lazy val jdbcUrl: String = config.getString("jdbc.url")
 
-  lazy val jdbcUser = config.getString("jdbc.username")
+  lazy val jdbcUser: String = config.getString("jdbc.username")
 
-  lazy val jdbcPassword = config.getString("jdbc.password")
+  lazy val jdbcPassword: String = config.getString("jdbc.password")
 }
