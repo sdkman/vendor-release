@@ -19,14 +19,19 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import io.sdkman.model.{Candidate, Version}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
-import support.Mongo
+import support.{Mongo, Postgres}
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues {
 
-  Then("""^(.*) Version (.*) with URL (.*) was published as (.*)$""") {
-    (candidate: String, version: String, url: String, platform: String) =>
-      withClue("Version was not published") {
-        Mongo.versionPublished(candidate, version, url, platform) shouldBe true
+  Then("""^(.*) Version (.*) with URL (.*) was published as (.*) to (.*)$""") {
+    (candidate: String, version: String, url: String, platform: String, datastore: String) =>
+      withClue(s"Version was not published to $datastore") {
+        datastore match {
+          case "postgres" =>
+            Postgres.versionPublished(candidate, version, url, platform) shouldBe true
+          case "mongodb" =>
+            Mongo.versionPublished(candidate, version, url, platform) shouldBe true
+        }
       }
   }
 

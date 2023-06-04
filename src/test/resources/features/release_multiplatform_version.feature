@@ -35,7 +35,8 @@ Feature: Release Multi-Platform Version
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to postgres
     And the message "Released: java 8u131-zulu for LINUX_64" is received
 
   Scenario: Release multiple multi-platform binaries of the same Version
@@ -61,5 +62,7 @@ Feature: Release Multi-Platform Version
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to postgres
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to mongodb
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to postgres

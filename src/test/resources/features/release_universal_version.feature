@@ -34,7 +34,8 @@ Feature: Release Universal Version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
   Scenario: Attempt to Release a duplicate Version
@@ -127,5 +128,6 @@ Feature: Release Universal Version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received

@@ -25,7 +25,7 @@ Feature: Release Version with checksums
           |}
     """
     Then the status received is 201 CREATED
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "8f817c305a1bb15428b4aa29b844d75c" using algorithm MD5
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "aa8c9101ae2badca9ca4827bd433c58cf3c255e8" using algorithm SHA-1
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "2380df580f84d3d1549681a7b25b589f4371becfca62f1e0a985f5b4" using algorithm SHA-224
@@ -65,9 +65,9 @@ Feature: Release Version with checksums
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
     And java Version 8u131-zulu on platform LINUX_64 has a checksum "2380df580f84d3d1549681a7b25b589f4371becfca62f1e0a985f5b4" using algorithm SHA-224
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX
+    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to mongodb
     And java Version 8u131-zulu on platform MAC_OSX has a checksum "337155d0cff16f0448de8111247927382c53a9ed25aa260301f3233f94945a3704359ef7b44f3425f03a4ad79e97269d" using algorithm SHA-384
 
   Scenario: Attempt to submit malformed JSON with invalid algorithms
@@ -134,6 +134,6 @@ Feature: Release Version with checksums
           |}
     """
     Then the status received is 204 NO_CONTENT
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL
+    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to mongodb
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "8f817c305a1bb15428b4aa29b844d75c" using algorithm MD5
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "01bfe9d471b7cb1f8321204e6fa05a574db3ae5b67c5bd2f17184ffd521387f1" using algorithm SHA-256
