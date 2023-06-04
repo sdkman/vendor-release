@@ -22,7 +22,8 @@ import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.model.{Candidate, Version}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
-import io.sdkman.vendor.release.{Configuration, HttpResponses}
+import io.sdkman.vendor.release.repos.PgVersionRepo
+import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,6 +35,8 @@ trait ReleaseRoutes
     with MongoConnectivity
     with MongoConfiguration
     with Configuration
+    with PostgresConnectivity
+    with PgVersionRepo
     with HttpResponses
     with JsonSupport
     with Validation
@@ -166,8 +169,6 @@ trait ReleaseRoutes
       response   <- f(candidateO, versionO, resolvedPlatform)
     } yield response
   }
-
-  private def insertPostgres(version: Version): Future[Unit] = Future.successful(Unit)
 
   private def updatePostgres(oldVersion: Version, newVersion: Version): Future[Unit] =
     Future.successful(Unit)
