@@ -123,10 +123,15 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       )
   }
 
-  Then("""^the Default (.*) Version is (.*)$""") {
-    (candidate: String, version: String) =>
-      withClue(s"The default $candidate version was not changed to $version") {
-        Mongo.isDefault(candidate, version) shouldBe true
+  Then("""^the default (.*) version is (.*) on (.*)$""") {
+    (candidate: String, version: String, datastore: String) =>
+      withClue(s"The default $candidate version was not changed to $version on $datastore") {
+        datastore match {
+          case "postgres" =>
+            Postgres.isDefault(candidate, version)
+          case "mongodb" =>
+            Mongo.isDefault(candidate, version) shouldBe true
+        }
       }
   }
 

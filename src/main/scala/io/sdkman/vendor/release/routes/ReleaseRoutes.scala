@@ -22,7 +22,7 @@ import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.model.{Candidate, Version}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
-import io.sdkman.vendor.release.repos.PgVersionRepo
+import io.sdkman.vendor.release.repos.{PgCandidateRepo, PgVersionRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,6 +37,7 @@ trait ReleaseRoutes
     with Configuration
     with PostgresConnectivity
     with PgVersionRepo
+    with PgCandidateRepo
     with HttpResponses
     with JsonSupport
     with Validation
@@ -70,7 +71,7 @@ trait ReleaseRoutes
                         )
                         for {
                           _ <- saveVersion(v)
-                          _ <- insertPostgres(v)
+                          _ <- insertVersionPostgres(v)
                           _ <- if (req.default.exists(d => d)) for {
                             _ <- updateDefaultVersion(c.candidate, version)
                             _ <- updateDefaultVersionPostgres(c.candidate, version)
@@ -104,7 +105,7 @@ trait ReleaseRoutes
                   )
                 } yield for {
                   _   <- updateVersion(oldVersion, newVersion)
-                  res <- updatePostgres(oldVersion, newVersion)
+                  res <- updateVersionPostgres(oldVersion, newVersion)
                 } yield res
                 existing.map(noContentResponseF()) getOrElse badRequestResponseF(
                   s"Does not exist: ${req.candidate} ${req.version} $platform"
@@ -169,12 +170,6 @@ trait ReleaseRoutes
       response   <- f(candidateO, versionO, resolvedPlatform)
     } yield response
   }
-
-  private def updatePostgres(oldVersion: Version, newVersion: Version): Future[Unit] =
-    Future.successful(Unit)
-
-  private def updateDefaultVersionPostgres(candidate: String, version: String): Future[Unit] =
-    Future.successful(Unit)
 
   private def deletePostgres(candidate: String, version: String, platform: String): Future[Unit] =
     Future.successful(Unit)

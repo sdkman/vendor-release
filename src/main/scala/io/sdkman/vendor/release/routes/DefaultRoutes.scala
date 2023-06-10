@@ -3,7 +3,8 @@ package io.sdkman.vendor.release.routes
 import akka.http.scaladsl.server.{Directives, Route}
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
-import io.sdkman.vendor.release.{Configuration, HttpResponses}
+import io.sdkman.vendor.release.repos.PgCandidateRepo
+import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,6 +16,8 @@ trait DefaultRoutes
     with MongoConnectivity
     with Configuration
     with MongoConfiguration
+    with PostgresConnectivity
+    with PgCandidateRepo
     with JsonSupport
     with HttpResponses
     with Authorisation {
@@ -33,9 +36,10 @@ trait DefaultRoutes
               candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
                 versions.headOption
                   .map { v =>
-                    updateDefaultVersion(req.candidate, req.version)
-                      .flatMap(_ => updateDefaultVersionPostgres(req.candidate, req.version))
-                      .map(_ => acceptedResponse(s"Defaulted: ${req.candidate} ${req.version}"))
+                    for {
+                      _ <- updateDefaultVersion(v.candidate, v.version)
+                      _ <- updateDefaultVersionPostgres(v.candidate, v.version)
+                    } yield acceptedResponse(s"Defaulted: ${v.candidate} ${v.version}")
                   }
                   .getOrElse(
                     badRequestResponseF(
@@ -49,7 +53,4 @@ trait DefaultRoutes
       }
     }
   }
-
-  private def updateDefaultVersionPostgres(candidate: String, version: String): Future[Unit] =
-    Future.successful(Unit)
 }

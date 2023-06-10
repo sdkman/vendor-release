@@ -35,7 +35,8 @@ Feature: Release Version Validation
           |}
     """
     Then the status received is 201 CREATED
-    And the Default java Version is 8u131-zulu
+    And the default java version is 8u131-zulu on mongodb
+    And the default java version is 8u131-zulu on postgres
 
   Scenario: The Version is not marked as a default explicitly
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
@@ -52,7 +53,8 @@ Feature: Release Version Validation
           |}
     """
     Then the status received is 201 CREATED
-    And the Default java Version is 8u121-zulu
+    And the default java version is 8u121-zulu on mongodb
+    And the default java version is 8u121-zulu on postgres
 
   Scenario: The Version is not marked as a default implicitly
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
@@ -68,4 +70,5 @@ Feature: Release Version Validation
           |}
     """
     Then the status received is 201 CREATED
-    And the Default java Version is 8u121-zulu
+    And the default java version is 8u121-zulu on mongodb
+    And the default java version is 8u121-zulu on postgres

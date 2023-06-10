@@ -33,7 +33,8 @@ Feature: Default Candidate Version
     """
     Then the status received is 202 ACCEPTED
     And the message "Defaulted: groovy 2.3.6" is received
-    And the Default groovy Version is 2.3.6
+    And the default groovy version is 2.3.6 on mongodb
+    And the default groovy version is 2.3.6 on postgres
 
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default UNIVERSAL groovy Version is 2.3.5
@@ -72,7 +73,8 @@ Feature: Default Candidate Version
     """
     Then the status received is 202 ACCEPTED
     And the message "Defaulted: groovy 2.3.6" is received
-    And the Default groovy Version is 2.3.6
+    And the default groovy version is 2.3.6 on mongodb
+    And the default groovy version is 2.3.6 on postgres
 
 
   Scenario: Attempt to submit malformed JSON with no candidate
