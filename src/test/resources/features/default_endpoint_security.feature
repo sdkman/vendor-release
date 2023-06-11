@@ -22,7 +22,7 @@ Feature: Default endpoint security
     And an existing UNIVERSAL groovy version 2.3.5 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And the UNIVERSAL candidate groovy with default version 2.3.5 already exists
-    When a JSON PUT on the /default/version endpoint:
+    When a JSON PUT on the /default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -37,7 +37,7 @@ Feature: Default endpoint security
     And an existing UNIVERSAL groovy version 2.3.5 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And the UNIVERSAL candidate groovy with default version 2.3.5 already exists
-    When a JSON PUT on the /default/version endpoint:
+    When a JSON PUT on the /default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -52,7 +52,7 @@ Feature: Default endpoint security
     And an existing UNIVERSAL groovy version 2.3.5 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And the existing default UNIVERSAL groovy version is 2.3.5
-    When a JSON PUT on the /default/version endpoint:
+    When a JSON PUT on the /default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -67,7 +67,7 @@ Feature: Default endpoint security
     And an existing UNIVERSAL groovy version 2.3.5 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And the existing default UNIVERSAL groovy version is 2.3.5
-    When a JSON PUT on the /default/version endpoint:
+    When a JSON PUT on the /default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -82,7 +82,7 @@ Feature: Default endpoint security
     And an existing UNIVERSAL groovy version 2.3.5 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And the existing default UNIVERSAL groovy version is 2.3.5
-    When a JSON PUT on the /default/version endpoint:
+    When a JSON PUT on the /default endpoint:
     """
           |{
           |   "candidate" : "groovy",

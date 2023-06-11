@@ -36,7 +36,7 @@ trait VersionDefaultRoutes
     with HttpResponses
     with Authorisation {
 
-  val versionDefaultRoutes: Route = path("default" / "version") {
+  val versionDefaultRoutes: Route = path("default") {
     put {
       entity(as[DefaultVersionRequest]) { req =>
         authorised(req.candidate) {
