@@ -24,8 +24,8 @@ trait PgCandidateRepo {
 
   self: PostgresConnectivity =>
 
-  def updateDefaultVersionPostgres(c: String, v: String): Future[Int] =
+  def updateDefaultVersionPostgres(candidate: String, version: String): Future[Int] =
     pgDatabase.run(
-      sqlu"UPDATE candidate SET default_version = $v WHERE id = $c"
+      sqlu"UPDATE candidate SET default_version = $version WHERE id = $candidate"
     )
 }
