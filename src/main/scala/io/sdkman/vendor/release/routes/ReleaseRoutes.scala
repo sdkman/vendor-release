@@ -49,7 +49,7 @@ trait ReleaseRoutes
 
   val releaseRoutes: Route = pathPrefix("release" / "version") {
     post {
-      entity(as[PostReleaseRequest]) { req =>
+      entity(as[PostVersionReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>
           validate(req.candidate, req.platform, Some(req.url), req.checksums) {
             complete {
@@ -86,7 +86,7 @@ trait ReleaseRoutes
         }
       }
     } ~ patch {
-      entity(as[PatchReleaseRequest]) { req =>
+      entity(as[PatchVersionReleaseRequest]) { req =>
         validate(req.candidate, req.platform, req.url, req.checksums) {
           complete {
             onFinding(req.candidate, req.version, req.platform) {
@@ -115,7 +115,7 @@ trait ReleaseRoutes
         }
       }
     } ~ delete {
-      entity(as[DeleteReleaseRequest]) { req =>
+      entity(as[DeleteVersionReleaseRequest]) { req =>
         validate(req.candidate, Some(req.platform), None, None) {
           complete {
             findCandidate(req.candidate).flatMap {

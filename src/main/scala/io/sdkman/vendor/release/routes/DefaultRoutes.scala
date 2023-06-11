@@ -39,7 +39,7 @@ trait DefaultRoutes
 
   val defaultRoutes: Route = path("default" / "version") {
     put {
-      entity(as[VersionDefaultRequest]) { req =>
+      entity(as[DefaultVersionRequest]) { req =>
         authorised(req.candidate) {
           val candidateFO = findCandidate(req.candidate)
           val versionsF   = findAllVersionsByCandidateVersion(req.candidate, req.version)

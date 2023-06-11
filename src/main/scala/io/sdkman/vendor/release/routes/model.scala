@@ -15,9 +15,18 @@
   */
 package io.sdkman.vendor.release.routes
 
-case class VersionDefaultRequest(candidate: String, version: String)
+case class DefaultVersionRequest(candidate: String, version: String)
 
-case class PostReleaseRequest(
+case class CandidateReleaseRequest(
+    id: String,
+    name: String,
+    description: String,
+    defaultVersion: String,
+    websiteUrl: String,
+    distribution: String
+)
+
+case class PostVersionReleaseRequest(
     candidate: String,
     version: String,
     url: String,
@@ -27,7 +36,7 @@ case class PostReleaseRequest(
     default: Option[Boolean] = Some(false)
 )
 
-case class PatchReleaseRequest(
+case class PatchVersionReleaseRequest(
     candidate: String,
     version: String,
     platform: Option[String],
@@ -37,7 +46,7 @@ case class PatchReleaseRequest(
     checksums: Option[Map[String, String]] = None
 )
 
-case class DeleteReleaseRequest(
+case class DeleteVersionReleaseRequest(
     candidate: String,
     version: String,
     platform: String
