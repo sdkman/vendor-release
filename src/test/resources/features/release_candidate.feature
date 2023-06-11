@@ -23,10 +23,10 @@ Feature: Release candidate
     """
           |{
           |   "id" : "riot",
-          |   "name" : "Riotous",
-          |   "description" : "Rocking riot, forever",
-          |   "websiteUrl" : "https://riotous.io",
-          |   "distribution" : "UNIVERSAL"
+          |   "name" : "Riot",
+          |   "description" : "Get data in and out of Redis with RIOT! Redis Input/Output Tools (RIOT) is a command-line utility designed to help you get data in and out of Redis.",
+          |   "websiteUrl" : "https://github.com/redis-developer/riot",
+          |   "distribution" : "PLATFORM_SPECIFIC"
           |}
     """
     Then the status received is 202 ACCEPTED
