@@ -11,7 +11,11 @@ object Postgres {
 
   val db = Database.forConfig("jdbc")
 
-  def truncateVersion(): Int = Await.result(db.run(sqlu"TRUNCATE TABLE version"), 1 second)
+  def truncateTables(): Unit =
+    Await.result(for {
+      _ <- db.run(sqlu"TRUNCATE TABLE version")
+      _ <- db.run(sqlu"TRUNCATE TABLE candidate")
+    } yield (), 1 second)
 
   def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
     Await.result(

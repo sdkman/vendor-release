@@ -40,7 +40,7 @@ class Env extends ScalaDsl with LazyLogging {
 
   Before() { s =>
     Mongo.dropAllCollections()
-    Postgres.truncateVersion()
+    Postgres.truncateTables()
     WireMock.reset()
     World.reset()
   }
