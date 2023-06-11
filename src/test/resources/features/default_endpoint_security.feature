@@ -14,13 +14,13 @@
 #  limitations under the License.
 #
 
-Feature: Default Endpoint Security
+Feature: Default endpoint security
 
-  Scenario: The default endpoints can NOT be accessed without a valid Auth Token
-    Given the Consumer for candidate groovy is making a request
-    And the Consumer does not have a valid Auth Token
-    And an existing UNIVERSAL groovy Version 2.3.5 exists
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
+  Scenario: The default endpoints can NOT be accessed without a valid auth token
+    Given the consumer for candidate groovy is making a request
+    And the consumer does not have a valid auth token
+    And an existing UNIVERSAL groovy version 2.3.5 exists
+    And an existing UNIVERSAL groovy version 2.3.6 exists
     And the UNIVERSAL candidate groovy with default version 2.3.5 already exists
     When a JSON PUT on the /default/version endpoint:
     """
@@ -32,10 +32,10 @@ Feature: Default Endpoint Security
     Then the status received is 403 "FORBIDDEN"
 
   Scenario: The default endpoints can NOT be accesses by an invalid consumer
-    Given the Consumer for candidate scala is making a request
-    And the Consumer has a valid Auth Token
-    And an existing UNIVERSAL groovy Version 2.3.5 exists
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
+    Given the consumer for candidate scala is making a request
+    And the consumer has a valid auth token
+    And an existing UNIVERSAL groovy version 2.3.5 exists
+    And an existing UNIVERSAL groovy version 2.3.6 exists
     And the UNIVERSAL candidate groovy with default version 2.3.5 already exists
     When a JSON PUT on the /default/version endpoint:
     """
@@ -46,12 +46,12 @@ Feature: Default Endpoint Security
     """
     Then the status received is 403 "FORBIDDEN"
 
-  Scenario: The default endpoints CAN be Accessed when authorised as valid Consumer
-    Given the Consumer for candidate groovy is making a request
-    And the Consumer has a valid Auth Token
-    And an existing UNIVERSAL groovy Version 2.3.5 exists
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+  Scenario: The default endpoints CAN be Accessed when authorised as valid consumer
+    Given the consumer for candidate groovy is making a request
+    And the consumer has a valid auth token
+    And an existing UNIVERSAL groovy version 2.3.5 exists
+    And an existing UNIVERSAL groovy version 2.3.6 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON PUT on the /default/version endpoint:
     """
           |{
@@ -62,11 +62,11 @@ Feature: Default Endpoint Security
     Then the status received is 202 "ACCEPTED"
 
   Scenario: The default endpoints CAN be accessed when authorised as valid list of consumers
-    Given the Consumer for candidate grails|groovy is making a request
-    And the Consumer has a valid Auth Token
-    And an existing UNIVERSAL groovy Version 2.3.5 exists
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given the consumer for candidate grails|groovy is making a request
+    And the consumer has a valid auth token
+    And an existing UNIVERSAL groovy version 2.3.5 exists
+    And an existing UNIVERSAL groovy version 2.3.6 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON PUT on the /default/version endpoint:
     """
           |{
@@ -77,11 +77,11 @@ Feature: Default Endpoint Security
     Then the status received is 202 "ACCEPTED"
 
   Scenario: The default endpoints CAN be accessed when authorised as administrator
-    Given the Consumer for candidate default_admin is making a request
-    And the Consumer has a valid Auth Token
-    And an existing UNIVERSAL groovy Version 2.3.5 exists
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given the consumer for candidate default_admin is making a request
+    And the consumer has a valid auth token
+    And an existing UNIVERSAL groovy version 2.3.5 exists
+    And an existing UNIVERSAL groovy version 2.3.6 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON PUT on the /default/version endpoint:
     """
           |{

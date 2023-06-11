@@ -14,16 +14,16 @@
 #  limitations under the License.
 #
 
-Feature: Release Universal Version
+Feature: Release universal version
 
   Background:
-    Given the Consumer for candidate groovy is making a request
-    And the Consumer has a valid Auth Token
+    Given the consumer for candidate groovy is making a request
+    And the consumer has a valid auth token
     And the URI /groovy-2.3.6.zip is available for download
 
   Scenario: Release a universal candidate version
-    Given an existing UNIVERSAL groovy Version 2.3.5 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given an existing UNIVERSAL groovy version 2.3.5 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -34,13 +34,13 @@ Feature: Release Universal Version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
   Scenario: Attempt to release a duplicate version
-    Given an existing UNIVERSAL groovy Version 2.3.5 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given an existing UNIVERSAL groovy version 2.3.5 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -117,8 +117,8 @@ Feature: Release Universal Version
     And the message containing "Object is missing required member 'url'" is received
 
   Scenario: Omit the platform to infer UNIVERSAL
-    Given an existing UNIVERSAL groovy Version 2.3.5 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given an existing UNIVERSAL groovy version 2.3.5 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -128,6 +128,6 @@ Feature: Release Universal Version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
-    And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received

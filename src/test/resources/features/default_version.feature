@@ -14,16 +14,16 @@
 #  limitations under the License.
 #
 
-Feature: Default Candidate Version
+Feature: Default candidate version
 
   Background:
-    Given the Consumer for candidate groovy is making a request
-    And the Consumer has a valid Auth Token
+    Given the consumer for candidate groovy is making a request
+    And the consumer has a valid auth token
 
   Scenario: Mark an existing candidate version as default
-    Given an existing UNIVERSAL groovy Version 2.3.5 exists
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
-    And the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given an existing UNIVERSAL groovy version 2.3.5 exists
+    And an existing UNIVERSAL groovy version 2.3.6 exists
+    And the existing default UNIVERSAL groovy version is 2.3.5
     When a JSON PUT on the /default/version endpoint:
     """
           |{
@@ -37,7 +37,7 @@ Feature: Default Candidate Version
     And the default groovy version is 2.3.6 on postgres
 
   Scenario: Attempt to mark a non-existent candidate version as default
-    Given the existing Default UNIVERSAL groovy Version is 2.3.5
+    Given the existing default UNIVERSAL groovy version is 2.3.5
     And the groovy version 2.3.6 UNIVERSAL does not exist
     When a JSON PUT on the /default/version endpoint:
     """
@@ -62,8 +62,8 @@ Feature: Default Candidate Version
     And the message "Invalid candidate: groovy" is received
 
   Scenario: Attempt to mark a non-default candidate default
-    Given the existing UNIVERSAL groovy Version has no Default
-    And an existing UNIVERSAL groovy Version 2.3.6 exists
+    Given the existing UNIVERSAL groovy version has no default
+    And an existing UNIVERSAL groovy version 2.3.6 exists
     When a JSON PUT on the /default/version endpoint:
     """
           |{

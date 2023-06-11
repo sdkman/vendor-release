@@ -21,15 +21,15 @@ import steps.World._
 
 class SecuritySteps extends ScalaDsl with EN with Matchers {
 
-  And("""^the Consumer does not have a valid Auth Token""") { () =>
+  And("""^the consumer does not have a valid auth token""") { () =>
     token = "invalid_token"
   }
 
-  And("""^the Consumer has a valid Auth Token""") { () =>
+  And("""^the consumer has a valid auth token""") { () =>
     token = "default_token"
   }
 
-  And("""^the Consumer for candidate (.*) is making a request$""") { (c: String) =>
+  And("""^the consumer for candidate (.*) is making a request$""") { (c: String) =>
     candidates = c
   }
 

@@ -23,7 +23,7 @@ import support.{Mongo, Postgres}
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues {
 
-  Then("""^(.*) Version (.*) with URL (.*) was published as (.*) to (.*)$""") {
+  Then("""^(.*) version (.*) with URL (.*) was published as (.*) to (.*)$""") {
     (candidate: String, version: String, url: String, platform: String, datastore: String) =>
       withClue(s"Version was not published to $datastore") {
         datastore match {
@@ -35,40 +35,40 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       }
   }
 
-  Then("""^the (.*) (.*) Version (.*) has a vendor of '(.*)'$""") {
+  Then("""^the (.*) (.*) version (.*) has a vendor of '(.*)'$""") {
     (platform: String, candidate: String, version: String, vendor: String) =>
       withClue(s"Vendor does not match $vendor") {
         Mongo.versionVendor(candidate, version, platform).value shouldBe vendor
       }
   }
 
-  Then("""^the (.*) (.*) Version (.*) has no vendor$""") {
+  Then("""^the (.*) (.*) version (.*) has no vendor$""") {
     (platform: String, candidate: String, version: String) =>
       withClue(s"Should not have a vendor") {
         Mongo.versionVendor(candidate, version, platform) shouldBe None
       }
   }
 
-  Then("""^(.*) Version (.*) is hidden""") { (candidate: String, version: String) =>
+  Then("""^(.*) version (.*) is hidden""") { (candidate: String, version: String) =>
     withClue("Version is not hidden") {
       Mongo.versionVisible(candidate, version) shouldBe false
     }
   }
 
-  Then("""^(.*) Version (.*) is visible$""") { (candidate: String, version: String) =>
+  Then("""^(.*) version (.*) is visible$""") { (candidate: String, version: String) =>
     withClue("Version is not hidden") {
       Mongo.versionVisible(candidate, version) shouldBe true
     }
   }
 
-  Given("""^a (.*) (.*) Version (.*) with URL (.*) already exists$""") {
+  Given("""^a (.*) (.*) version (.*) with URL (.*) already exists$""") {
     (platform: String, candidate: String, version: String, url: String) =>
       Mongo.insertVersion(
         Version(candidate, version, platform, s"http://somecandidate.org/$candidate/$version")
       )
   }
 
-  Given("""^an existing (.*) (.*) Version (.*) exists""") {
+  Given("""^an existing (.*) (.*) version (.*) exists""") {
     (platform: String, candidate: String, version: String) =>
       Mongo.insertVersion(
         Version(
@@ -95,7 +95,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       )
   }
 
-  Given("""^the existing Default (.*) (.*) Version is (.*)$""") {
+  Given("""^the existing default (.*) (.*) version is (.*)$""") {
     (platform: String, candidate: String, version: String) =>
       Mongo.insertCandidate(
         Candidate(
@@ -109,7 +109,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       )
   }
 
-  Given("""^the existing (.*) (.*) Version has no Default$""") {
+  Given("""^the existing (.*) (.*) version has no default$""") {
     (platform: String, candidate: String) =>
       Mongo.insertCandidate(
         Candidate(
@@ -159,7 +159,7 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
     Mongo.insertAliveOk()
   }
 
-  Then("""^(.*) Version (.*) on platform (.*) has a checksum \"(.*)\" using algorithm (.*)$""") {
+  Then("""^(.*) version (.*) on platform (.*) has a checksum \"(.*)\" using algorithm (.*)$""") {
     (candidate: String, version: String, platform: String, checksum: String, algorithm: String) =>
       withClue("Checksum not found") {
         Mongo.checksumExists(candidate, version, platform, algorithm, checksum) shouldBe true

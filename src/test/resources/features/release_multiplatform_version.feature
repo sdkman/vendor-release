@@ -14,17 +14,17 @@
 #  limitations under the License.
 #
 
-Feature: Release Multi-Platform Version
+Feature: Release multi-platform version
 
   Background:
-    Given the Consumer for candidate java|jmc is making a request
-    And the Consumer has a valid Auth Token
+    Given the consumer for candidate java|jmc is making a request
+    And the consumer has a valid auth token
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the URI /zulu8.21.0.1-jdk8.0.131-macosx.tar.gz is available for download
 
   Scenario: Release a single multi-platform binary version
-    Given an existing LINUX_64 java Version 8u121-zulu exists
-    And the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given an existing LINUX_64 java version 8u121-zulu exists
+    And the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -35,13 +35,13 @@ Feature: Release Multi-Platform Version
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to postgres
+    And java version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
+    And java version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to postgres
     And the message "Released: java 8u131-zulu for LINUX_64" is received
 
   Scenario: Release multiple multi-platform binaries of the same version
-    Given an existing LINUX_64 java Version 8u121-zulu exists
-    And the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given an existing LINUX_64 java version 8u121-zulu exists
+    And the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -62,7 +62,7 @@ Feature: Release Multi-Platform Version
           |}
     """
     Then the status received is 201 CREATED
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to postgres
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to mongodb
-    And java Version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to postgres
+    And java version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to mongodb
+    And java version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz was published as LINUX_64 to postgres
+    And java version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to mongodb
+    And java version 8u131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz was published as MAC_OSX to postgres

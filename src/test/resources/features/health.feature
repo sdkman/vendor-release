@@ -14,7 +14,7 @@
 #  limitations under the License.
 #
 
-Feature: Health Check endpoint
+Feature: Health check endpoint
 
 	Scenario: Check if the service is alive
 		Given an alive OK entry in the application collection

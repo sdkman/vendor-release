@@ -14,15 +14,15 @@
 #  limitations under the License.
 #
 
-Feature: Release Platform Validation
+Feature: Release platform validation
 
   Background:
-    Given the Consumer for candidate java is making a request
-    And the Consumer has a valid Auth Token
+    Given the consumer for candidate java is making a request
+    And the consumer has a valid auth token
     And the URI /zulu8.21.0.1-jdk8.0.131.tar.gz is available for download
 
   Scenario: The Linux 64 bit platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -35,7 +35,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Linux 32 bit platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -48,7 +48,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Linux ARM32 bit soft float platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -61,7 +61,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Linux ARM32 bit hard float platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -74,7 +74,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Linux ARM64 bit platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -87,7 +87,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Mac OSX X64 platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -100,7 +100,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Mac OSX ARM64 platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -113,7 +113,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: The Cygwin platform is valid
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -126,7 +126,7 @@ Feature: Release Platform Validation
     Then the status received is 201 CREATED
 
   Scenario: An invalid platform is rejected
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /release/version endpoint:
     """
           |{

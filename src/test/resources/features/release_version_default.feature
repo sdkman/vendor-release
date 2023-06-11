@@ -14,14 +14,14 @@
 #  limitations under the License.
 #
 
-Feature: Release Version Validation
+Feature: Release version validation
 
   Background:
-    Given the Consumer for candidate java is making a request
-    And the Consumer has a valid Auth Token
+    Given the consumer for candidate java is making a request
+    And the consumer has a valid auth token
 
   Scenario: The version is marked as a default explicitly
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
     """
@@ -39,7 +39,7 @@ Feature: Release Version Validation
     And the default java version is 8u131-zulu on postgres
 
   Scenario: The version is not marked as a default explicitly
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
     """
@@ -57,7 +57,7 @@ Feature: Release Version Validation
     And the default java version is 8u121-zulu on postgres
 
   Scenario: The version is not marked as a default implicitly
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
     """

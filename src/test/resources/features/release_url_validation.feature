@@ -14,14 +14,14 @@
 #  limitations under the License.
 #
 
-Feature: Release URL Validation
+Feature: Release URL validation
 
   Background:
-    Given the Consumer for candidate java is making a request
-    And the Consumer has a valid Auth Token
+    Given the consumer for candidate java is making a request
+    And the consumer has a valid auth token
 
   Scenario: The URI is a valid resolving resource
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
     """
@@ -35,7 +35,7 @@ Feature: Release URL Validation
     Then the status received is 201 CREATED
 
   Scenario: The URI is NOT a valid resolving resource
-    Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.999-linux_x64.tar.gz is not available for download
     When a JSON POST on the /release/version endpoint:
     """
