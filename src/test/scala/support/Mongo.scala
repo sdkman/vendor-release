@@ -43,8 +43,8 @@ object Mongo {
 
   def insertCandidate(c: Candidate): Seq[Completed] = candidatesCollection.insertOne(c).results()
 
-  def candidateExists(candidate: String): Boolean =
-    candidatesCollection.find(equal("candidate", candidate)).results().nonEmpty
+  def candidateExistsAndIsUnique(candidate: String): Boolean =
+    candidatesCollection.find(equal("candidate", candidate)).results().size == 1
 
   def versionExists(candidate: String, version: String, platform: String): Boolean =
     versionsCollection

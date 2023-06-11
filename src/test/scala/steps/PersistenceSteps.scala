@@ -151,7 +151,18 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
 
   Given("""^Candidate (.*) does not exist$""") { candidate: String =>
     withClue(s"The exists: $candidate") {
-      Mongo.candidateExists(candidate) shouldBe false
+      Mongo.candidateExistsAndIsUnique(candidate) shouldBe false
+    }
+  }
+
+  Given("""^Candidate (.*) exists and is unique on (.*)$""") { (candidate: String, datastore: String) =>
+    withClue(s"The candidate $candidate does not exist on $datastore") {
+      datastore match {
+        case "postgres" =>
+          Postgres.candidateExistsAndIsUnique(candidate) shouldBe true
+        case "mongodb" =>
+          Mongo.candidateExistsAndIsUnique(candidate) shouldBe true
+      }
     }
   }
 

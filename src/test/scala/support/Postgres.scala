@@ -27,10 +27,19 @@ object Postgres {
   def isDefault(candidate: String, version: String): Boolean =
     Await.result(
       db.run(
-        sql"""SELECT default_version FROM candidate where id = $candidate"""
+        sql"""SELECT default_version FROM candidate WHERE id = $candidate"""
           .as[String]
           .map(_.contains(version))
       ),
       1 second
     )
+
+  def candidateExistsAndIsUnique(candidate: String): Boolean =
+    Await.result(
+      db.run(
+        sql"""SELECT id FROM candidate WHERE id = $candidate""".as[String]
+      ),
+      1 second
+    ).size == 1
+
 }

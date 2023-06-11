@@ -28,7 +28,7 @@ import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectiv
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait ReleaseRoutes
+trait VersionReleaseRoutes
     extends Directives
     with CandidatesRepo
     with VersionsRepo
@@ -47,7 +47,7 @@ trait ReleaseRoutes
 
   private val Universal = "UNIVERSAL"
 
-  val releaseRoutes: Route = pathPrefix("release" / "version") {
+  val versionReleaseRoutes: Route = pathPrefix("release" / "version") {
     post {
       entity(as[PostVersionReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>

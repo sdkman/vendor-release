@@ -22,9 +22,8 @@ import io.sdkman.vendor.release.repos.PgCandidateRepo
 import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
-trait DefaultRoutes
+trait VersionDefaultRoutes
     extends Directives
     with CandidatesRepo
     with VersionsRepo
@@ -37,7 +36,7 @@ trait DefaultRoutes
     with HttpResponses
     with Authorisation {
 
-  val defaultRoutes: Route = path("default" / "version") {
+  val versionDefaultRoutes: Route = path("default" / "version") {
     put {
       entity(as[DefaultVersionRequest]) { req =>
         authorised(req.candidate) {

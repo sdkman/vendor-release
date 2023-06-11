@@ -18,18 +18,23 @@ package io.sdkman.vendor.release
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
-import io.sdkman.vendor.release.routes.{DefaultRoutes, HealthRoutes, ReleaseRoutes}
+import io.sdkman.vendor.release.routes.{CandidateReleaseRoutes, VersionDefaultRoutes, HealthRoutes, VersionReleaseRoutes}
 import org.flywaydb.core.Flyway
 import org.flywaydb.core.api.output.MigrateResult
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-class HttpServer extends Configuration with ReleaseRoutes with DefaultRoutes with HealthRoutes {
+class HttpServer
+    extends Configuration
+    with VersionReleaseRoutes
+    with CandidateReleaseRoutes
+    with VersionDefaultRoutes
+    with HealthRoutes {
 
   implicit lazy val actorSystem: ActorSystem = ActorSystem("vendor-release-service")
 
-  val routes: Route = healthRoutes ~ releaseRoutes ~ defaultRoutes
+  val routes: Route = healthRoutes ~ versionReleaseRoutes ~ versionDefaultRoutes ~ candidateReleaseRoutes
 
   private val flyway = Flyway
     .configure()

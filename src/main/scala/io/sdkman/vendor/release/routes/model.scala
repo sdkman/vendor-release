@@ -17,7 +17,7 @@ package io.sdkman.vendor.release.routes
 
 case class DefaultVersionRequest(candidate: String, version: String)
 
-case class CandidateReleaseRequest(
+case class PostCandidateReleaseRequest(
     id: String,
     name: String,
     description: String,
