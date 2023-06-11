@@ -11,7 +11,6 @@ Feature: Release candidate
           |   "id" : "riot",
           |   "name" : "Riot",
           |   "description" : "Rocking riot",
-          |   "defaultVersion" : "1.0.0",
           |   "websiteUrl" : "https://riot.io",
           |   "distribution" : "UNIVERSAL"
           |}
@@ -26,7 +25,6 @@ Feature: Release candidate
           |   "id" : "riot",
           |   "name" : "Riotous",
           |   "description" : "Rocking riot, forever",
-          |   "defaultVersion" : "1.0.1",
           |   "websiteUrl" : "https://riotous.io",
           |   "distribution" : "UNIVERSAL"
           |}

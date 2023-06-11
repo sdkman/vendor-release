@@ -28,7 +28,6 @@ trait PgCandidateRepo {
       id: String,
       name: String,
       description: String,
-      defaultVersion: String,
       websiteUrl: String,
       distribution: String
   ): Future[Int] = pgDatabase.run(
@@ -37,20 +36,17 @@ trait PgCandidateRepo {
             id,
             name,
             description,
-            default_version,
             website_url,
             distribution
         ) VALUES (
             $id,
             $name,
             $description,
-            $defaultVersion,
             $websiteUrl,
             $distribution
         ) ON CONFLICT (id) DO UPDATE SET
             name = $name,
             description = $description,
-            default_version = $defaultVersion,
             website_url = $websiteUrl,
             distribution = $distribution
         """

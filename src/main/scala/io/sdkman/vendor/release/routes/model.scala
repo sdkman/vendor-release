@@ -21,7 +21,6 @@ case class PostCandidateReleaseRequest(
     id: String,
     name: String,
     description: String,
-    defaultVersion: String,
     websiteUrl: String,
     distribution: String
 )

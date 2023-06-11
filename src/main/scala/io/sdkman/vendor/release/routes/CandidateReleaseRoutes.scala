@@ -36,17 +36,16 @@ trait CandidateReleaseRoutes
                 req.id,
                 req.name,
                 req.description,
-                req.defaultVersion,
                 req.websiteUrl,
                 req.distribution
               )
               candidate = Candidate(
-                req.id,
-                req.name,
-                req.description,
-                Some(req.defaultVersion),
-                req.websiteUrl,
-                req.distribution
+                candidate = req.id,
+                name = req.name,
+                description = req.description,
+                websiteUrl = req.websiteUrl,
+                distribution = req.distribution,
+                default = None
               )
               _ <- upsertCandidate(candidate)
             } yield acceptedResponse(s"Create or update candidate: ${req.id}")
