@@ -23,7 +23,7 @@ Feature: Release version with checksums
     Given the existing default UNIVERSAL groovy version is 2.3.6
     And the consumer for candidate groovy is making a request
     And the URI /groovy-2.3.6.zip is available for download
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -55,7 +55,7 @@ Feature: Release version with checksums
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the URI /zulu8.21.0.1-jdk8.0.131-macosx.tar.gz is available for download
     And the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -68,7 +68,7 @@ Feature: Release version with checksums
           |}
     """
     Then the status received is 201 CREATED
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -90,7 +90,7 @@ Feature: Release version with checksums
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the consumer for candidate java|jmc is making a request
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -111,7 +111,7 @@ Feature: Release version with checksums
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the consumer for candidate java|jmc is making a request
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -136,7 +136,7 @@ Feature: Release version with checksums
     And the URI /groovy-x.y.z.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
-    When a JSON PATCH on the /release/version endpoint:
+    When a JSON PATCH on the /release endpoint:
     """
           |{
           |   "candidate" : "groovy",

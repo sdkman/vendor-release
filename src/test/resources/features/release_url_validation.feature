@@ -23,7 +23,7 @@ Feature: Release URL validation
   Scenario: The URI is a valid resolving resource
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -37,7 +37,7 @@ Feature: Release URL validation
   Scenario: The URI is NOT a valid resolving resource
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.999-linux_x64.tar.gz is not available for download
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",

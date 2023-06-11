@@ -22,7 +22,7 @@ Feature: Release endpoint security
   Scenario: The release endpoints can NOT be accessed without a valid auth token
     Given the consumer for candidate groovy is making a request
     And the consumer does not have a valid auth token
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -35,7 +35,7 @@ Feature: Release endpoint security
   Scenario: The release endpoints can NOT be accessed by an invalid consumer
     Given the consumer for candidate scala is making a request
     And the consumer has a valid auth token
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -49,7 +49,7 @@ Feature: Release endpoint security
     Given the consumer for candidate groovy is making a request
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -63,7 +63,7 @@ Feature: Release endpoint security
     Given the consumer for candidate grails|groovy is making a request
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -77,7 +77,7 @@ Feature: Release endpoint security
     Given the consumer for candidate default_admin is making a request
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",

@@ -5,7 +5,7 @@ Feature: Release candidate
     And the consumer has a valid auth token
 
   Scenario: Idempotent create and update a candidate
-    When a JSON POST on the /release/candidate endpoint:
+    When a JSON POST on the /candidate endpoint:
     """
           |{
           |   "id" : "riot",
@@ -19,7 +19,7 @@ Feature: Release candidate
     And the message "Create or update candidate: riot" is received
     And Candidate riot exists and is unique on postgres
     And Candidate riot exists and is unique on mongodb
-    When a JSON POST on the /release/candidate endpoint:
+    When a JSON POST on the /candidate endpoint:
     """
           |{
           |   "id" : "riot",

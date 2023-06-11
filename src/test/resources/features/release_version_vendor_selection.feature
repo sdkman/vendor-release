@@ -23,7 +23,7 @@ Feature: Release version vendor selection
     Given the consumer for candidate groovy is making a request
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -41,7 +41,7 @@ Feature: Release version vendor selection
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And Vendor header 'oci' is passed with the request
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -58,7 +58,7 @@ Feature: Release version vendor selection
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And Vendor header 'apache' is passed with the request
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -75,7 +75,7 @@ Feature: Release version vendor selection
     Given the consumer for candidate groovy is making a request
     And the consumer has a valid auth token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "groovy",

@@ -25,7 +25,7 @@ Feature: Release multi-platform version
   Scenario: Release a single multi-platform binary version
     Given an existing LINUX_64 java version 8u121-zulu exists
     And the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -42,7 +42,7 @@ Feature: Release multi-platform version
   Scenario: Release multiple multi-platform binaries of the same version
     Given an existing LINUX_64 java version 8u121-zulu exists
     And the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -52,7 +52,7 @@ Feature: Release multi-platform version
           |}
     """
     Then the status received is 201 CREATED
-    When a JSON POST on the /release/version endpoint:
+    When a JSON POST on the /release endpoint:
     """
           |{
           |  "candidate" : "java",
