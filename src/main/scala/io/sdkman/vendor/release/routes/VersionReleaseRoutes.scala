@@ -47,7 +47,7 @@ trait VersionReleaseRoutes
 
   private val Universal = "UNIVERSAL"
 
-  val versionReleaseRoutes: Route = pathPrefix("release" / "version") {
+  val versionReleaseRoutes: Route = path("release" / "version") {
     post {
       entity(as[PostVersionReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>
