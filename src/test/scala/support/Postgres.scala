@@ -39,11 +39,13 @@ object Postgres {
     )
 
   def candidateExistsAndIsUnique(candidate: String): Boolean =
-    Await.result(
-      db.run(
-        sql"""SELECT id FROM candidate WHERE id = $candidate""".as[String]
-      ),
-      1 second
-    ).size == 1
+    Await
+      .result(
+        db.run(
+          sql"""SELECT id FROM candidate WHERE id = $candidate""".as[String]
+        ),
+        1 second
+      )
+      .size == 1
 
 }
