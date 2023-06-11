@@ -33,7 +33,7 @@ Feature: Release Version with checksums
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "337155d0cff16f0448de8111247927382c53a9ed25aa260301f3233f94945a3704359ef7b44f3425f03a4ad79e97269d" using algorithm SHA-384
     And groovy Version 2.3.6 on platform UNIVERSAL has a checksum "6b9bf0fd263b4eeb9929df2ffcb3bc765212e682e7dca08bc48ce4e4950cdde10282b029b60291c8dad0d8d1b65574979dff2c657e58ced7846b01f485ecec59" using algorithm SHA-512
 
-  Scenario: Release multiple multi-platform binaries of the same Version with checksums
+  Scenario: Release multiple multi-platform binaries of the same version with checksums
     Given an existing LINUX_64 java Version 8u121-zulu exists
     And the Consumer for candidate java|jmc is making a request
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
@@ -115,7 +115,7 @@ Feature: Release Version with checksums
     Then the status received is 400 BAD_REQUEST
     And the message containing "Invalid checksum for algorithm(s): MD5,SHA-1,SHA-224,SHA-384,SHA-512" is received
 
-  Scenario: Change the checksum of an existing Candidate Version
+  Scenario: Change the checksum of an existing candidate version
     Given the Consumer for candidate groovy is making a request
     And the URI /groovy-x.y.z.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists

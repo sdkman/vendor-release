@@ -3,7 +3,7 @@ Feature: Update Release Version
   Background:
     And the Consumer has a valid Auth Token
 
-  Scenario: Hide an existing visible universal Candidate Version
+  Scenario: Hide an existing visible universal candidate version
     Given the Consumer for candidate groovy is making a request
     And the URI /groovy-2.3.6.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -21,7 +21,7 @@ Feature: Update Release Version
     Then the status received is 204 NO_CONTENT
     And groovy Version 2.3.6 is hidden
 
-  Scenario: Change the URL of an existing universal Candidate Version
+  Scenario: Change the URL of an existing universal candidate version
     Given the Consumer for candidate groovy is making a request
     And the URI /groovy-x.y.z.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -38,7 +38,7 @@ Feature: Update Release Version
     Then the status received is 204 NO_CONTENT
     And groovy Version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to mongodb
 
-  Scenario: Hide an existing visible multi-platform Candidate Version
+  Scenario: Hide an existing visible multi-platform candidate version
     Given the Consumer for candidate java is making a request
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
@@ -56,7 +56,7 @@ Feature: Update Release Version
     Then the status received is 204 NO_CONTENT
     And java Version 8.0.131-zulu is hidden
 
-  Scenario: Change the URL of an existing multi-platform Candidate Version
+  Scenario: Change the URL of an existing multi-platform candidate version
     Given the Consumer for candidate java is making a request
     And the URI /zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz is available for download
     And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
@@ -73,7 +73,7 @@ Feature: Update Release Version
     Then the status received is 204 NO_CONTENT
     And java Version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published as LINUX_64 to mongodb
 
-    Scenario: Reject a non-existent Version
+    Scenario: Reject a non-existent version
       Given the Consumer for candidate groovy is making a request
       And Candidate groovy does not exist
       And the groovy version 2.3.6 UNIVERSAL does not exist

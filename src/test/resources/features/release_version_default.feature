@@ -20,7 +20,7 @@ Feature: Release Version Validation
     Given the Consumer for candidate java is making a request
     And the Consumer has a valid Auth Token
 
-  Scenario: The Version is marked as a default explicitly
+  Scenario: The version is marked as a default explicitly
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
@@ -38,7 +38,7 @@ Feature: Release Version Validation
     And the default java version is 8u131-zulu on mongodb
     And the default java version is 8u131-zulu on postgres
 
-  Scenario: The Version is not marked as a default explicitly
+  Scenario: The version is not marked as a default explicitly
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:
@@ -56,7 +56,7 @@ Feature: Release Version Validation
     And the default java version is 8u121-zulu on mongodb
     And the default java version is 8u121-zulu on postgres
 
-  Scenario: The Version is not marked as a default implicitly
+  Scenario: The version is not marked as a default implicitly
     Given the existing Default PLATFORM_SPECIFIC java Version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     When a JSON POST on the /release/version endpoint:

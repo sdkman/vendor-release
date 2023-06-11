@@ -19,7 +19,7 @@ Feature: Release Endpoint Security
   Background:
     Given the URI /groovy-2.3.6.zip is available for download
 
-  Scenario: The Release endpoints can NOT be Accessed without a valid Auth Token
+  Scenario: The release endpoints can NOT be accessed without a valid auth token
     Given the Consumer for candidate groovy is making a request
     And the Consumer does not have a valid Auth Token
     When a JSON POST on the /release/version endpoint:
@@ -32,7 +32,7 @@ Feature: Release Endpoint Security
     """
     Then the status received is 403 "FORBIDDEN"
 
-  Scenario: The Release endpoints can NOT be Accessed by an invalid Consumer
+  Scenario: The release endpoints can NOT be accessed by an invalid consumer
     Given the Consumer for candidate scala is making a request
     And the Consumer has a valid Auth Token
     When a JSON POST on the /release/version endpoint:
@@ -45,7 +45,7 @@ Feature: Release Endpoint Security
     """
     Then the status received is 403 "FORBIDDEN"
 
-  Scenario: The Release endpoints CAN be Accessed when Authorised as valid Consumer
+  Scenario: The release endpoints CAN be accessed when authorised as valid consumer
     Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -59,7 +59,7 @@ Feature: Release Endpoint Security
     """
     Then the status received is 201 "CREATED"
 
-  Scenario: The Release endpoints CAN be Accessed when Authorised with valid list of Consumers
+  Scenario: The release endpoints CAN be accessed when authorised with valid list of consumers
     Given the Consumer for candidate grails|groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -73,7 +73,7 @@ Feature: Release Endpoint Security
     """
     Then the status received is 201 "CREATED"
 
-  Scenario: The Release endpoints CAN be Accessed when Authorised as Administrator
+  Scenario: The release endpoints CAN be accessed when authorised as administrator
     Given the Consumer for candidate default_admin is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists

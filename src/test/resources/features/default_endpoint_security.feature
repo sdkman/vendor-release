@@ -16,7 +16,7 @@
 
 Feature: Default Endpoint Security
 
-  Scenario: The Default endpoints can NOT be Accessed without a valid Auth Token
+  Scenario: The default endpoints can NOT be accessed without a valid Auth Token
     Given the Consumer for candidate groovy is making a request
     And the Consumer does not have a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -31,7 +31,7 @@ Feature: Default Endpoint Security
     """
     Then the status received is 403 "FORBIDDEN"
 
-  Scenario: The Default endpoints can NOT by an invalid Consumer
+  Scenario: The default endpoints can NOT be accesses by an invalid consumer
     Given the Consumer for candidate scala is making a request
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -46,7 +46,7 @@ Feature: Default Endpoint Security
     """
     Then the status received is 403 "FORBIDDEN"
 
-  Scenario: The Default endpoints CAN be Accessed when Authorised as valid Consumer
+  Scenario: The default endpoints CAN be Accessed when authorised as valid Consumer
     Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -61,7 +61,7 @@ Feature: Default Endpoint Security
     """
     Then the status received is 202 "ACCEPTED"
 
-  Scenario: The Default endpoints CAN be Accessed when Authorised as valid list of Consumers
+  Scenario: The default endpoints CAN be accessed when authorised as valid list of consumers
     Given the Consumer for candidate grails|groovy is making a request
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists
@@ -76,7 +76,7 @@ Feature: Default Endpoint Security
     """
     Then the status received is 202 "ACCEPTED"
 
-  Scenario: The Default endpoints CAN be Accessed when Authorised as Administrator
+  Scenario: The default endpoints CAN be accessed when authorised as administrator
     Given the Consumer for candidate default_admin is making a request
     And the Consumer has a valid Auth Token
     And an existing UNIVERSAL groovy Version 2.3.5 exists

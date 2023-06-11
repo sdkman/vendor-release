@@ -21,7 +21,7 @@ Feature: Release Universal Version
     And the Consumer has a valid Auth Token
     And the URI /groovy-2.3.6.zip is available for download
 
-  Scenario: Release a Universal Candidate Version
+  Scenario: Release a universal candidate version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
     And the existing Default UNIVERSAL groovy Version is 2.3.5
     When a JSON POST on the /release/version endpoint:
@@ -38,7 +38,7 @@ Feature: Release Universal Version
     And groovy Version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
-  Scenario: Attempt to Release a duplicate Version
+  Scenario: Attempt to release a duplicate version
     Given an existing UNIVERSAL groovy Version 2.3.5 exists
     And the existing Default UNIVERSAL groovy Version is 2.3.5
     When a JSON POST on the /release/version endpoint:
@@ -62,7 +62,7 @@ Feature: Release Universal Version
     Then the status received is 409 CONFLICT
     And the message "Conflict: groovy 2.3.6 UNIVERSAL" is received
 
-  Scenario: Attempt to Release a Version for a non-existent Candidate
+  Scenario: Attempt to release a version for a non-existent candidate
     Given Candidate groovy does not exist
     When a JSON POST on the /release/version endpoint:
     """
@@ -77,7 +77,7 @@ Feature: Release Universal Version
     And the message "Invalid candidate: groovy" is received
     And the groovy version 2.3.6 UNIVERSAL does not exist
 
-  Scenario: Attempt to submit malformed JSON with no Candidate
+  Scenario: Attempt to submit malformed JSON with no candidate
     When a JSON POST on the /release/version endpoint:
     """
           |{
@@ -90,7 +90,7 @@ Feature: Release Universal Version
     And the message containing "The request content was malformed" is received
     And the message containing "Object is missing required member 'candidate'" is received
 
-  Scenario: Attempt to submit malformed JSON with no Version
+  Scenario: Attempt to submit malformed JSON with no version
     When a JSON POST on the /release/version endpoint:
     """
           |{

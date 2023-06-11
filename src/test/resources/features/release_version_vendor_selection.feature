@@ -3,7 +3,7 @@ Feature: Release Version Vendor selection
   Background:
     Given the URI /groovy-2.3.6.zip is available for download
 
-  Scenario: A Vendor field is passed from upstream
+  Scenario: A vendor field is passed from upstream
     Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -20,7 +20,7 @@ Feature: Release Version Vendor selection
     Then the status received is 201 "CREATED"
     And the UNIVERSAL groovy Version 2.3.6-oci has a vendor of 'oci'
 
-  Scenario: A Vendor header is passed from upstream
+  Scenario: A vendor header is passed from upstream
     Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -37,7 +37,7 @@ Feature: Release Version Vendor selection
     Then the status received is 201 "CREATED"
     And the UNIVERSAL groovy Version 2.3.6-oci has a vendor of 'oci'
 
-  Scenario: Both a Vendor header and field are passed from upstream
+  Scenario: Both a vendor header and field are passed from upstream
     Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
@@ -55,7 +55,7 @@ Feature: Release Version Vendor selection
     Then the status received is 201 "CREATED"
     And the UNIVERSAL groovy Version 2.3.6-apache has a vendor of 'apache'
 
-  Scenario: No Vendor header or field is passed from upstream
+  Scenario: No vendor header or field is passed from upstream
     Given the Consumer for candidate groovy is making a request
     And the Consumer has a valid Auth Token
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
