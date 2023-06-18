@@ -20,7 +20,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import io.sdkman.vendor.release.routes.{
   CandidateReleaseRoutes,
-  VersionDefaultRoutes,
+  CandidateDefaultRoutes,
   HealthRoutes,
   VersionReleaseRoutes
 }
@@ -34,13 +34,12 @@ class HttpServer
     extends Configuration
     with VersionReleaseRoutes
     with CandidateReleaseRoutes
-    with VersionDefaultRoutes
+    with CandidateDefaultRoutes
     with HealthRoutes {
 
   implicit lazy val actorSystem: ActorSystem = ActorSystem("vendor-release-service")
 
-  val routes
-      : Route = healthRoutes ~ versionReleaseRoutes ~ versionDefaultRoutes ~ candidateReleaseRoutes
+  val routes: Route = healthRoutes ~ versionReleaseRoutes ~ candidateDefaultRoutes ~ candidateReleaseRoutes
 
   private val flyway = Flyway
     .configure()

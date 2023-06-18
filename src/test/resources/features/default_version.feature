@@ -24,7 +24,7 @@ Feature: Default candidate version
     Given an existing UNIVERSAL groovy version 2.3.5 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And the existing default UNIVERSAL groovy version is 2.3.5
-    When a JSON PUT on the /default endpoint:
+    When a JSON PUT on the /candidate/default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -40,7 +40,7 @@ Feature: Default candidate version
     Given the existing default UNIVERSAL groovy version is 2.3.5
     And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
     And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
-    When a JSON PUT on the /default endpoint:
+    When a JSON PUT on the /candidate/default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -52,7 +52,7 @@ Feature: Default candidate version
 
   Scenario: attempt to mark a non-existent candidate default
     Given Candidate "groovy" does not exist
-    When a JSON PUT on the /default endpoint:
+    When a JSON PUT on the /candidate/default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -65,7 +65,7 @@ Feature: Default candidate version
   Scenario: Attempt to mark a non-default candidate default
     Given the existing UNIVERSAL groovy version has no default
     And an existing UNIVERSAL groovy version 2.3.6 exists
-    When a JSON PUT on the /default endpoint:
+    When a JSON PUT on the /candidate/default endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -79,7 +79,7 @@ Feature: Default candidate version
 
 
   Scenario: Attempt to submit malformed JSON with no candidate
-    When a JSON PUT on the /default endpoint:
+    When a JSON PUT on the /candidate/default endpoint:
     """
           |{
           |   "version" : "2.3.6"
@@ -90,7 +90,7 @@ Feature: Default candidate version
     And the message containing "Object is missing required member 'candidate'" is received
 
   Scenario: Attempt to submit malformed JSON with no default version
-    When a JSON PUT on the /default endpoint:
+    When a JSON PUT on the /candidate/default endpoint:
     """
           |{
           |   "candidate" : "groovy"

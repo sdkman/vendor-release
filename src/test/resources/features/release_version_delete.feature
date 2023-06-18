@@ -24,7 +24,7 @@ Feature: Delete release version
     And the UNIVERSAL candidate groovy with default version 2.3.7 already exists
     And an existing UNIVERSAL groovy version 2.3.7 exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
-    When a JSON DELETE on the /release endpoint:
+    When a JSON DELETE on the /version/release endpoint:
     """
     |{
     |   "candidate": "groovy",
@@ -41,7 +41,7 @@ Feature: Delete release version
     Given the consumer for candidate groovy is making a request
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
-    When a JSON DELETE on the /release endpoint:
+    When a JSON DELETE on the /version/release endpoint:
     """
     |{
     |   "candidate": "groovy",
@@ -58,7 +58,7 @@ Feature: Delete release version
     Given the consumer for candidate groovy is making a request
     And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
     And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
-    When a JSON DELETE on the /release endpoint:
+    When a JSON DELETE on the /version/release endpoint:
     """
     |{
     |   "candidate": "groovy",
