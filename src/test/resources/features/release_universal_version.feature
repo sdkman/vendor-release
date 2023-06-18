@@ -75,7 +75,8 @@ Feature: Release universal version
     """
     Then the status received is 400 BAD_REQUEST
     And the message "Invalid candidate: groovy" is received
-    And the groovy version 2.3.6 UNIVERSAL does not exist
+    And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
+    And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
 
   Scenario: Attempt to submit malformed JSON with no candidate
     When a JSON POST on the /release endpoint:

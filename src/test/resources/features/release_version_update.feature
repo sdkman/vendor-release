@@ -92,7 +92,8 @@ Feature: Update release version
     Scenario: Reject a non-existent version
       Given the consumer for candidate groovy is making a request
       And Candidate groovy does not exist
-      And the groovy version 2.3.6 UNIVERSAL does not exist
+      And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
+      And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
       When a JSON PATCH on the /release endpoint:
     """
           |{

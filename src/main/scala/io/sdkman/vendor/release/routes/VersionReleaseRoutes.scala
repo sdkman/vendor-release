@@ -123,11 +123,11 @@ trait VersionReleaseRoutes
                 conflictResponseF(req.candidate, req.version, req.platform)
               case _ =>
                 val result = for {
-                  del <- deleteVersion(req.candidate, req.version, req.platform)
-                  _   <- deletePostgres(req.candidate, req.version, req.platform)
-                } yield del
+                  delMdb <- deleteVersion(req.candidate, req.version, req.platform)
+                  delPg  <- deleteVersionPostgres(req.candidate, req.version, req.platform)
+                } yield (delMdb, delPg)
                 result.map {
-                  case result if result.getDeletedCount == 1 =>
+                  case (delMdb, delPg) if delMdb.getDeletedCount == 1 && delPg == 1 =>
                     okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
                   case _ =>
                     notFoundResponse(s"Not found: ${req.candidate} ${req.version} ${req.platform}")
@@ -170,7 +170,4 @@ trait VersionReleaseRoutes
       response   <- f(candidateO, versionO, resolvedPlatform)
     } yield response
   }
-
-  private def deletePostgres(candidate: String, version: String, platform: String): Future[Unit] =
-    Future.successful(Unit)
 }

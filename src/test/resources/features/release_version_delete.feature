@@ -34,7 +34,8 @@ Feature: Delete release version
     """
     Then the status received is 200 OK
     And the message "Deleted: groovy 2.3.6 UNIVERSAL" is received
-    And the groovy version 2.3.6 UNIVERSAL does not exist
+    And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
+    And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
 
   Scenario: A default version cannot be deleted
     Given the consumer for candidate groovy is making a request
@@ -50,11 +51,13 @@ Feature: Delete release version
     """
     Then the status received is 409 CONFLICT
     And the message "Conflict: groovy 2.3.6 UNIVERSAL" is received
-    And the groovy version 2.3.6 UNIVERSAL still exists
+    And the groovy version 2.3.6 UNIVERSAL still exists on mongodb
+    And the groovy version 2.3.6 UNIVERSAL still exists on postgres
 
   Scenario: A non-existent version cannot be deleted
     Given the consumer for candidate groovy is making a request
-    And the groovy version 2.3.6 UNIVERSAL does not exist
+    And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
+    And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
     When a JSON DELETE on the /release endpoint:
     """
     |{

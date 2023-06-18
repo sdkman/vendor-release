@@ -1,5 +1,6 @@
 package support
 
+import io.sdkman.model.Version
 import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.Await
@@ -27,6 +28,33 @@ object Postgres {
         """.as[String]).map(_.contains(url)),
       1 second
     )
+
+  def versionExists(candidate: String, version: String, platform: String): Boolean =
+    Await
+      .result(
+        db.run(
+          sql"""SELECT id FROM version
+             WHERE candidate = $candidate
+                AND version = $version
+                AND platform = $platform""".as[String]
+        ),
+        1 second
+      )
+      .size == 1
+
+  def insertVersion(version: Version): Int = Await.result(
+    db.run(
+      sqlu"""INSERT INTO version(candidate, version, platform, visible, url)
+             VALUES (
+              ${version.candidate},
+              ${version.version},
+              ${version.platform},
+              ${version.visible},
+              ${version.url}
+             )"""
+    ),
+    1 second
+  )
 
   def isDefault(candidate: String, version: String): Boolean =
     Await.result(

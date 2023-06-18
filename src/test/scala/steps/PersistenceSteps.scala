@@ -70,15 +70,15 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
 
   Given("""^an existing (.*) (.*) version (.*) exists""") {
     (platform: String, candidate: String, version: String) =>
-      Mongo.insertVersion(
-        Version(
-          candidate = candidate,
-          version = version,
-          platform = platform,
-          url = s"http://somecandidate.org/$candidate/$version",
-          visible = Some(true)
-        )
+      val v = Version(
+        candidate = candidate,
+        version = version,
+        platform = platform,
+        url = s"http://somecandidate.org/$candidate/$version",
+        visible = Some(true)
       )
+      Mongo.insertVersion(v)
+      Postgres.insertVersion(v)
   }
 
   Given("""^the (.*) candidate (.*) with default version (.*) already exists$""") {
@@ -135,17 +135,27 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       }
   }
 
-  Given("""^the (.*) version (.*) (.*) does not exist$""") {
-    (candidate: String, version: String, platform: String) =>
+  Given("""^the (.*) version (.*) (.*) does not exist on (.*)$""") {
+    (candidate: String, version: String, platform: String, datastore: String) =>
       withClue(s"$candidate $version does not exist") {
-        Mongo.versionExists(candidate, version, platform) shouldBe false
+        datastore match {
+          case "postgres" =>
+            Postgres.versionExists(candidate, version, platform) shouldBe false
+          case "mongodb" =>
+            Mongo.versionExists(candidate, version, platform) shouldBe false
+        }
       }
   }
 
-  Given("""^the (.*) version (.*) (.*) still exists$""") {
-    (candidate: String, version: String, platform: String) =>
-      withClue(s"$candidate $version does not exist") {
-        Mongo.versionExists(candidate, version, platform) shouldBe true
+  Given("""^the (.*) version (.*) (.*) still exists on (.*)$""") {
+    (candidate: String, version: String, platform: String, datastore: String) =>
+      withClue(s"$candidate $version still exists") {
+        datastore match {
+          case "postgres" =>
+            Postgres.versionExists(candidate, version, platform) shouldBe true
+          case "mongodb" =>
+            Mongo.versionExists(candidate, version, platform) shouldBe true
+        }
       }
   }
 
@@ -155,15 +165,16 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
     }
   }
 
-  Given("""^Candidate (.*) exists and is unique on (.*)$""") { (candidate: String, datastore: String) =>
-    withClue(s"The candidate $candidate does not exist on $datastore") {
-      datastore match {
-        case "postgres" =>
-          Postgres.candidateExistsAndIsUnique(candidate) shouldBe true
-        case "mongodb" =>
-          Mongo.candidateExistsAndIsUnique(candidate) shouldBe true
+  Given("""^Candidate (.*) exists and is unique on (.*)$""") {
+    (candidate: String, datastore: String) =>
+      withClue(s"The candidate $candidate does not exist on $datastore") {
+        datastore match {
+          case "postgres" =>
+            Postgres.candidateExistsAndIsUnique(candidate) shouldBe true
+          case "mongodb" =>
+            Mongo.candidateExistsAndIsUnique(candidate) shouldBe true
+        }
       }
-    }
   }
 
   Given("""^an alive OK entry in the application collection$""") { () =>

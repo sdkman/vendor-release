@@ -51,4 +51,10 @@ trait PgVersionRepo {
             AND platform = ${oldVersion.platform}
         """
     )
+
+  def deleteVersionPostgres(candidate: String, version: String, platform: String): Future[Int] =
+    pgDatabase.run(
+      sqlu"""DELETE FROM version
+            WHERE candidate=$candidate AND version=$version AND platform=$platform"""
+    )
 }

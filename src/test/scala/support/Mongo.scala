@@ -54,7 +54,13 @@ object Mongo {
       .results()
       .nonEmpty
 
-  def checksumExists(candidate: String, version: String, platform: String, algorithm: String, checksum: String): Boolean =
+  def checksumExists(
+      candidate: String,
+      version: String,
+      platform: String,
+      algorithm: String,
+      checksum: String
+  ): Boolean =
     versionsCollection
       .find(
         and(equal("candidate", candidate), equal("version", version), equal("platform", platform))
