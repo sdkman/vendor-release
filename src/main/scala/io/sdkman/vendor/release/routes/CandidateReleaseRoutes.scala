@@ -26,7 +26,7 @@ trait CandidateReleaseRoutes
     with HttpResponses
     with Authorisation {
 
-  val candidateReleaseRoutes: Route = path("candidate" / "release") {
+  val candidateReleaseRoutes: Route = path("candidates") {
     post {
       entity(as[PostCandidateReleaseRequest]) { req =>
         authorised(req.id) {

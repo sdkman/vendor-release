@@ -25,7 +25,7 @@ Feature: Update release version
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
     And groovy version 2.3.6 is visible
-    When a JSON PATCH on the /version/release endpoint:
+    When a JSON PATCH on the /versions endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -42,7 +42,7 @@ Feature: Update release version
     And the URI /groovy-x.y.z.zip is available for download
     And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
     And an existing UNIVERSAL groovy version 2.3.6 exists
-    When a JSON PATCH on the /version/release endpoint:
+    When a JSON PATCH on the /versions endpoint:
     """
           |{
           |   "candidate" : "groovy",
@@ -60,7 +60,7 @@ Feature: Update release version
     And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
     And an existing LINUX_64 java version 8.0.131-zulu exists
     And java version 8.0.131-zulu is visible
-    When a JSON PATCH on the /version/release endpoint:
+    When a JSON PATCH on the /versions endpoint:
     """
           |{
           |   "candidate" : "java",
@@ -77,7 +77,7 @@ Feature: Update release version
     And the URI /zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz is available for download
     And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
     And an existing LINUX_64 java version 8.0.131-zulu exists
-    When a JSON PATCH on the /version/release endpoint:
+    When a JSON PATCH on the /versions endpoint:
     """
           |{
           |   "candidate" : "java",
@@ -94,7 +94,7 @@ Feature: Update release version
       And Candidate groovy does not exist
       And the groovy version 2.3.6 UNIVERSAL does not exist on mongodb
       And the groovy version 2.3.6 UNIVERSAL does not exist on postgres
-      When a JSON PATCH on the /version/release endpoint:
+      When a JSON PATCH on the /versions endpoint:
     """
           |{
           |   "candidate" : "groovy",

@@ -23,7 +23,7 @@ Feature: Release version validation
   Scenario: The version is marked as a default explicitly
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -41,7 +41,7 @@ Feature: Release version validation
   Scenario: The version is not marked as a default explicitly
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -59,7 +59,7 @@ Feature: Release version validation
   Scenario: The version is not marked as a default implicitly
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",

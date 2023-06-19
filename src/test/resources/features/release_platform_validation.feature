@@ -23,7 +23,7 @@ Feature: Release platform validation
 
   Scenario: The Linux 64 bit platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -36,7 +36,7 @@ Feature: Release platform validation
 
   Scenario: The Linux 32 bit platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -49,7 +49,7 @@ Feature: Release platform validation
 
   Scenario: The Linux ARM32 bit soft float platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -62,7 +62,7 @@ Feature: Release platform validation
 
   Scenario: The Linux ARM32 bit hard float platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -75,7 +75,7 @@ Feature: Release platform validation
 
   Scenario: The Linux ARM64 bit platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -88,7 +88,7 @@ Feature: Release platform validation
 
   Scenario: The Mac OSX X64 platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -101,7 +101,7 @@ Feature: Release platform validation
 
   Scenario: The Mac OSX ARM64 platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -114,7 +114,7 @@ Feature: Release platform validation
 
   Scenario: The Cygwin platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
@@ -127,7 +127,7 @@ Feature: Release platform validation
 
   Scenario: An invalid platform is rejected
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
-    When a JSON POST on the /version/release endpoint:
+    When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "java",
