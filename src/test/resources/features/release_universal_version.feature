@@ -38,29 +38,24 @@ Feature: Release universal version
     And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
-  Scenario: Attempt to release a duplicate version
-    Given an existing UNIVERSAL groovy version 2.3.5 exists
-    And the existing default UNIVERSAL groovy version is 2.3.5
+  Scenario: Overwrite an existing candidate version
+    Given an existing UNIVERSAL groovy version 2.3.6 exists
+    And the existing default UNIVERSAL groovy version is 2.3.6
     When a JSON POST on the /versions endpoint:
     """
           |{
           |  "candidate" : "groovy",
           |  "version" : "2.3.6",
           |  "platform" : "UNIVERSAL",
-          |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
+          |  "url" : "http://localhost:8080/groovy-x.y.z.zip"
           |}
     """
-    And a JSON POST on the /versions endpoint:
-    """
-          |{
-          |  "candidate" : "groovy",
-          |  "version" : "2.3.6",
-          |  "platform" : "UNIVERSAL",
-          |  "url" : "http://localhost:8080/groovy-2.3.6.zip"
-          |}
-    """
-    Then the status received is 409 CONFLICT
-    And the message "Conflict: groovy 2.3.6 UNIVERSAL" is received
+    Then the status received is 201 CREATED
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to mongodb
+    And the groovy version 2.3.6 UNIVERSAL uniquely exists on mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to postgres
+    And the groovy version 2.3.6 UNIVERSAL uniquely exists on postgres
+    And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
   Scenario: Attempt to release a version for a non-existent candidate
     Given Candidate groovy does not exist

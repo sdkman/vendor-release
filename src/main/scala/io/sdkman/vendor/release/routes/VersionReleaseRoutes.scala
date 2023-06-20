@@ -24,6 +24,7 @@ import io.sdkman.model.{Candidate, Version}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
 import io.sdkman.vendor.release.repos.{PgCandidateRepo, PgVersionRepo}
 import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
+import org.mongodb.scala.Completed
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -53,33 +54,29 @@ trait VersionReleaseRoutes
         optionalHeaderValueByName("Vendor") { vendorHeader =>
           validate(req.candidate, req.platform, Some(req.url), req.checksums) {
             complete {
-              onFinding(req.candidate, req.version, req.platform) {
-                (candidateO, versionO, platform) =>
-                  candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) {
-                    c =>
-                      //TODO: undo version-vendor concatenation once vendor domain is established
-                      val vendor  = vendorHeader orElse req.vendor
-                      val version = req.version + vendor.map(v => s"-$v").getOrElse("")
-                      versionO.fold {
-                        val v = Version(
-                          candidate = c.candidate,
-                          version = version,
-                          platform = platform,
-                          url = req.url,
-                          vendor = vendor,
-                          checksums = req.checksums
-                        )
-                        for {
-                          _ <- saveVersion(v)
-                          _ <- insertVersionPostgres(v)
-                          _ <- if (req.default.exists(d => d)) for {
-                            _ <- updateDefaultVersion(c.candidate, version)
-                            _ <- updateDefaultVersionPostgres(c.candidate, version)
-                          } yield ()
-                          else Future.successful(Unit)
-                        } yield createdResponse(c.candidate, version, platform)
-                      }(v => conflictResponseF(c.candidate, v.version, platform))
-                  }
+              onFinding(req.candidate, req.version, req.platform) { (candidateO, _, platform) =>
+                candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { c =>
+                  //TODO: undo version-vendor concatenation once vendor domain is established
+                  val vendor  = vendorHeader orElse req.vendor
+                  val version = req.version + vendor.map(v => s"-$v").getOrElse("")
+                  val v = Version(
+                    candidate = c.candidate,
+                    version = version,
+                    platform = platform,
+                    url = req.url,
+                    vendor = vendor,
+                    checksums = req.checksums
+                  )
+                  for {
+                    _ <- upsertVersionMongodb(v)
+                    _ <- upsertVersionPostgres(v)
+                    _ <- if (req.default.exists(d => d)) for {
+                      _ <- updateDefaultVersion(c.candidate, version)
+                      _ <- updateDefaultVersionPostgres(c.candidate, version)
+                    } yield ()
+                    else Future.successful(Unit)
+                  } yield createdResponse(c.candidate, version, platform)
+                }
               }
             }
           }
@@ -170,4 +167,11 @@ trait VersionReleaseRoutes
       response   <- f(candidateO, versionO, resolvedPlatform)
     } yield response
   }
+
+  private def upsertVersionMongodb(version: Version): Future[Completed] =
+    for {
+      result <- updateVersion(version, version)
+      updated = result.getModifiedCount > 0
+      insert <- if (!updated) saveVersion(version) else Future.successful(Completed())
+    } yield insert
 }

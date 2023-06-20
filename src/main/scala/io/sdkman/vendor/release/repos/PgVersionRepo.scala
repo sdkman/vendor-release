@@ -25,7 +25,7 @@ trait PgVersionRepo {
 
   self: PostgresConnectivity =>
 
-  def insertVersionPostgres(version: Version): Future[Int] =
+  def upsertVersionPostgres(version: Version): Future[Int] =
     pgDatabase.run(
       sqlu"""INSERT INTO version(
               candidate,
@@ -39,7 +39,10 @@ trait PgVersionRepo {
                  ${version.platform},
                  ${version.visible},
                  ${version.url}
-             )"""
+             ) ON CONFLICT (candidate, version, platform) DO UPDATE SET
+              visible = ${version.visible},
+              url = ${version.url}
+              """
     )
 
   def updateVersionPostgres(oldVersion: Version, newVersion: Version): Future[Int] =

@@ -51,8 +51,8 @@ Feature: Delete release version
     """
     Then the status received is 409 CONFLICT
     And the message "Conflict: groovy 2.3.6 UNIVERSAL" is received
-    And the groovy version 2.3.6 UNIVERSAL still exists on mongodb
-    And the groovy version 2.3.6 UNIVERSAL still exists on postgres
+    And the groovy version 2.3.6 UNIVERSAL uniquely exists on mongodb
+    And the groovy version 2.3.6 UNIVERSAL uniquely exists on postgres
 
   Scenario: A non-existent version cannot be deleted
     Given the consumer for candidate groovy is making a request

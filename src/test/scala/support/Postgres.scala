@@ -29,7 +29,7 @@ object Postgres {
       1 second
     )
 
-  def versionExists(candidate: String, version: String, platform: String): Boolean =
+  def versionExistsAndIsUnique(candidate: String, version: String, platform: String): Boolean =
     Await
       .result(
         db.run(

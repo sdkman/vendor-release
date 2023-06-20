@@ -46,13 +46,13 @@ object Mongo {
   def candidateExistsAndIsUnique(candidate: String): Boolean =
     candidatesCollection.find(equal("candidate", candidate)).results().size == 1
 
-  def versionExists(candidate: String, version: String, platform: String): Boolean =
+  def versionExistsAndIsUnique(candidate: String, version: String, platform: String): Boolean =
     versionsCollection
       .find(
         and(equal("candidate", candidate), equal("version", version), equal("platform", platform))
       )
       .results()
-      .nonEmpty
+      .size == 1
 
   def checksumExists(
       candidate: String,

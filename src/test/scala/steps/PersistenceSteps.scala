@@ -140,21 +140,21 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       withClue(s"$candidate $version does not exist") {
         datastore match {
           case "postgres" =>
-            Postgres.versionExists(candidate, version, platform) shouldBe false
+            Postgres.versionExistsAndIsUnique(candidate, version, platform) shouldBe false
           case "mongodb" =>
-            Mongo.versionExists(candidate, version, platform) shouldBe false
+            Mongo.versionExistsAndIsUnique(candidate, version, platform) shouldBe false
         }
       }
   }
 
-  Given("""^the (.*) version (.*) (.*) still exists on (.*)$""") {
+  Given("""^the (.*) version (.*) (.*) uniquely exists on (.*)$""") {
     (candidate: String, version: String, platform: String, datastore: String) =>
       withClue(s"$candidate $version still exists") {
         datastore match {
           case "postgres" =>
-            Postgres.versionExists(candidate, version, platform) shouldBe true
+            Postgres.versionExistsAndIsUnique(candidate, version, platform) shouldBe true
           case "mongodb" =>
-            Mongo.versionExists(candidate, version, platform) shouldBe true
+            Mongo.versionExistsAndIsUnique(candidate, version, platform) shouldBe true
         }
       }
   }
