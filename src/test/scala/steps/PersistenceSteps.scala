@@ -23,7 +23,7 @@ import support.{Mongo, Postgres}
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues {
 
-  Then("""^(.*) version (.*) with URL (.*) was published as (.*) to (.*)$""") {
+  Then("""^(.*) version (.*) with URL (.*) was published for (.*) to (.*)$""") {
     (candidate: String, version: String, url: String, platform: String, datastore: String) =>
       withClue(s"Version was not published to $datastore") {
         datastore match {

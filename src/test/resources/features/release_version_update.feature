@@ -52,7 +52,8 @@ Feature: Update release version
           |}
     """
     Then the status received is 204 NO_CONTENT
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published for UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published for UNIVERSAL to postgres
 
   Scenario: Hide an existing visible multi-platform candidate version
     Given the consumer for candidate java is making a request
@@ -87,8 +88,9 @@ Feature: Update release version
           |}
     """
     Then the status received is 204 NO_CONTENT
-    And java version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published as LINUX_64 to mongodb
-
+    And java version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published for LINUX_64 to mongodb
+    And java version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published for LINUX_64 to postgres
+    
     Scenario: Reject a non-existent version
       Given the consumer for candidate groovy is making a request
       And Candidate groovy does not exist

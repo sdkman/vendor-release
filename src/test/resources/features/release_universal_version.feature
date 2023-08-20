@@ -34,8 +34,8 @@ Feature: Release universal version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
   Scenario: Overwrite an existing candidate version
@@ -51,9 +51,9 @@ Feature: Release universal version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published for UNIVERSAL to mongodb
     And the groovy version 2.3.6 UNIVERSAL uniquely exists on mongodb
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published as UNIVERSAL to postgres
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published for UNIVERSAL to postgres
     And the groovy version 2.3.6 UNIVERSAL uniquely exists on postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
 
@@ -124,6 +124,6 @@ Feature: Release universal version
           |}
     """
     Then the status received is 201 CREATED
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to mongodb
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published as UNIVERSAL to postgres
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to postgres
     And the message "Released: groovy 2.3.6 for UNIVERSAL" is received
