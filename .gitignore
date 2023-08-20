@@ -113,9 +113,10 @@ project/plugins/project/
 *.log
 *.metals
 **/*.metals
+**/metals.sbt
 
 # End of https://www.gitignore.io/api/sbt,scala,bloop,metals,intellij+all
 .bsp/
 
 # vscode
-.vscode
+.vscode/
