@@ -90,6 +90,24 @@ Feature: Update release version
     Then the status received is 204 NO_CONTENT
     And java version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published for LINUX_64 to mongodb
     And java version 8.0.131-zulu with URL http://localhost:8080/zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz was published for LINUX_64 to postgres
+
+  Scenario: Change the vendor of an existing multi-platform candidate version
+    Given the consumer for candidate java is making a request
+    And the URI /zulu8.21.0.1-jdk8.0.141-linux_x64.tar.gz is available for download
+    And the PLATFORM_SPECIFIC candidate java with default version 8.0.131-zulu already exists
+    And an existing LINUX_64 java version 8.0.131-zulu exists
+    When a JSON PATCH on the /versions endpoint:
+    """
+          |{
+          |   "candidate" : "java",
+          |   "version" : "8.0.131-zulu",
+          |   "platform": "LINUX_64",
+          |   "vendor" : "zulu"
+          |}
+    """
+    Then the status received is 204 NO_CONTENT
+    And java version 8.0.131-zulu for vendor zulu was published for LINUX_64 to mongodb
+    And java version 8.0.131-zulu for vendor zulu was published for LINUX_64 to postgres
     
     Scenario: Reject a non-existent version
       Given the consumer for candidate groovy is making a request

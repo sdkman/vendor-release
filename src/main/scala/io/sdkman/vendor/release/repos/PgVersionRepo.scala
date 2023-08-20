@@ -48,7 +48,7 @@ trait PgVersionRepo {
   def updateVersionPostgres(oldVersion: Version, newVersion: Version): Future[Int] =
     pgDatabase.run(
       sqlu"""UPDATE version
-           SET visible = ${newVersion.visible}, url = ${newVersion.url}
+           SET visible = ${newVersion.visible}, url = ${newVersion.url}, vendor = ${newVersion.vendor}
            WHERE candidate = ${oldVersion.candidate}
             AND version = ${oldVersion.version}
             AND platform = ${oldVersion.platform}

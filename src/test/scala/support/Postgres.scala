@@ -18,7 +18,12 @@ object Postgres {
       _ <- db.run(sqlu"TRUNCATE TABLE candidate")
     } yield (), 1 second)
 
-  def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
+  def versionPublishedWithUrl(
+      candidate: String,
+      version: String,
+      platform: String,
+      url: String
+  ): Boolean =
     Await.result(
       db.run(sql"""SELECT url
               FROM version
@@ -26,6 +31,22 @@ object Postgres {
                 AND version = $version
                   AND platform = $platform
         """.as[String]).map(_.contains(url)),
+      1 second
+    )
+
+  def versionPublishedForVendor(
+      candidate: String,
+      version: String,
+      platform: String,
+      vendor: String
+  ): Boolean =
+    Await.result(
+      db.run(sql"""SELECT vendor
+              FROM version
+              WHERE candidate = $candidate
+                AND version = $version
+                  AND platform = $platform
+        """.as[String]).map(_.contains(vendor)),
       1 second
     )
 

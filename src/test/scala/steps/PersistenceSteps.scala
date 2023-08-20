@@ -28,12 +28,25 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
       withClue(s"Version was not published to $datastore") {
         datastore match {
           case "postgres" =>
-            Postgres.versionPublished(candidate, version, url, platform) shouldBe true
+            Postgres.versionPublishedWithUrl(candidate, version, platform, url) shouldBe true
           case "mongodb" =>
-            Mongo.versionPublished(candidate, version, url, platform) shouldBe true
+            Mongo.versionPublishedWithUrl(candidate, version, platform, url) shouldBe true
         }
       }
   }
+
+  Then("""^(.*) version (.*) for vendor (.*) was published for (.*) to (.*)$""") {
+    (candidate: String, version: String, vendor: String, platform: String, datastore: String) =>
+      withClue(s"Version was not published to $datastore") {
+        datastore match {
+          case "postgres" =>
+            Postgres.versionPublishedForVendor(candidate, version, platform, vendor) shouldBe true
+          case "mongodb" =>
+            Mongo.versionPublishedForVendor(candidate, version, platform, vendor) shouldBe true
+        }
+      }
+  }
+
 
   Then("""^the (.*) (.*) version (.*) has a vendor of '(.*)'$""") {
     (platform: String, candidate: String, version: String, vendor: String) =>

@@ -87,7 +87,12 @@ object Mongo {
       .results()
       .nonEmpty
 
-  def versionPublished(candidate: String, version: String, url: String, platform: String): Boolean =
+  def versionPublishedWithUrl(
+      candidate: String,
+      version: String,
+      platform: String,
+      url: String
+  ): Boolean =
     versionsCollection
       .find(
         and(
@@ -95,6 +100,24 @@ object Mongo {
           equal("version", version),
           equal("platform", platform),
           equal("url", url)
+        )
+      )
+      .results()
+      .nonEmpty
+
+  def versionPublishedForVendor(
+      candidate: String,
+      version: String,
+      platform: String,
+      vendor: String
+  ): Boolean =
+    versionsCollection
+      .find(
+        and(
+          equal("candidate", candidate),
+          equal("version", version),
+          equal("platform", platform),
+          equal("vendor", vendor)
         )
       )
       .results()
