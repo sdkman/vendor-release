@@ -22,8 +22,7 @@ import io.sdkman.UrlValidation
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.model.{Candidate, Version}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
-import io.sdkman.vendor.release.repos.{PgCandidateRepo, PgVersionRepo}
-import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
+import io.sdkman.vendor.release.{Configuration, HttpResponses}
 import org.mongodb.scala.Completed
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,9 +35,6 @@ trait VersionReleaseRoutes
     with MongoConnectivity
     with MongoConfiguration
     with Configuration
-    with PostgresConnectivity
-    with PgVersionRepo
-    with PgCandidateRepo
     with HttpResponses
     with JsonSupport
     with Validation
@@ -69,10 +65,8 @@ trait VersionReleaseRoutes
                   )
                   for {
                     _ <- upsertVersionMongodb(v)
-                    _ <- upsertVersionPostgres(v)
                     _ <- if (req.default.exists(d => d)) for {
                       _ <- updateDefaultVersion(c.candidate, version)
-                      _ <- updateDefaultVersionPostgres(c.candidate, version)
                     } yield ()
                     else Future.successful(Unit)
                   } yield createdResponse(c.candidate, version, platform)
@@ -100,10 +94,8 @@ trait VersionReleaseRoutes
                     req.visible orElse oldVersion.visible,
                     req.checksums orElse oldVersion.checksums
                   )
-                } yield for {
-                  _   <- updateVersion(oldVersion, newVersion)
-                  res <- updateVersionPostgres(oldVersion, newVersion)
-                } yield res
+                } yield updateVersion(oldVersion, newVersion)
+                  .map(res => res)
                 existing.map(noContentResponseF()) getOrElse badRequestResponseF(
                   s"Does not exist: ${req.candidate} ${req.version} $platform"
                 )
@@ -119,16 +111,16 @@ trait VersionReleaseRoutes
               case Some(Candidate(_, _, _, Some(default), _, _)) if default == req.version =>
                 conflictResponseF(req.candidate, req.version, req.platform)
               case _ =>
-                val result = for {
-                  delMdb <- deleteVersion(req.candidate, req.version, req.platform)
-                  delPg  <- deleteVersionPostgres(req.candidate, req.version, req.platform)
-                } yield (delMdb, delPg)
-                result.map {
-                  case (delMdb, delPg) if delMdb.getDeletedCount == 1 && delPg == 1 =>
-                    okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
-                  case _ =>
-                    notFoundResponse(s"Not found: ${req.candidate} ${req.version} ${req.platform}")
-                }
+                deleteVersion(req.candidate, req.version, req.platform)
+                  .map(delMdb => delMdb)
+                  .map {
+                    case delMdb if delMdb.getDeletedCount == 1 =>
+                      okResponse(s"Deleted: ${req.candidate} ${req.version} ${req.platform}")
+                    case _ =>
+                      notFoundResponse(
+                        s"Not found: ${req.candidate} ${req.version} ${req.platform}"
+                      )
+                  }
             }
           }
         }

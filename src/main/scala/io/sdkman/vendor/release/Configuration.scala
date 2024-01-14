@@ -28,10 +28,4 @@ trait Configuration {
   lazy val serviceToken: String = config.getString("service.token")
 
   lazy val serviceAdminConsumer: String = config.getString("service.adminConsumer")
-
-  lazy val jdbcUrl: String = config.getString("jdbc.properties.url")
-
-  lazy val jdbcUser: String = config.getString("jdbc.properties.user")
-
-  lazy val jdbcPassword: String = config.getString("jdbc.properties.password")
 }

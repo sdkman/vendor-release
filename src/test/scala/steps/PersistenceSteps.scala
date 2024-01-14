@@ -19,34 +19,19 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import io.sdkman.model.{Candidate, Version}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
-import support.{Mongo, Postgres}
+import support.Mongo
 
 class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues {
 
   Then("""^(.*) version (.*) with URL (.*) was published for (.*) to (.*)$""") {
-    (candidate: String, version: String, url: String, platform: String, datastore: String) =>
-      withClue(s"Version was not published to $datastore") {
-        datastore match {
-          case "postgres" =>
-            Postgres.versionPublishedWithUrl(candidate, version, platform, url) shouldBe true
-          case "mongodb" =>
-            Mongo.versionPublishedWithUrl(candidate, version, platform, url) shouldBe true
-        }
-      }
+    (candidate: String, version: String, url: String, platform: String, _: String) =>
+      Mongo.versionPublishedWithUrl(candidate, version, platform, url) shouldBe true
   }
 
   Then("""^(.*) version (.*) for vendor (.*) was published for (.*) to (.*)$""") {
-    (candidate: String, version: String, vendor: String, platform: String, datastore: String) =>
-      withClue(s"Version was not published to $datastore") {
-        datastore match {
-          case "postgres" =>
-            Postgres.versionPublishedForVendor(candidate, version, platform, vendor) shouldBe true
-          case "mongodb" =>
-            Mongo.versionPublishedForVendor(candidate, version, platform, vendor) shouldBe true
-        }
-      }
+    (candidate: String, version: String, vendor: String, platform: String, _: String) =>
+      Mongo.versionPublishedForVendor(candidate, version, platform, vendor) shouldBe true
   }
-
 
   Then("""^the (.*) (.*) version (.*) has a vendor of '(.*)'$""") {
     (platform: String, candidate: String, version: String, vendor: String) =>
@@ -83,15 +68,15 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
 
   Given("""^an existing (.*) (.*) version (.*) exists""") {
     (platform: String, candidate: String, version: String) =>
-      val v = Version(
-        candidate = candidate,
-        version = version,
-        platform = platform,
-        url = s"http://somecandidate.org/$candidate/$version",
-        visible = Some(true)
+      Mongo.insertVersion(
+        Version(
+          candidate = candidate,
+          version = version,
+          platform = platform,
+          url = s"http://somecandidate.org/$candidate/$version",
+          visible = Some(true)
+        )
       )
-      Mongo.insertVersion(v)
-      Postgres.insertVersion(v)
   }
 
   Given("""^the (.*) candidate (.*) with default version (.*) already exists$""") {
@@ -137,39 +122,18 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
   }
 
   Then("""^the default (.*) version is (.*) on (.*)$""") {
-    (candidate: String, version: String, datastore: String) =>
-      withClue(s"The default $candidate version was not changed to $version on $datastore") {
-        datastore match {
-          case "postgres" =>
-            Postgres.isDefault(candidate, version)
-          case "mongodb" =>
-            Mongo.isDefault(candidate, version) shouldBe true
-        }
-      }
+    (candidate: String, version: String, _: String) =>
+      Mongo.isDefault(candidate, version) shouldBe true
   }
 
   Given("""^the (.*) version (.*) (.*) does not exist on (.*)$""") {
-    (candidate: String, version: String, platform: String, datastore: String) =>
-      withClue(s"$candidate $version does not exist") {
-        datastore match {
-          case "postgres" =>
-            Postgres.versionExistsAndIsUnique(candidate, version, platform) shouldBe false
-          case "mongodb" =>
-            Mongo.versionExistsAndIsUnique(candidate, version, platform) shouldBe false
-        }
-      }
+    (candidate: String, version: String, platform: String, _: String) =>
+      Mongo.versionExistsAndIsUnique(candidate, version, platform) shouldBe false
   }
 
   Given("""^the (.*) version (.*) (.*) uniquely exists on (.*)$""") {
-    (candidate: String, version: String, platform: String, datastore: String) =>
-      withClue(s"$candidate $version still exists") {
-        datastore match {
-          case "postgres" =>
-            Postgres.versionExistsAndIsUnique(candidate, version, platform) shouldBe true
-          case "mongodb" =>
-            Mongo.versionExistsAndIsUnique(candidate, version, platform) shouldBe true
-        }
-      }
+    (candidate: String, version: String, platform: String, _: String) =>
+      Mongo.versionExistsAndIsUnique(candidate, version, platform) shouldBe true
   }
 
   Given("""^Candidate (.*) does not exist$""") { candidate: String =>
@@ -178,16 +142,8 @@ class PersistenceSteps extends ScalaDsl with EN with Matchers with OptionValues 
     }
   }
 
-  Given("""^Candidate (.*) exists and is unique on (.*)$""") {
-    (candidate: String, datastore: String) =>
-      withClue(s"The candidate $candidate does not exist on $datastore") {
-        datastore match {
-          case "postgres" =>
-            Postgres.candidateExistsAndIsUnique(candidate) shouldBe true
-          case "mongodb" =>
-            Mongo.candidateExistsAndIsUnique(candidate) shouldBe true
-        }
-      }
+  Given("""^Candidate (.*) exists and is unique on (.*)$""") { (candidate: String, _: String) =>
+    Mongo.candidateExistsAndIsUnique(candidate) shouldBe true
   }
 
   Given("""^an alive OK entry in the application collection$""") { () =>

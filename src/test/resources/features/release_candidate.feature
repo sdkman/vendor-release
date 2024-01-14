@@ -17,7 +17,6 @@ Feature: Release candidate
     """
     Then the status received is 202 ACCEPTED
     And the message "Create or update candidate: riot" is received
-    And Candidate riot exists and is unique on postgres
     And Candidate riot exists and is unique on mongodb
     When a JSON POST on the /candidates endpoint:
     """
@@ -31,5 +30,4 @@ Feature: Release candidate
     """
     Then the status received is 202 ACCEPTED
     And the message "Create or update candidate: riot" is received
-    And Candidate riot exists and is unique on postgres
     And Candidate riot exists and is unique on mongodb

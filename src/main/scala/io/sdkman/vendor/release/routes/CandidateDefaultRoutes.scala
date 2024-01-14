@@ -18,8 +18,7 @@ package io.sdkman.vendor.release.routes
 import akka.http.scaladsl.server.{Directives, Route}
 import io.sdkman.db.{MongoConfiguration, MongoConnectivity}
 import io.sdkman.repos.{CandidatesRepo, VersionsRepo}
-import io.sdkman.vendor.release.repos.PgCandidateRepo
-import io.sdkman.vendor.release.{Configuration, HttpResponses, PostgresConnectivity}
+import io.sdkman.vendor.release.{Configuration, HttpResponses}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -30,8 +29,6 @@ trait CandidateDefaultRoutes
     with MongoConnectivity
     with Configuration
     with MongoConfiguration
-    with PostgresConnectivity
-    with PgCandidateRepo
     with JsonSupport
     with HttpResponses
     with Authorisation {
@@ -50,10 +47,8 @@ trait CandidateDefaultRoutes
               candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { _ =>
                 versions.headOption
                   .map { v =>
-                    for {
-                      _ <- updateDefaultVersion(v.candidate, v.version)
-                      _ <- updateDefaultVersionPostgres(v.candidate, v.version)
-                    } yield acceptedResponse(s"Defaulted: ${v.candidate} ${v.version}")
+                    updateDefaultVersion(v.candidate, v.version)
+                      .map(_ => acceptedResponse(s"Defaulted: ${v.candidate} ${v.version}"))
                   }
                   .getOrElse(
                     badRequestResponseF(

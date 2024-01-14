@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import com.typesafe.scalalogging.LazyLogging
 import cucumber.api.scala.ScalaDsl
 import io.sdkman.vendor.release.HttpServer
-import support.{Mongo, Postgres}
+import support.Mongo
 
 class Env extends ScalaDsl with LazyLogging {
 
@@ -29,7 +29,6 @@ class Env extends ScalaDsl with LazyLogging {
   wireMockServer.start()
 
   val app = new HttpServer()
-  app.migrate()
   app.start()
 
   sys.addShutdownHook {
@@ -40,7 +39,6 @@ class Env extends ScalaDsl with LazyLogging {
 
   Before() { s =>
     Mongo.dropAllCollections()
-    Postgres.truncateTables()
     WireMock.reset()
     World.reset()
   }

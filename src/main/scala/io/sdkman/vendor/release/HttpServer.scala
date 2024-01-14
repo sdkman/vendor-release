@@ -19,13 +19,11 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import io.sdkman.vendor.release.routes.{
-  CandidateReleaseRoutes,
   CandidateDefaultRoutes,
+  CandidateReleaseRoutes,
   HealthRoutes,
   VersionReleaseRoutes
 }
-import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.output.MigrateResult
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -41,23 +39,13 @@ class HttpServer
 
   val routes: Route = healthRoutes ~ versionReleaseRoutes ~ candidateDefaultRoutes ~ candidateReleaseRoutes
 
-  private val flyway = Flyway
-    .configure()
-    .dataSource(jdbcUrl, jdbcUser, jdbcPassword)
-    .load()
-
-  def migrate(): MigrateResult = flyway.migrate()
-
   def start(): Future[Http.ServerBinding] =
     Http().newServerAt(serviceHost, servicePort).bindFlow(routes)
 
-  def shutdown(): Unit = {
-    Await.ready(actorSystem.terminate(), 5.seconds)
-  }
+  def shutdown(): Unit = Await.ready(actorSystem.terminate(), 5.seconds)
 }
 
 object HttpServer extends App {
   val server = new HttpServer
-  server.migrate()
   server.start()
 }
