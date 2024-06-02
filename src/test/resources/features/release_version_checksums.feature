@@ -131,25 +131,3 @@ Feature: Release version with checksums
     Then the status received is 400 BAD_REQUEST
     And the message containing "Invalid checksum for algorithm(s): MD5,SHA-1,SHA-224,SHA-384,SHA-512" is received
 
-  Scenario: Change the checksum of an existing candidate version
-    Given the consumer for candidate groovy is making a request
-    And the URI /groovy-x.y.z.zip is available for download
-    And the UNIVERSAL candidate groovy with default version 2.3.6 already exists
-    And an existing UNIVERSAL groovy version 2.3.6 exists
-    When a JSON PATCH on the /versions endpoint:
-    """
-          |{
-          |   "candidate" : "groovy",
-          |   "version" : "2.3.6",
-          |   "platform": "UNIVERSAL",
-          |   "url" : "http://localhost:8080/groovy-x.y.z.zip",
-          |   "checksums" : {
-          |    "MD5": "8f817c305a1bb15428b4aa29b844d75c",
-          |    "SHA-256": "01bfe9d471b7cb1f8321204e6fa05a574db3ae5b67c5bd2f17184ffd521387f1"
-          |   }
-          |}
-    """
-    Then the status received is 204 NO_CONTENT
-    And groovy version 2.3.6 with URL http://localhost:8080/groovy-x.y.z.zip was published for UNIVERSAL to mongodb
-    And groovy version 2.3.6 on platform UNIVERSAL has a checksum "8f817c305a1bb15428b4aa29b844d75c" using algorithm MD5
-    And groovy version 2.3.6 on platform UNIVERSAL has a checksum "01bfe9d471b7cb1f8321204e6fa05a574db3ae5b67c5bd2f17184ffd521387f1" using algorithm SHA-256

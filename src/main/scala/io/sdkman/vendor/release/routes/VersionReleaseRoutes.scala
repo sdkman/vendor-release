@@ -76,33 +76,6 @@ trait VersionReleaseRoutes
           }
         }
       }
-    } ~ patch {
-      entity(as[PatchVersionReleaseRequest]) { req =>
-        validate(req.candidate, req.platform, req.url, req.checksums) {
-          complete {
-            onFinding(req.candidate, req.version, req.platform) {
-              (candidateO, versionO, platform) =>
-                val existing = for {
-                  existingCandidate <- candidateO
-                  oldVersion        <- versionO
-                  newVersion = Version(
-                    existingCandidate.candidate,
-                    oldVersion.version,
-                    platform,
-                    req.url getOrElse oldVersion.url,
-                    req.vendor orElse oldVersion.vendor,
-                    req.visible orElse oldVersion.visible,
-                    req.checksums orElse oldVersion.checksums
-                  )
-                } yield updateVersion(oldVersion, newVersion)
-                  .map(res => res)
-                existing.map(noContentResponseF()) getOrElse badRequestResponseF(
-                  s"Does not exist: ${req.candidate} ${req.version} $platform"
-                )
-            }
-          }
-        }
-      }
     } ~ delete {
       entity(as[DeleteVersionReleaseRequest]) { req =>
         validate(req.candidate, Some(req.platform), None, None) {
