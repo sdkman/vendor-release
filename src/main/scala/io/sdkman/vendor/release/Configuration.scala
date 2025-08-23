@@ -28,4 +28,10 @@ trait Configuration {
   lazy val serviceToken: String = config.getString("service.token")
 
   lazy val serviceAdminConsumer: String = config.getString("service.adminConsumer")
+
+  lazy val stateApiBaseUrl: String = config.getString("state-api.url.host")
+
+  lazy val stateApiBasicAuthUsername: String = config.getString("state-api.basic-auth.username")
+
+  lazy val stateApiBasicAuthPassword: String = config.getString("state-api.basic-auth.password")
 }
