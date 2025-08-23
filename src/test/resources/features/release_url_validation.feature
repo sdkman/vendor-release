@@ -19,6 +19,7 @@ Feature: Release URL validation
   Background:
     Given the consumer for candidate java is making a request
     And the consumer has a valid auth token
+    And the state API is available
 
   Scenario: The URI is a valid resolving resource
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu

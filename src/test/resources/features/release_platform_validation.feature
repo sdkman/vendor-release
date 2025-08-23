@@ -20,6 +20,7 @@ Feature: Release platform validation
     Given the consumer for candidate java is making a request
     And the consumer has a valid auth token
     And the URI /zulu8.21.0.1-jdk8.0.131.tar.gz is available for download
+    And the state API is available
 
   Scenario: The Linux 64 bit platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu

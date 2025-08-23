@@ -68,7 +68,7 @@ trait VersionReleaseRoutes
               onFinding(req.candidate, req.version, req.platform) { (candidateO, _, platform) =>
                 candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { c =>
                   //TODO: undo version-vendor concatenation once vendor domain is established
-                  val vendor  = vendorHeader orElse req.vendor
+                  val vendor = vendorHeader orElse req.vendor
                   val v = Version(
                     candidate = c.candidate,
                     version = req.version,
@@ -127,11 +127,11 @@ trait VersionReleaseRoutes
   ): Route = {
     authorised(candidate) {
       validatePlatform(platform) {
-        // validateUrl(url) {
+        validateUrl(url) {
           validateChecksumAlgorithms(checksums) {
             validateChecksums(checksums)(route)
           }
-        // }
+        }
       }
     }
   }

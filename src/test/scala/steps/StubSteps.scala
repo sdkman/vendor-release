@@ -21,6 +21,16 @@ import org.scalatest.matchers.should.Matchers
 
 class StubSteps extends ScalaDsl with EN with Matchers {
 
+  And("""^the state API is available$""") { () =>
+    stubFor(
+      post(urlEqualTo("/versions"))
+        .willReturn(
+          aResponse()
+            .withStatus(204)
+        )
+    )
+  }
+
   And("""^the URI (.*) is available for download$""") { uri: String =>
     stubFor(
       get(urlEqualTo(uri))

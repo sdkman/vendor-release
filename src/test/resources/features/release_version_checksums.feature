@@ -18,6 +18,7 @@ Feature: Release version with checksums
 
   Background:
     Given the consumer has a valid auth token
+    And the state API is available
 
   Scenario: Release universal groovy binary with checksums
     Given the existing default UNIVERSAL groovy version is 2.3.6

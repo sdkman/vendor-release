@@ -18,6 +18,7 @@ Feature: Release version vendor selection
 
   Background:
     Given the URI /groovy-2.3.6.zip is available for download
+    And the state API is available
 
   Scenario: A vendor field is passed from upstream
     Given the consumer for candidate groovy is making a request
