@@ -20,6 +20,7 @@ Feature: Release universal version
     Given the consumer for candidate groovy is making a request
     And the consumer has a valid auth token
     And the URI /groovy-2.3.6.zip is available for download
+    And the state API is available
 
   Scenario: Release a universal candidate version
     Given an existing UNIVERSAL groovy version 2.3.5 exists

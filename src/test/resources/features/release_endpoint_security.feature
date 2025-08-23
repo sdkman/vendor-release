@@ -18,6 +18,7 @@ Feature: Release endpoint security
 
   Background:
     Given the URI /groovy-2.3.6.zip is available for download
+    And the state API is available
 
   Scenario: The release endpoints can NOT be accessed without a valid auth token
     Given the consumer for candidate groovy is making a request

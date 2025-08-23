@@ -21,6 +21,7 @@ Feature: Release multi-platform version
     And the consumer has a valid auth token
     And the URI /zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz is available for download
     And the URI /zulu8.21.0.1-jdk8.0.131-macosx.tar.gz is available for download
+    And the state API is available
 
   Scenario: Release a single multi-platform binary version
     Given an existing LINUX_64 java version 8u121-zulu exists

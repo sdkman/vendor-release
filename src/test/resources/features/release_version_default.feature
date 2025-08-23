@@ -19,6 +19,7 @@ Feature: Release version validation
   Background:
     Given the consumer for candidate java is making a request
     And the consumer has a valid auth token
+    And the state API is available
 
   Scenario: The version is marked as a default explicitly
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
