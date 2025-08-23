@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <root level="${root-level:-INFO}">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

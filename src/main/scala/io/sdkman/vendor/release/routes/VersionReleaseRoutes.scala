@@ -27,6 +27,20 @@ import org.mongodb.scala.Completed
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.model.HttpMethods
+import akka.http.scaladsl.model.FormData
+import akka.http.scaladsl.model.RequestEntity
+import akka.http.scaladsl.model.StatusCodes
+import akka.util.ByteString
+import akka.http.scaladsl.model.HttpEntity
+import akka.http.scaladsl.model.ContentTypes
+import spray.json.DefaultJsonProtocol
+import akka.http.scaladsl.model.headers.RawHeader
+import akka.http.scaladsl.model.headers.BasicHttpCredentials
+import akka.http.scaladsl.model.headers.Authorization
 
 trait VersionReleaseRoutes
     extends Directives
@@ -40,7 +54,8 @@ trait VersionReleaseRoutes
     with Validation
     with UrlValidation
     with LazyLogging
-    with Authorisation {
+    with Authorisation
+    with HttpStateApiClient {
 
   private val Universal = "UNIVERSAL"
 
@@ -54,22 +69,23 @@ trait VersionReleaseRoutes
                 candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { c =>
                   //TODO: undo version-vendor concatenation once vendor domain is established
                   val vendor  = vendorHeader orElse req.vendor
-                  val version = req.version + vendor.map(v => s"-$v").getOrElse("")
                   val v = Version(
                     candidate = c.candidate,
-                    version = version,
+                    version = req.version,
                     platform = platform,
                     url = req.url,
                     vendor = vendor,
                     checksums = req.checksums
                   )
+                  val versionAndVendor = req.version + vendor.map(v => s"-$v").getOrElse("")
                   for {
-                    _ <- upsertVersionMongodb(v)
+                    _ <- upsertVersionMongodb(v.copy(version = versionAndVendor))
+                    _ <- upsertVersionStateApi(v)
                     _ <- if (req.default.exists(d => d)) for {
-                      _ <- updateDefaultVersion(c.candidate, version)
+                      _ <- updateDefaultVersion(c.candidate, versionAndVendor)
                     } yield ()
                     else Future.successful(Unit)
-                  } yield createdResponse(c.candidate, version, platform)
+                  } yield createdResponse(c.candidate, versionAndVendor, platform)
                 }
               }
             }
@@ -111,11 +127,11 @@ trait VersionReleaseRoutes
   ): Route = {
     authorised(candidate) {
       validatePlatform(platform) {
-        validateUrl(url) {
+        // validateUrl(url) {
           validateChecksumAlgorithms(checksums) {
             validateChecksums(checksums)(route)
           }
-        }
+        // }
       }
     }
   }
