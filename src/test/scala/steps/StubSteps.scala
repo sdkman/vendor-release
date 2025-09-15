@@ -31,6 +31,17 @@ class StubSteps extends ScalaDsl with EN with Matchers {
     )
   }
 
+  And("""^the state API is unavailable$""") { () =>
+    stubFor(
+      post(urlEqualTo("/versions"))
+        .willReturn(
+          aResponse()
+            .withStatus(500)
+            .withBody("Internal Server Error")
+        )
+    )
+  }
+
   And("""^the URI (.*) is available for download$""") { uri: String =>
     stubFor(
       get(urlEqualTo(uri))
@@ -48,5 +59,49 @@ class StubSteps extends ScalaDsl with EN with Matchers {
       get(urlEqualTo(uri))
         .willReturn(aResponse().withStatus(404))
     )
+  }
+
+  Then("""^the state API received a POST request with platform (.*)$""") {
+    expectedPlatform: String =>
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.platform == '$expectedPlatform')]"))
+      )
+  }
+
+  Then("""^the state API received a POST request with vendor (.*)$""") { expectedVendor: String =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withRequestBody(matchingJsonPath(s"$$[?(@.vendor == '$expectedVendor')]"))
+    )
+  }
+
+  Then("""^the state API received a POST request WITHOUT vendor$""") { () =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withRequestBody(matchingJsonPath(s"$$[?(!@.vendor)]"))
+    )
+  }
+
+  Then("""^the state API received a POST request with version (.*)$""") { expectedVersion: String =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withRequestBody(matchingJsonPath(s"$$[?(@.version == '$expectedVersion')]"))
+    )
+  }
+
+  Then("""^the state API received a POST request with md5sum (.*)$""") { expectedMd5: String =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withRequestBody(matchingJsonPath(s"$$[?(@.md5sum == '$expectedMd5')]"))
+    )
+  }
+
+  Then("""^the state API received a POST request with sha256sum (.*)$""") {
+    expectedSha256: String =>
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.sha256sum == '$expectedSha256')]"))
+      )
   }
 }
