@@ -67,7 +67,6 @@ trait VersionReleaseRoutes
             complete {
               onFinding(req.candidate, req.version, req.platform) { (candidateO, _, platform) =>
                 candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { c =>
-                  //TODO: undo version-vendor concatenation once vendor domain is established
                   val vendor = vendorHeader orElse req.vendor
                   val v = Version(
                     candidate = c.candidate,
@@ -77,15 +76,22 @@ trait VersionReleaseRoutes
                     vendor = vendor,
                     checksums = req.checksums
                   )
-                  val versionAndVendor = req.version + vendor.map(v => s"-$v").getOrElse("")
+                  val mongoVersionString = req.version + vendor.map(v => s"-$v").getOrElse("")
                   for {
-                    _ <- upsertVersionMongodb(v.copy(version = versionAndVendor))
-                    _ <- upsertVersionStateApi(v)
+                    _ <- upsertVersionMongodb(v.copy(version = mongoVersionString))
+                    _ <- upsertVersionStateApi(v).recoverWith {
+                      case ex: Exception =>
+                        logger.error(
+                          s"Failed to upsert version to state API: ${ex.getMessage}",
+                          ex
+                        )
+                        Future.unit
+                    }
                     _ <- if (req.default.exists(d => d)) for {
-                      _ <- updateDefaultVersion(c.candidate, versionAndVendor)
+                      _ <- updateDefaultVersion(c.candidate, mongoVersionString)
                     } yield ()
                     else Future.successful(Unit)
-                  } yield createdResponse(c.candidate, versionAndVendor, platform)
+                  } yield createdResponse(c.candidate, mongoVersionString, platform)
                 }
               }
             }
