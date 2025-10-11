@@ -28,9 +28,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "LINUX_64"
+          |  "platform" : "LINUX_64",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -41,9 +42,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "LINUX_32"
+          |  "platform" : "LINUX_32",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -54,9 +56,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "LINUX_ARM32SF"
+          |  "platform" : "LINUX_ARM32SF",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -67,9 +70,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "LINUX_ARM32HF"
+          |  "platform" : "LINUX_ARM32HF",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -80,9 +84,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "LINUX_ARM64"
+          |  "platform" : "LINUX_ARM64",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -93,9 +98,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "MAC_OSX"
+          |  "platform" : "MAC_OSX",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -106,9 +112,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "MAC_ARM64"
+          |  "platform" : "MAC_ARM64",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -119,9 +126,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "WINDOWS_64"
+          |  "platform" : "WINDOWS_64",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 201 CREATED
@@ -132,9 +140,10 @@ Feature: Release platform validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
-          |  "platform" : "SOLARIS"
+          |  "platform" : "SOLARIS",
+          |  "vendor" : "zulu"
           |}
     """
     Then the status received is 400 BAD_REQUEST

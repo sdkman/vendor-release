@@ -63,7 +63,7 @@ trait VersionReleaseRoutes
     post {
       entity(as[PostVersionReleaseRequest]) { req =>
         optionalHeaderValueByName("Vendor") { vendorHeader =>
-          validate(req.candidate, req.platform, Some(req.url), req.checksums) {
+          validate(req.candidate, req.version, req.platform, Some(req.url), req.checksums) {
             complete {
               onFinding(req.candidate, req.version, req.platform) { (candidateO, _, platform) =>
                 candidateO.fold(badRequestResponseF(s"Invalid candidate: ${req.candidate}")) { c =>
@@ -100,7 +100,7 @@ trait VersionReleaseRoutes
       }
     } ~ delete {
       entity(as[DeleteVersionReleaseRequest]) { req =>
-        validate(req.candidate, Some(req.platform), None, None) {
+        validate(req.candidate, req.version, Some(req.platform), None, None) {
           complete {
             findCandidate(req.candidate).flatMap {
               case Some(Candidate(_, _, _, Some(default), _, _)) if default == req.version =>
@@ -125,6 +125,7 @@ trait VersionReleaseRoutes
 
   private def validate(
       candidate: String,
+      version: String,
       platform: Option[String],
       url: Option[String],
       checksums: Option[Map[String, String]]
@@ -132,10 +133,12 @@ trait VersionReleaseRoutes
       route: StandardRoute
   ): Route = {
     authorised(candidate) {
-      validatePlatform(platform) {
-        validateUrl(url) {
-          validateChecksumAlgorithms(checksums) {
-            validateChecksums(checksums)(route)
+      validateVersionFormat(version) {
+        validatePlatform(platform) {
+          validateUrl(url) {
+            validateChecksumAlgorithms(checksums) {
+              validateChecksums(checksums)(route)
+            }
           }
         }
       }
