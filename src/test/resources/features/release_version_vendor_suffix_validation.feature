@@ -49,8 +49,7 @@ Feature: Release version vendor suffix validation
     """
     Then the status received is 201 CREATED
 
-  #TODO combine all version vendor suffix scenarios in a single cucumber scenario outline. make the outline comprehensive!
-  Scenario: Version with vendor suffix -tem is rejected
+  Scenario Outline: Version with vendor suffix is rejected
     Given the consumer for candidate java is making a request
     And the consumer has a valid auth token
     And the URI /java-17.0.1.zip is available for download
@@ -60,48 +59,34 @@ Feature: Release version vendor suffix validation
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "17.0.1-tem",
+          |  "version" : "<version>",
           |  "url" : "http://localhost:8080/java-17.0.1.zip"
           |}
     """
     Then the status received is 400 BAD_REQUEST
     And the message containing "Invalid version format: version field must not contain vendor suffix. Use the 'vendor' field instead." is received
 
-  #TODO combine all version vendor suffix scenarios in a single cucumber scenario outline. make the outline comprehensive!
-  Scenario: Version with vendor suffix -zulu is rejected
-    Given the consumer for candidate java is making a request
-    And the consumer has a valid auth token
-    And the URI /java-17.0.1.zip is available for download
-    And the state API is available
-    And the existing default UNIVERSAL java version is 11.0.12
-    When a JSON POST on the /versions endpoint:
-    """
-          |{
-          |  "candidate" : "java",
-          |  "version" : "11.0.12-zulu",
-          |  "url" : "http://localhost:8080/java-17.0.1.zip"
-          |}
-    """
-    Then the status received is 400 BAD_REQUEST
-    And the message containing "Invalid version format: version field must not contain vendor suffix. Use the 'vendor' field instead." is received
-
-  #TODO combine all version vendor suffix scenarios in a single cucumber scenario outline. make the outline comprehensive!
-  Scenario: Version with vendor suffix -amzn is rejected
-    Given the consumer for candidate java is making a request
-    And the consumer has a valid auth token
-    And the URI /java-17.0.1.zip is available for download
-    And the state API is available
-    And the existing default UNIVERSAL java version is 11.0.12
-    When a JSON POST on the /versions endpoint:
-    """
-          |{
-          |  "candidate" : "java",
-          |  "version" : "17.0.7-amzn",
-          |  "url" : "http://localhost:8080/java-17.0.1.zip"
-          |}
-    """
-    Then the status received is 400 BAD_REQUEST
-    And the message containing "Invalid version format: version field must not contain vendor suffix. Use the 'vendor' field instead." is received
+    Examples:
+      | version        |
+      | 17.0.1-amzn    |
+      | 17.0.1-albba   |
+      | 17.0.1-gln     |
+      | 17.0.1-graalce |
+      | 17.0.1-graal   |
+      | 17.0.1-bisheng |
+      | 17.0.1-open    |
+      | 17.0.1-jbr     |
+      | 17.0.1-librca  |
+      | 17.0.1-nik     |
+      | 17.0.1-mandrel |
+      | 17.0.1-ms      |
+      | 17.0.1-oracle  |
+      | 17.0.1-sapmchn |
+      | 17.0.1-sem     |
+      | 17.0.1-tem     |
+      | 17.0.1-kona    |
+      | 17.0.1-trava   |
+      | 17.0.1-zulu    |
 
   Scenario: Version with vendor suffix AND vendor field is rejected
     Given the consumer for candidate java is making a request
@@ -121,8 +106,7 @@ Feature: Release version vendor suffix validation
     Then the status received is 400 BAD_REQUEST
     And the message containing "Invalid version format: version field must not contain vendor suffix. Use the 'vendor' field instead." is received
 
-  #TODO combine all pre-release version suffix scenarios in a single cucumber scenario outline. make the outline comprehensive!
-  Scenario: Version with pre-release suffix -RC1 is accepted
+  Scenario Outline: Version with pre-release suffix is accepted
     Given the consumer for candidate groovy is making a request
     And the consumer has a valid auth token
     And the URI /groovy-x.y.z.zip is available for download
@@ -132,40 +116,17 @@ Feature: Release version vendor suffix validation
     """
           |{
           |  "candidate" : "groovy",
-          |  "version" : "3.0.0-RC1",
+          |  "version" : "<version>",
           |  "url" : "http://localhost:8080/groovy-x.y.z.zip"
           |}
     """
     Then the status received is 201 CREATED
 
-  Scenario: Version with pre-release suffix -SNAPSHOT is accepted
-    Given the consumer for candidate groovy is making a request
-    And the consumer has a valid auth token
-    And the URI /groovy-x.y.z.zip is available for download
-    And the state API is available
-    And the existing default UNIVERSAL groovy version is 2.3.6
-    When a JSON POST on the /versions endpoint:
-    """
-          |{
-          |  "candidate" : "groovy",
-          |  "version" : "3.0.0-SNAPSHOT",
-          |  "url" : "http://localhost:8080/groovy-x.y.z.zip"
-          |}
-    """
-    Then the status received is 201 CREATED
-
-  Scenario: Version with pre-release suffix -beta-1 is accepted
-    Given the consumer for candidate groovy is making a request
-    And the consumer has a valid auth token
-    And the URI /groovy-x.y.z.zip is available for download
-    And the state API is available
-    And the existing default UNIVERSAL groovy version is 2.3.6
-    When a JSON POST on the /versions endpoint:
-    """
-          |{
-          |  "candidate" : "groovy",
-          |  "version" : "3.0.0-beta-1",
-          |  "url" : "http://localhost:8080/groovy-x.y.z.zip"
-          |}
-    """
-    Then the status received is 201 CREATED
+    Examples:
+      | version          |
+      | 3.0.0-RC1        |
+      | 3.0.0-SNAPSHOT   |
+      | 3.0.0-beta-1     |
+      | 3.0.0-alpha-1    |
+      | 3.0.0-M1         |
+      | 3.0.0-PREVIEW    |
