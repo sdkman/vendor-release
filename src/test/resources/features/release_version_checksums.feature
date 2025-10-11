@@ -60,7 +60,8 @@ Feature: Release version with checksums
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
+          |  "vendor" : "zulu",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64",
           |  "checksums" : {
@@ -73,7 +74,8 @@ Feature: Release version with checksums
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
+          |  "vendor" : "zulu",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-macosx.tar.gz",
           |  "platform" : "MAC_OSX",
           |  "checksums" : {
@@ -95,7 +97,8 @@ Feature: Release version with checksums
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
+          |  "vendor" : "zulu",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64",
           |  "checksums" : {
@@ -116,7 +119,8 @@ Feature: Release version with checksums
     """
           |{
           |  "candidate" : "java",
-          |  "version" : "8u131-zulu",
+          |  "version" : "8u131",
+          |  "vendor" : "zulu",
           |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131-linux_x64.tar.gz",
           |  "platform" : "LINUX_64",
           |  "checksums" : {

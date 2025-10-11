@@ -47,6 +47,30 @@ trait Validation {
     SHA512.id -> "^[a-f0-9]{128}$"
   )
 
+  private val KnownVendorSuffixes = Set(
+    "amzn",
+    "albba",
+    "gln",
+    "graalce",
+    "graal",
+    "bisheng",
+    "open",
+    "jbr",
+    "librca",
+    "nik",
+    "mandrel",
+    "ms",
+    "oracle",
+    "sapmchn",
+    "sem",
+    "tem",
+    "kona",
+    "trava",
+    "zulu"
+  )
+
+  private val VendorSuffixPattern = s".*-(${KnownVendorSuffixes.mkString("|")})$$".r
+
   def validatePlatform(platform: Option[String]): Directive0 =
     platform
       .map(
@@ -100,4 +124,13 @@ trait Validation {
         )
 
       } getOrElse pass
+
+  def validateVersionFormat(version: String): Directive0 =
+    validate(
+      VendorSuffixPattern.findFirstIn(version).isEmpty,
+      ApiResponse(
+        400,
+        "Invalid version format: version field must not contain vendor suffix. Use the 'vendor' field instead."
+      ).toJson.compactPrint
+    )
 }
