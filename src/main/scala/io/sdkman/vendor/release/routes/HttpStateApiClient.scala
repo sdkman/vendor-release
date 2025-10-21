@@ -5,12 +5,14 @@ import io.sdkman.vendor.release.Configuration
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import io.sdkman.model.Version
+
 import scala.concurrent.Future
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
+
 import scala.concurrent.duration._
 
 case class StateVersion(
@@ -34,7 +36,11 @@ trait HttpStateApiClient extends LazyLogging {
 
   implicit val actorSystem: ActorSystem
 
-  lazy val http = Http(actorSystem)
+  lazy val http = {
+    val httpExt = Http(actorSystem)
+    httpExt.setDefaultClientHttpsContext(httpExt.defaultClientHttpsContext)
+    httpExt
+  }
 
   import VersionJsonProtocol._
   import spray.json._
