@@ -44,7 +44,7 @@ class HttpStateApiClientSpec
   }
 
   trait TestConfiguration extends Configuration {
-    override lazy val stateApiBaseUrl: String           = "http://localhost:8089"
+    override lazy val stateApiUrl: String               = "http://localhost:8089"
     override lazy val stateApiBasicAuthUsername: String = "testuser"
     override lazy val stateApiBasicAuthPassword: String = "testpass"
   }

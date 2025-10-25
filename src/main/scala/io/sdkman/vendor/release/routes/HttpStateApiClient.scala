@@ -70,7 +70,7 @@ trait HttpStateApiClient extends LazyLogging {
     val response =
       http.singleRequest(
         HttpRequest(
-          uri = s"$stateApiBaseUrl/versions",
+          uri = s"$stateApiUrl/versions",
           method = HttpMethods.POST,
           entity = HttpEntity(ContentTypes.`application/json`, stateVersion.toJson.compactPrint)
         ).withHeaders(

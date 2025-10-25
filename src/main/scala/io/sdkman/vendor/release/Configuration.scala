@@ -29,7 +29,17 @@ trait Configuration {
 
   lazy val serviceAdminConsumer: String = config.getString("service.adminConsumer")
 
-  lazy val stateApiBaseUrl: String = config.getString("state-api.url.host")
+  private lazy val stateApiProtocol: String = config.getString("state-api.url.protocol")
+
+  private lazy val stateApiHost: String = config.getString("state-api.url.host")
+
+  lazy val stateApiUrl: String = {
+    if (stateApiHost == "localhost") {
+      s"$stateApiProtocol://$stateApiHost:8080"
+    } else {
+      s"$stateApiProtocol://$stateApiHost"
+    }
+  }
 
   lazy val stateApiBasicAuthUsername: String = config.getString("state-api.basic-auth.username")
 
