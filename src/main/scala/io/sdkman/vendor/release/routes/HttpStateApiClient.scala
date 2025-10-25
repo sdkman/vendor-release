@@ -47,7 +47,7 @@ trait HttpStateApiClient extends LazyLogging {
 
   def upsertVersionStateApi(version: Version): Future[Unit] = {
     logger.info(
-      s"Upserting version to state API: ${version.candidate} ${version.version} ${version.platform}"
+      s"Upserting version to state API ${this.stateApiUrl}: ${version.candidate} ${version.version} ${version.platform}"
     )
 
     val statePlatform                  = PlatformMapper.mapToStatePlatform(version.platform)
