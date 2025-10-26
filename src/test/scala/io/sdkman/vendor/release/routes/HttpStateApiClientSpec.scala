@@ -1,7 +1,7 @@
 package io.sdkman.vendor.release.routes
 
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, Materializer}
+import akka.stream.{ActorMaterializer, Materializer, SystemMaterializer}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
@@ -24,7 +24,7 @@ class HttpStateApiClientSpec
 
   implicit val patience: PatienceConfig           = PatienceConfig(timeout = 5.seconds)
   implicit val actorSystem: ActorSystem           = ActorSystem()
-  implicit val materializer: Materializer         = ActorMaterializer()
+  implicit val materializer: Materializer         = SystemMaterializer(actorSystem).materializer
   implicit val executionContext: ExecutionContext = actorSystem.dispatcher
 
   val wireMockServer = new WireMockServer(wireMockConfig().port(8089))
