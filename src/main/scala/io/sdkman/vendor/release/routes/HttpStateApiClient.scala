@@ -36,11 +36,7 @@ trait HttpStateApiClient extends LazyLogging {
 
   implicit val actorSystem: ActorSystem
 
-  lazy val http = {
-    val httpExt = Http(actorSystem)
-    httpExt.setDefaultClientHttpsContext(httpExt.defaultClientHttpsContext)
-    httpExt
-  }
+  lazy val http = Http(actorSystem)
 
   import VersionJsonProtocol._
   import spray.json._
