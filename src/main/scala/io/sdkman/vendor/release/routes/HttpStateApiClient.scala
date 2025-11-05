@@ -38,13 +38,6 @@ trait HttpStateApiClient extends LazyLogging {
 
   implicit val actorSystem: ActorSystem
 
-  lazy val http = {
-    val httpExt = Http(actorSystem)
-    val context = ConnectionContext.httpsClient(SSLContext.getDefault)
-    httpExt.setDefaultClientHttpsContext(context)
-    httpExt
-  }
-
   import VersionJsonProtocol._
   import spray.json._
 
@@ -70,21 +63,22 @@ trait HttpStateApiClient extends LazyLogging {
 
     logger.debug(s"State API payload: ${stateVersion.toJson.prettyPrint}")
 
-    val response =
-      http.singleRequest(
-        HttpRequest(
-          uri = s"$stateApiUrl/versions",
-          method = HttpMethods.POST,
-          entity = HttpEntity(ContentTypes.`application/json`, stateVersion.toJson.compactPrint)
-        ).withHeaders(
-          Authorization(
-            BasicHttpCredentials(
-              stateApiBasicAuthUsername,
-              stateApiBasicAuthPassword
-            )
-          )
+    val request = HttpRequest(
+      uri = s"$stateApiUrl/versions",
+      method = HttpMethods.POST,
+      entity = HttpEntity(ContentTypes.`application/json`, stateVersion.toJson.compactPrint)
+    ).withHeaders(
+      Authorization(
+        BasicHttpCredentials(
+          stateApiBasicAuthUsername,
+          stateApiBasicAuthPassword
         )
       )
+    )
+
+    val httpsContext = ConnectionContext.httpsClient(SSLContext.getDefault)
+    val response     = Http().singleRequest(request, httpsContext)
+
     response.flatMap {
       case HttpResponse(StatusCodes.NoContent, _, _, _) =>
         logger.info(
