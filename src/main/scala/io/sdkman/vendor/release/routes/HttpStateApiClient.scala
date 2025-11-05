@@ -41,6 +41,8 @@ trait HttpStateApiClient extends LazyLogging {
   import VersionJsonProtocol._
   import spray.json._
 
+  private val httpsContext = ConnectionContext.httpsClient(SSLContext.getDefault)
+
   def upsertVersionStateApi(version: Version): Future[Unit] = {
     logger.info(
       s"Upserting version to ${this.stateApiUrl}: ${version.candidate} ${version.version} ${version.platform}"
@@ -76,7 +78,6 @@ trait HttpStateApiClient extends LazyLogging {
       )
     )
 
-    val httpsContext = ConnectionContext.httpsClient(SSLContext.getDefault)
     val response     = Http().singleRequest(request, httpsContext)
 
     response.flatMap {
@@ -90,9 +91,10 @@ trait HttpStateApiClient extends LazyLogging {
           val errorBody = strictEntity.data.utf8String
           logger
             .error(s"Failed to upsert version to state API. Status: $status, Body: $errorBody")
-          throw new RuntimeException(
+          logger.error(
             s"State API request failed with status: $status, body: $errorBody"
           )
+          throw new RuntimeException("State API request failed!")
         }
       case _ =>
         logger.error("Unexpected response from state API")

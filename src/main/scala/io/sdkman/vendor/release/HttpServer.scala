@@ -35,7 +35,7 @@ class HttpServer
     with CandidateDefaultRoutes
     with HealthRoutes {
 
-  implicit lazy val actorSystem: ActorSystem = ActorSystem("vendor-release-service")
+  implicit val actorSystem: ActorSystem = ActorSystem("vendor-release-service")
 
   val routes: Route = healthRoutes ~ versionReleaseRoutes ~ candidateDefaultRoutes ~ candidateReleaseRoutes
 
