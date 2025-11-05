@@ -2,20 +2,13 @@ package io.sdkman.vendor.release.routes
 
 import spray.json.DefaultJsonProtocol
 import io.sdkman.vendor.release.Configuration
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.ConnectionContext
 import io.sdkman.model.Version
 
 import scala.concurrent.Future
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
 
-import scala.concurrent.duration._
-import javax.net.ssl.SSLContext
+import scalaj.http.{Http, HttpResponse}
 
 case class StateVersion(
     candidate: String,
@@ -36,14 +29,10 @@ object VersionJsonProtocol extends DefaultJsonProtocol {
 trait HttpStateApiClient extends LazyLogging {
   self: Configuration =>
 
-  implicit val actorSystem: ActorSystem
-
   import VersionJsonProtocol._
   import spray.json._
 
-  private val httpsContext = ConnectionContext.httpsClient(SSLContext.getDefault)
-
-  def upsertVersionStateApi(version: Version): Future[Unit] = {
+  def upsertVersionStateApi(version: Version): Future[Unit] = Future {
     logger.info(
       s"Upserting version to ${this.stateApiUrl}: ${version.candidate} ${version.version} ${version.platform}"
     )
@@ -65,40 +54,26 @@ trait HttpStateApiClient extends LazyLogging {
 
     logger.debug(s"State API payload: ${stateVersion.toJson.prettyPrint}")
 
-    val request = HttpRequest(
-      uri = s"$stateApiUrl/versions",
-      method = HttpMethods.POST,
-      entity = HttpEntity(ContentTypes.`application/json`, stateVersion.toJson.compactPrint)
-    ).withHeaders(
-      Authorization(
-        BasicHttpCredentials(
-          stateApiBasicAuthUsername,
-          stateApiBasicAuthPassword
-        )
-      )
-    )
+    val jsonBody = stateVersion.toJson.compactPrint
 
-    val response     = Http().singleRequest(request, httpsContext)
+    val response: HttpResponse[String] = Http(s"$stateApiUrl/versions")
+      .postData(jsonBody)
+      .header("Content-Type", "application/json")
+      .auth(stateApiBasicAuthUsername, stateApiBasicAuthPassword)
+      .asString
 
-    response.flatMap {
-      case HttpResponse(StatusCodes.NoContent, _, _, _) =>
+    response.code match {
+      case 204 =>
         logger.info(
           s"Successfully upserted version to state API: ${version.candidate} ${version.version}"
         )
-        Future.successful(Unit)
-      case HttpResponse(status, _, entity, _) =>
-        entity.toStrict(5.seconds).map { strictEntity =>
-          val errorBody = strictEntity.data.utf8String
-          logger
-            .error(s"Failed to upsert version to state API. Status: $status, Body: $errorBody")
-          logger.error(
-            s"State API request failed with status: $status, body: $errorBody"
-          )
-          throw new RuntimeException("State API request failed!")
-        }
-      case _ =>
-        logger.error("Unexpected response from state API")
-        Future.failed(new RuntimeException("Unexpected response from state API"))
+      case statusCode =>
+        logger.error(
+          s"Failed to upsert version to state API. Status: $statusCode, Body: ${response.body}"
+        )
+        throw new RuntimeException(
+          s"State API request failed with status: $statusCode, body: ${response.body}"
+        )
     }
   }
 

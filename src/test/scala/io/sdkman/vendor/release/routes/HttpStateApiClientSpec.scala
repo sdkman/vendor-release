@@ -49,9 +49,7 @@ class HttpStateApiClientSpec
     override lazy val stateApiBasicAuthPassword: String = "testpass"
   }
 
-  class TestClient extends HttpStateApiClient with TestConfiguration {
-    override implicit val actorSystem: ActorSystem = HttpStateApiClientSpec.this.actorSystem
-  }
+  class TestClient extends HttpStateApiClient with TestConfiguration
 
   lazy val client = new TestClient()
 
