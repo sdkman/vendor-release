@@ -33,10 +33,6 @@ trait HttpStateApiClient extends LazyLogging {
   import spray.json._
 
   def upsertVersionStateApi(version: Version): Future[Unit] = Future {
-    logger.info(
-      s"Upserting version to ${this.stateApiUrl}: ${version.candidate} ${version.version} ${version.platform}"
-    )
-
     val statePlatform                  = PlatformMapper.mapToStatePlatform(version.platform)
     val (md5sum, sha256sum, sha512sum) = extractChecksums(version.checksums)
 
@@ -65,7 +61,8 @@ trait HttpStateApiClient extends LazyLogging {
     response.code match {
       case 204 =>
         logger.info(
-          s"Successfully upserted version to state API: ${version.candidate} ${version.version}"
+          s"Upserted to $stateApiUrl/versions: ${version.candidate} ${version.version} ${version.platform} " +
+            s"${version.vendor.getOrElse("")}"
         )
       case statusCode =>
         logger.error(
