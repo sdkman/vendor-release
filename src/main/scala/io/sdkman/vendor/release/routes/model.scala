@@ -35,16 +35,6 @@ case class PostVersionReleaseRequest(
     default: Option[Boolean] = Some(false)
 )
 
-case class PatchVersionReleaseRequest(
-    candidate: String,
-    version: String,
-    platform: Option[String],
-    url: Option[String],
-    vendor: Option[String],
-    visible: Option[Boolean],
-    checksums: Option[Map[String, String]] = None
-)
-
 case class DeleteVersionReleaseRequest(
     candidate: String,
     version: String,
