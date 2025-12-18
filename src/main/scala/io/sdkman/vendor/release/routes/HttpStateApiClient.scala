@@ -13,7 +13,7 @@ import scalaj.http.{Http, HttpResponse}
 case class StateVersion(
     candidate: String,
     version: String,
-    vendor: Option[String],
+    distribution: Option[String],
     url: String,
     platform: String = "UNIVERSAL",
     visible: Boolean = true,
@@ -34,12 +34,13 @@ trait HttpStateApiClient extends LazyLogging {
 
   def upsertVersionStateApi(version: Version): Future[Unit] = Future {
     val statePlatform                  = PlatformMapper.mapToStatePlatform(version.platform)
+    val stateDistribution              = version.vendor.flatMap(DistributionMapper.mapToStateDistribution)
     val (md5sum, sha256sum, sha512sum) = extractChecksums(version.checksums)
 
     val stateVersion = StateVersion(
       candidate = version.candidate,
       version = version.version,
-      vendor = version.vendor,
+      distribution = stateDistribution,
       url = version.url,
       platform = statePlatform,
       visible = version.visible.getOrElse(true),

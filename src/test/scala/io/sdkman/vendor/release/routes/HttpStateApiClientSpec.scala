@@ -77,7 +77,7 @@ class HttpStateApiClientSpec
         postRequestedFor(urlEqualTo("/versions"))
           .withRequestBody(matchingJsonPath("$[?(@.version == '17.0.1')]"))
           .withRequestBody(matchingJsonPath("$[?(@.platform == 'MAC_X64')]"))
-          .withRequestBody(matchingJsonPath("$[?(@.vendor == 'tem')]"))
+          .withRequestBody(matchingJsonPath("$[?(@.distribution == 'TEMURIN')]"))
           .withRequestBody(matchingJsonPath("$[?(@.md5sum == 'abc123')]"))
           .withRequestBody(matchingJsonPath("$[?(@.sha256sum == 'def456')]"))
       )
@@ -102,7 +102,7 @@ class HttpStateApiClientSpec
 
       verify(
         postRequestedFor(urlEqualTo("/versions"))
-          .withRequestBody(matchingJsonPath("$[?(!@.vendor)]"))
+          .withRequestBody(matchingJsonPath("$[?(!@.distribution)]"))
       )
     }
 

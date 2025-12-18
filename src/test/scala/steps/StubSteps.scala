@@ -69,17 +69,17 @@ class StubSteps extends ScalaDsl with EN with Matchers {
       )
   }
 
-  Then("""^the state API received a POST request with vendor (.*)$""") { expectedVendor: String =>
+  Then("""^the state API received a POST request with distribution (.*)$""") { expectedDistribution: String =>
     verify(
       postRequestedFor(urlEqualTo("/versions"))
-        .withRequestBody(matchingJsonPath(s"$$[?(@.vendor == '$expectedVendor')]"))
+        .withRequestBody(matchingJsonPath(s"$$[?(@.distribution == '$expectedDistribution')]"))
     )
   }
 
-  Then("""^the state API received a POST request WITHOUT vendor$""") { () =>
+  Then("""^the state API received a POST request WITHOUT distribution""") { () =>
     verify(
       postRequestedFor(urlEqualTo("/versions"))
-        .withRequestBody(matchingJsonPath(s"$$[?(!@.vendor)]"))
+        .withRequestBody(matchingJsonPath(s"$$[?(!@.distribution)]"))
     )
   }
 

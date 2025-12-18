@@ -41,7 +41,7 @@ Feature: State API Dual Write
     Then the status received is 201 CREATED
     And java version 17.0.1-tem with URL http://localhost:8080/java-17.0.1.zip was published for MAC_OSX to mongodb
     And the state API received a POST request with platform MAC_X64
-    And the state API received a POST request with vendor tem
+    And the state API received a POST request with distribution TEMURIN
     And the state API received a POST request with version 17.0.1
     And the state API received a POST request with md5sum 8f817c305a1bb15428b4aa29b844d75c
     And the state API received a POST request with sha256sum 01bfe9d471b7cb1f8321204e6fa05a574db3ae5b67c5bd2f17184ffd521387f1
@@ -62,7 +62,7 @@ Feature: State API Dual Write
     Then the status received is 201 CREATED
     And the state API received a POST request with platform LINUX_X64
 
-  Scenario: Release version and unspecified vendor with dual write
+  Scenario: Release version and unspecified distribution with dual write
     Given the existing default PLATFORM_SPECIFIC java version is 17.0.1-tem
     And the consumer for candidate java|jmc is making a request
     And the URI /java-17.0.1.zip is available for download
@@ -76,7 +76,7 @@ Feature: State API Dual Write
           |}
     """
     Then the status received is 201 CREATED
-    And the state API received a POST request WITHOUT vendor
+    And the state API received a POST request WITHOUT distribution
 
   Scenario: Release version still succeeds when State API is unavailable
     Given the existing default UNIVERSAL java version is 17.0.1
