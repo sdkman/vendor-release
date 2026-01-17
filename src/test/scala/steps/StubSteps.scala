@@ -69,11 +69,12 @@ class StubSteps extends ScalaDsl with EN with Matchers {
       )
   }
 
-  Then("""^the state API received a POST request with distribution (.*)$""") { expectedDistribution: String =>
-    verify(
-      postRequestedFor(urlEqualTo("/versions"))
-        .withRequestBody(matchingJsonPath(s"$$[?(@.distribution == '$expectedDistribution')]"))
-    )
+  Then("""^the state API received a POST request with distribution (.*)$""") {
+    expectedDistribution: String =>
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.distribution == '$expectedDistribution')]"))
+      )
   }
 
   Then("""^the state API received a POST request WITHOUT distribution""") { () =>
@@ -103,5 +104,9 @@ class StubSteps extends ScalaDsl with EN with Matchers {
         postRequestedFor(urlEqualTo("/versions"))
           .withRequestBody(matchingJsonPath(s"$$[?(@.sha256sum == '$expectedSha256')]"))
       )
+  }
+
+  Then("""^the state API did not receive any POST requests$""") { () =>
+    verify(0, postRequestedFor(urlEqualTo("/versions")))
   }
 }

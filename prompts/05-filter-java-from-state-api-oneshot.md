@@ -90,8 +90,8 @@ Create a new feature file: `filter_java_state_api_propagation.feature`
 - Release Groovy 2.3.6 → MongoDB updated, State API called, returns 201 Created
 
 **Edge Cases:**
-- Java version with different case variations (JAVA, Java, java) → all filtered correctly
-- Java version with vendor suffix → MongoDB gets suffix, State API not called
+- Java candidate with different case variations in the "candidate" field ("JAVA", "Java", "java") → all filtered correctly
+- Java version with vendor suffix (e.g., vendor="zulu") → MongoDB gets suffix appended (e.g., "8.0.131-zulu"), State API not called
 - Java version set as default → MongoDB default updated, State API not called
 
 **Verification:**

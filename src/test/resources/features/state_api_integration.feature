@@ -20,7 +20,24 @@ Feature: State API Dual Write
     Given the consumer has a valid auth token
     And the state API is available
 
-  Scenario: Release separate version and vendor with dual write
+  Scenario: Release non-java version with dual write to verify State API integration
+    Given the existing default UNIVERSAL groovy version is 2.3.5
+    And the consumer for candidate groovy is making a request
+    And the URI /groovy-2.3.6.zip is available for download
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And the state API received a POST request with version 2.3.6
+
+  Scenario: Java version should NOT be propagated to State API (filtered)
     Given the existing default MAC_OSX java version is 17.0.0
     And the consumer for candidate java|jmc is making a request
     And the URI /java-17.0.1.zip is available for download
@@ -40,13 +57,9 @@ Feature: State API Dual Write
     """
     Then the status received is 201 CREATED
     And java version 17.0.1-tem with URL http://localhost:8080/java-17.0.1.zip was published for MAC_OSX to mongodb
-    And the state API received a POST request with platform MAC_X64
-    And the state API received a POST request with distribution TEMURIN
-    And the state API received a POST request with version 17.0.1
-    And the state API received a POST request with md5sum 8f817c305a1bb15428b4aa29b844d75c
-    And the state API received a POST request with sha256sum 01bfe9d471b7cb1f8321204e6fa05a574db3ae5b67c5bd2f17184ffd521387f1
+    And the state API did not receive any POST requests
 
-  Scenario: Release version and platform mapping with dual write
+  Scenario: Java version should NOT be propagated to State API for different platforms
     Given the existing default PLATFORM_SPECIFIC java version is 17.0.1-tem
     And the consumer for candidate java|jmc is making a request
     And the URI /java-17.0.1.zip is available for download
@@ -60,9 +73,9 @@ Feature: State API Dual Write
           |}
     """
     Then the status received is 201 CREATED
-    And the state API received a POST request with platform LINUX_X64
+    And the state API did not receive any POST requests
 
-  Scenario: Release version and unspecified distribution with dual write
+  Scenario: Java version should NOT be propagated to State API without vendor
     Given the existing default PLATFORM_SPECIFIC java version is 17.0.1-tem
     And the consumer for candidate java|jmc is making a request
     And the URI /java-17.0.1.zip is available for download
@@ -76,7 +89,7 @@ Feature: State API Dual Write
           |}
     """
     Then the status received is 201 CREATED
-    And the state API received a POST request WITHOUT distribution
+    And the state API did not receive any POST requests
 
   Scenario: Release version still succeeds when State API is unavailable
     Given the existing default UNIVERSAL java version is 17.0.1

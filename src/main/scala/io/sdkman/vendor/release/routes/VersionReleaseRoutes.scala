@@ -79,14 +79,7 @@ trait VersionReleaseRoutes
                   val mongoVersionString = req.version + vendor.map(v => s"-$v").getOrElse("")
                   for {
                     _ <- upsertVersionMongodb(v.copy(version = mongoVersionString))
-                    _ <- upsertVersionStateApi(v).recoverWith {
-                      case ex: Exception =>
-                        logger.error(
-                          s"Failed to upsert version to state API: ${ex.getMessage}",
-                          ex
-                        )
-                        Future.unit
-                    }
+                    _ <- conditionalStateApiPropagation(v)
                     _ <- if (req.default.exists(d => d)) for {
                       _ <- updateDefaultVersion(c.candidate, mongoVersionString)
                     } yield ()
@@ -164,4 +157,20 @@ trait VersionReleaseRoutes
       updated = result.getModifiedCount > 0
       insert <- if (!updated) saveVersion(version) else Future.successful(Completed())
     } yield insert
+
+  private def conditionalStateApiPropagation(version: Version): Future[Unit] = {
+    if (version.candidate.equalsIgnoreCase("java")) {
+      logger.info(s"Skipping State API propagation for Java candidate: ${version.version}")
+      Future.successful(())
+    } else {
+      upsertVersionStateApi(version).recoverWith {
+        case ex: Exception =>
+          logger.error(
+            s"Failed to upsert version to state API: ${ex.getMessage}",
+            ex
+          )
+          Future.unit
+      }
+    }
+  }
 }
