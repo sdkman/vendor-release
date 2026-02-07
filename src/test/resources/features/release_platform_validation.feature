@@ -92,6 +92,20 @@ Feature: Release platform validation
     """
     Then the status received is 201 CREATED
 
+  Scenario: The Linux RISC-V 64 bit platform is valid
+    Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "java",
+          |  "version" : "8u131",
+          |  "url" : "http://localhost:8080/zulu8.21.0.1-jdk8.0.131.tar.gz",
+          |  "platform" : "LINUX_RISCV64",
+          |  "vendor" : "zulu"
+          |}
+    """
+    Then the status received is 201 CREATED
+
   Scenario: The Mac OSX X64 platform is valid
     Given the existing default PLATFORM_SPECIFIC java version is 8u121-zulu
     When a JSON POST on the /versions endpoint:

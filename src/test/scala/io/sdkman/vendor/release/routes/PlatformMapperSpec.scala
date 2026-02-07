@@ -35,6 +35,10 @@ class PlatformMapperSpec extends AnyWordSpec with Matchers {
       PlatformMapper.mapToStatePlatform("LINUX_ARM64") shouldBe "LINUX_ARM64"
     }
 
+    "map LINUX_RISCV64 to LINUX_RISCV64" in {
+      PlatformMapper.mapToStatePlatform("LINUX_RISCV64") shouldBe "LINUX_RISCV64"
+    }
+
     "map WINDOWS_64 to WINDOWS_X64" in {
       PlatformMapper.mapToStatePlatform("WINDOWS_64") shouldBe "WINDOWS_X64"
     }

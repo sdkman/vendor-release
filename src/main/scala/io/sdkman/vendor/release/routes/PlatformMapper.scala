@@ -12,6 +12,7 @@ object PlatformMapper extends LazyLogging {
     "LINUX_ARM32HF" -> "LINUX_ARM32HF",
     "LINUX_ARM32SF" -> "LINUX_ARM32SF",
     "LINUX_ARM64"   -> "LINUX_ARM64",
+    "LINUX_RISCV64" -> "LINUX_RISCV64",
     "WINDOWS_64"    -> "WINDOWS_X64",
     "UNIVERSAL"     -> "UNIVERSAL"
   )
