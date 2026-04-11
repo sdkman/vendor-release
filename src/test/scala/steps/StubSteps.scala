@@ -16,6 +16,7 @@
 package steps
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.stubbing.Scenario
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.matchers.should.Matchers
 
@@ -132,5 +133,52 @@ class StubSteps extends ScalaDsl with EN with Matchers {
 
   Then("""^the state API did not receive any POST requests to the versions endpoint$""") { () =>
     verify(0, postRequestedFor(urlEqualTo("/versions")))
+  }
+
+  And("""^the state API will return 401 on the first version request$""") { () =>
+    stubFor(
+      post(urlEqualTo("/login"))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withBody("""{"token":"test-jwt-token"}""")
+        )
+    )
+    stubFor(
+      post(urlEqualTo("/versions"))
+        .inScenario("token-expiry")
+        .whenScenarioStateIs(Scenario.STARTED)
+        .willReturn(aResponse().withStatus(401))
+        .willSetStateTo("re-authenticated")
+    )
+    stubFor(
+      post(urlEqualTo("/versions"))
+        .inScenario("token-expiry")
+        .whenScenarioStateIs("re-authenticated")
+        .willReturn(aResponse().withStatus(204))
+    )
+  }
+
+  And("""^the state API login endpoint returns 401$""") { () =>
+    stubFor(
+      post(urlEqualTo("/login"))
+        .willReturn(
+          aResponse()
+            .withStatus(401)
+            .withBody("""{"error":"Invalid credentials"}""")
+        )
+    )
+  }
+
+  And("""^the state API login endpoint returns 429$""") { () =>
+    stubFor(
+      post(urlEqualTo("/login"))
+        .willReturn(
+          aResponse()
+            .withStatus(429)
+            .withBody("""{"error":"Rate limit exceeded"}""")
+        )
+    )
   }
 }
