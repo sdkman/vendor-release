@@ -38,6 +38,32 @@ Feature: State API Dual Write
     And the state API received a POST request with a Bearer token
     And the state API received a POST request with version 2.3.6
 
+  Scenario: JWT token is cached and reused across multiple releases
+    Given the existing default UNIVERSAL groovy version is 2.3.5
+    And the consumer for candidate groovy is making a request
+    And the URI /groovy-2.3.6.zip is available for download
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And the state API login endpoint was called 1 time
+
   Scenario: Java version should NOT be propagated to State API (filtered)
     Given the existing default MAC_OSX java version is 17.0.0
     And the consumer for candidate java|jmc is making a request
