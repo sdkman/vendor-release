@@ -23,6 +23,15 @@ class StubSteps extends ScalaDsl with EN with Matchers {
 
   And("""^the state API is available$""") { () =>
     stubFor(
+      post(urlEqualTo("/login"))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withBody("""{"token":"test-jwt-token"}""")
+        )
+    )
+    stubFor(
       post(urlEqualTo("/versions"))
         .willReturn(
           aResponse()
@@ -108,5 +117,12 @@ class StubSteps extends ScalaDsl with EN with Matchers {
 
   Then("""^the state API did not receive any POST requests$""") { () =>
     verify(0, postRequestedFor(urlEqualTo("/versions")))
+  }
+
+  Then("""^the state API received a POST request with a Bearer token$""") { () =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withHeader("Authorization", matching("Bearer .*"))
+    )
   }
 }

@@ -4,6 +4,7 @@ import spray.json.DefaultJsonProtocol
 import io.sdkman.vendor.release.Configuration
 import io.sdkman.model.Version
 
+import java.util.concurrent.atomic.AtomicReference
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
@@ -32,6 +33,43 @@ trait HttpStateApiClient extends LazyLogging {
   import VersionJsonProtocol._
   import spray.json._
 
+  val cachedToken: AtomicReference[Option[String]] = new AtomicReference(None)
+
+  private def login(): String = {
+    val loginBody = s"""{"email":"$stateApiEmail","password":"$stateApiPassword"}"""
+
+    val response: HttpResponse[String] = Http(s"$stateApiUrl/login")
+      .postData(loginBody)
+      .header("Content-Type", "application/json")
+      .asString
+
+    response.code match {
+      case 200 =>
+        val token = response.body.parseJson.asJsObject.fields("token").convertTo[String]
+        cachedToken.set(Some(token))
+        logger.info(s"Successfully authenticated with State API")
+        token
+      case 429 =>
+        logger.error(s"State API login rate limited. Body: ${response.body}")
+        throw new RuntimeException(s"State API login rate limited: ${response.body}")
+      case statusCode =>
+        logger.error(s"State API login failed. Status: $statusCode, Body: ${response.body}")
+        throw new RuntimeException(
+          s"State API login failed with status: $statusCode, body: ${response.body}"
+        )
+    }
+  }
+
+  private def getToken(): String =
+    cachedToken.get().getOrElse(login())
+
+  private def postVersions(jsonBody: String, token: String): HttpResponse[String] =
+    Http(s"$stateApiUrl/versions")
+      .postData(jsonBody)
+      .header("Content-Type", "application/json")
+      .header("Authorization", s"Bearer $token")
+      .asString
+
   def upsertVersionStateApi(version: Version): Future[Unit] = Future {
     val statePlatform                  = PlatformMapper.mapToStatePlatform(version.platform)
     val stateDistribution              = version.vendor.flatMap(DistributionMapper.mapToStateDistribution)
@@ -53,11 +91,8 @@ trait HttpStateApiClient extends LazyLogging {
 
     val jsonBody = stateVersion.toJson.compactPrint
 
-    val response: HttpResponse[String] = Http(s"$stateApiUrl/versions")
-      .postData(jsonBody)
-      .header("Content-Type", "application/json")
-      .auth(stateApiBasicAuthUsername, stateApiBasicAuthPassword)
-      .asString
+    val token    = getToken()
+    val response = postVersions(jsonBody, token)
 
     response.code match {
       case 204 =>
@@ -65,6 +100,25 @@ trait HttpStateApiClient extends LazyLogging {
           s"Upserted to $stateApiUrl/versions: ${version.candidate} ${version.version} ${version.platform} " +
             s"${version.vendor.getOrElse("")}"
         )
+      case 401 =>
+        logger.info(s"State API returned 401, re-authenticating...")
+        cachedToken.set(None)
+        val freshToken    = login()
+        val retryResponse = postVersions(jsonBody, freshToken)
+        retryResponse.code match {
+          case 204 =>
+            logger.info(
+              s"Upserted to $stateApiUrl/versions after re-auth: ${version.candidate} ${version.version} ${version.platform} " +
+                s"${version.vendor.getOrElse("")}"
+            )
+          case retryStatus =>
+            logger.error(
+              s"Failed to upsert version to state API after re-auth. Status: $retryStatus, Body: ${retryResponse.body}"
+            )
+            throw new RuntimeException(
+              s"State API request failed after re-auth with status: $retryStatus, body: ${retryResponse.body}"
+            )
+        }
       case statusCode =>
         logger.error(
           s"Failed to upsert version to state API. Status: $statusCode, Body: ${response.body}"

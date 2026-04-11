@@ -41,5 +41,6 @@ class Env extends ScalaDsl with LazyLogging {
     Mongo.dropAllCollections()
     WireMock.reset()
     World.reset()
+    app.cachedToken.set(None)
   }
 }

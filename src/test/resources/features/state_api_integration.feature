@@ -35,6 +35,7 @@ Feature: State API Dual Write
     """
     Then the status received is 201 CREATED
     And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And the state API received a POST request with a Bearer token
     And the state API received a POST request with version 2.3.6
 
   Scenario: Java version should NOT be propagated to State API (filtered)
