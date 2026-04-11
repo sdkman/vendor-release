@@ -64,6 +64,25 @@ Feature: State API Dual Write
     Then the status received is 201 CREATED
     And the state API login endpoint was called 1 time
 
+  Scenario: Version release succeeds when JWT re-authentication is needed
+    Given the existing default UNIVERSAL groovy version is 2.3.5
+    And the consumer for candidate groovy is making a request
+    And the URI /groovy-2.3.6.zip is available for download
+    And the state API will return 401 on the first version request
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And the state API login endpoint was called 2 times
+    And the state API received a POST request with a Bearer token
+
   Scenario: Java version should NOT be propagated to State API (filtered)
     Given the existing default MAC_OSX java version is 17.0.0
     And the consumer for candidate java|jmc is making a request
