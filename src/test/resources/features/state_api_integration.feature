@@ -153,3 +153,39 @@ Feature: State API Dual Write
     """
     Then the status received is 201 CREATED
     And java version 17.0.1 with URL http://localhost:8080/java-17.0.1.zip was published for UNIVERSAL to mongodb
+
+  Scenario: Version release succeeds when login credentials are invalid
+    Given the existing default UNIVERSAL groovy version is 2.3.5
+    And the consumer for candidate groovy is making a request
+    And the URI /groovy-2.3.6.zip is available for download
+    And the state API login endpoint returns 401
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And the state API did not receive any POST requests to the versions endpoint
+
+  Scenario: Version release succeeds when login is rate limited
+    Given the existing default UNIVERSAL groovy version is 2.3.5
+    And the consumer for candidate groovy is making a request
+    And the URI /groovy-2.3.6.zip is available for download
+    And the state API login endpoint returns 429
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL"
+          |}
+    """
+    Then the status received is 201 CREATED
+    And groovy version 2.3.6 with URL http://localhost:8080/groovy-2.3.6.zip was published for UNIVERSAL to mongodb
+    And the state API did not receive any POST requests to the versions endpoint
