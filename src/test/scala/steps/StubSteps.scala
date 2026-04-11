@@ -125,4 +125,12 @@ class StubSteps extends ScalaDsl with EN with Matchers {
         .withHeader("Authorization", matching("Bearer .*"))
     )
   }
+
+  Then("""^the state API login endpoint was called (\d+) times?$""") { count: Int =>
+    verify(count, postRequestedFor(urlEqualTo("/login")))
+  }
+
+  Then("""^the state API did not receive any POST requests to the versions endpoint$""") { () =>
+    verify(0, postRequestedFor(urlEqualTo("/versions")))
+  }
 }
