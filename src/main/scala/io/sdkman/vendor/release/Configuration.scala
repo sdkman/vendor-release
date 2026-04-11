@@ -34,7 +34,7 @@ trait Configuration {
   lazy val stateApiUrl: String =
     if (stateApiMode == "local") "http://localhost:8080" else "https://state.sdkman.io"
 
-  lazy val stateApiBasicAuthUsername: String = config.getString("state-api.basic-auth.username")
+  lazy val stateApiEmail: String = config.getString("state-api.auth.email")
 
-  lazy val stateApiBasicAuthPassword: String = config.getString("state-api.basic-auth.password")
+  lazy val stateApiPassword: String = config.getString("state-api.auth.password")
 }

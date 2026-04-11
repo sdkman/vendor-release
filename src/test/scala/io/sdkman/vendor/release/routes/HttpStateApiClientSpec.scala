@@ -41,17 +41,27 @@ class HttpStateApiClientSpec
 
   override def beforeEach(): Unit = {
     wireMockServer.resetAll()
+    client.cachedToken.set(None)
+    stubFor(
+      post(urlEqualTo("/login"))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withBody("""{"token":"test-jwt-token"}""")
+        )
+    )
   }
 
   trait TestConfiguration extends Configuration {
-    override lazy val stateApiUrl: String               = "http://localhost:8089"
-    override lazy val stateApiBasicAuthUsername: String = "testuser"
-    override lazy val stateApiBasicAuthPassword: String = "testpass"
+    override lazy val stateApiUrl: String      = "http://localhost:8089"
+    override lazy val stateApiEmail: String    = "testuser@test.com"
+    override lazy val stateApiPassword: String = "testpass"
   }
 
   class TestClient extends HttpStateApiClient with TestConfiguration
 
-  lazy val client = new TestClient()
+  val client = new TestClient()
 
   "HttpStateApiClient" should {
 
