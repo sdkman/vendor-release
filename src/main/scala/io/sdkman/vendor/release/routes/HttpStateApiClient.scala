@@ -20,11 +20,20 @@ case class StateVersion(
     visible: Boolean = true,
     md5sum: Option[String] = None,
     sha256sum: Option[String] = None,
-    sha512sum: Option[String] = None
+    sha512sum: Option[String] = None,
+    tags: Option[List[String]] = None
 )
 
 object VersionJsonProtocol extends DefaultJsonProtocol {
-  implicit val versionFormat = jsonFormat9(StateVersion)
+  implicit val versionFormat = jsonFormat10(StateVersion)
+}
+
+object HttpStateApiClient {
+
+  /** The only tag vendor-release ever asserts for non-java candidates: the marker for the
+    * default version. `latest`, `26`, and every other tag are used exclusively on java.
+    */
+  val LtsTag = "lts"
 }
 
 trait HttpStateApiClient extends LazyLogging {

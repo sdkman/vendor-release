@@ -170,6 +170,38 @@ class HttpStateApiClientSpec
       )
     }
 
+    "omit the tags field when serialising a StateVersion with tags None" in {
+      import VersionJsonProtocol._
+      import spray.json._
+
+      val stateVersion = StateVersion(
+        candidate = "groovy",
+        version = "2.3.6",
+        distribution = None,
+        url = "http://example.com/groovy.zip",
+        tags = None
+      )
+
+      val json = stateVersion.toJson.asJsObject
+      json.fields.keySet should not contain "tags"
+    }
+
+    "serialise tags as [\"lts\"] when a StateVersion carries the lts tag" in {
+      import VersionJsonProtocol._
+      import spray.json._
+
+      val stateVersion = StateVersion(
+        candidate = "groovy",
+        version = "2.3.6",
+        distribution = None,
+        url = "http://example.com/groovy.zip",
+        tags = Some(List(HttpStateApiClient.LtsTag))
+      )
+
+      val json = stateVersion.toJson.asJsObject
+      json.fields("tags") shouldBe JsArray(JsString("lts"))
+    }
+
     "fail with meaningful error when state API returns error" in {
       stubFor(
         post(urlEqualTo("/versions"))
