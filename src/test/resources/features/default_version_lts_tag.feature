@@ -124,6 +124,7 @@ Feature: Dual-write default version as lts tag on PUT /candidates/default
     And the default groovy version is 2.3.6 on mongodb
     And the state API login endpoint was called 2 times
     And the state API received a POST /versions/tags with a Bearer token
+    And the state API received 2 POST /versions/tags requests
 
   Scenario: A failing tag write on one platform does not suppress its siblings
     Given the existing default LINUX_64 groovy version is 2.3.5
