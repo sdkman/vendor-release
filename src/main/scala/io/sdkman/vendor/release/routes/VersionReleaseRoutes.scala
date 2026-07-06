@@ -163,7 +163,8 @@ trait VersionReleaseRoutes
       logger.info(s"Skipping State API propagation for Java candidate: ${version.version}")
       Future.successful(())
     } else {
-      upsertVersionStateApi(version).recoverWith {
+      // Path 2 (default→lts) computes the tags in the route and threads them here; None for now.
+      upsertVersionStateApi(version, None).recoverWith {
         case ex: Exception =>
           logger.error(
             s"Failed to upsert version to state API: ${ex.getMessage}",

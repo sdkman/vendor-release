@@ -79,7 +79,10 @@ trait HttpStateApiClient extends LazyLogging {
       .header("Authorization", s"Bearer $token")
       .asString
 
-  def upsertVersionStateApi(version: Version): Future[Unit] = Future {
+  def upsertVersionStateApi(
+      version: Version,
+      tags: Option[List[String]] = None
+  ): Future[Unit] = Future {
     val statePlatform                  = PlatformMapper.mapToStatePlatform(version.platform)
     val stateDistribution              = version.vendor.flatMap(DistributionMapper.mapToStateDistribution)
     val (md5sum, sha256sum, sha512sum) = extractChecksums(version.checksums)
@@ -93,7 +96,8 @@ trait HttpStateApiClient extends LazyLogging {
       visible = version.visible.getOrElse(true),
       md5sum = md5sum,
       sha256sum = sha256sum,
-      sha512sum = sha512sum
+      sha512sum = sha512sum,
+      tags = tags
     )
 
     logger.debug(s"State API payload: ${stateVersion.toJson.prettyPrint}")

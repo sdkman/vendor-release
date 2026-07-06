@@ -202,6 +202,52 @@ class HttpStateApiClientSpec
       json.fields("tags") shouldBe JsArray(JsString("lts"))
     }
 
+    "post tags [\"lts\"] to /versions when upserting with the lts tag" in {
+      stubFor(
+        post(urlEqualTo("/versions"))
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      val version = Version(
+        candidate = "groovy",
+        version = "2.3.6",
+        platform = "UNIVERSAL",
+        url = "http://example.com/groovy.zip",
+        vendor = None,
+        visible = Some(true)
+      )
+
+      client.upsertVersionStateApi(version, Some(List(HttpStateApiClient.LtsTag))).futureValue
+
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath("$[?(@.tags[0] == 'lts')]"))
+      )
+    }
+
+    "post no tags field to /versions when upserting without tags" in {
+      stubFor(
+        post(urlEqualTo("/versions"))
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      val version = Version(
+        candidate = "groovy",
+        version = "2.3.6",
+        platform = "UNIVERSAL",
+        url = "http://example.com/groovy.zip",
+        vendor = None,
+        visible = Some(true)
+      )
+
+      client.upsertVersionStateApi(version, None).futureValue
+
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath("$[?(!@.tags)]"))
+      )
+    }
+
     "fail with meaningful error when state API returns error" in {
       stubFor(
         post(urlEqualTo("/versions"))
