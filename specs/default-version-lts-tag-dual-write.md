@@ -192,17 +192,17 @@ Feature: Dual-write default version as lts tag to the State API
 
 ## Verification
 
-- [ ] `PUT /candidates/default` for a non-java candidate issues `POST /versions/tags` (`tag=lts`) for every Mongo platform row of `(candidate, version)`
-- [ ] `POST /versions` with `default:true` (non-java) dual-writes a State payload containing `tags:["lts"]`
-- [ ] `POST /versions` without default sends no `tags` field (never `[]`)
-- [ ] Neither path issues any State API request when `candidate=java`
-- [ ] Mongo write remains authoritative; vendor receives `202`/`201` whenever Mongo succeeds
-- [ ] State API tag failures (`404`/`401`/`5xx`/unavailable) are recovered and logged per-platform without failing the request or stopping sibling platform writes
-- [ ] A `401` on a tag write triggers exactly one re-auth + retry; the cached token is reused across writes otherwise
-- [ ] `StateVersion` gains `tags: Option[List[String]]` with the updated spray-json format; no null usage
-- [ ] `upsertVersionStateApi` takes `tags: Option[List[String]]`; the default→`lts` mapping is computed in the route, not the client
-- [ ] Java-skip + best-effort recovery extracted into a shared helper used by both routes (no duplicated guard)
-- [ ] Path 1 reuses the `versions` Seq already fetched by `CandidateDefaultRoutes` (no second Mongo query)
-- [ ] `PlatformMapper` / `DistributionMapper` reused for coordinate translation (no duplicated tables)
-- [ ] Cross-path platform-scope asymmetry documented in code/comments where relevant
-- [ ] Cucumber acceptance scenarios above pass; `sbt test` green and scalafmt clean
+- [x] `PUT /candidates/default` for a non-java candidate issues `POST /versions/tags` (`tag=lts`) for every Mongo platform row of `(candidate, version)` — `default_version_lts_tag.feature` (UNIVERSAL single-row + multi-platform one-per-row scenarios)
+- [x] `POST /versions` with `default:true` (non-java) dual-writes a State payload containing `tags:["lts"]` — `release_version_default_lts_tag.feature`
+- [x] `POST /versions` without default sends no `tags` field (never `[]`) — `release_version_default_lts_tag.feature` (spray-json omits `None`)
+- [x] Neither path issues any State API request when `candidate=java` — java-skip scenario in both LTS-tag features via `bestEffortNonJava`
+- [x] Mongo write remains authoritative; vendor receives `202`/`201` whenever Mongo succeeds — every scenario asserts the status alongside the Mongo default
+- [x] State API tag failures (`404`/`401`/`5xx`/unavailable) are recovered and logged per-platform without failing the request or stopping sibling platform writes — 404/unavailable/sibling-independence scenarios + `HttpStateApiClientSpec` recover cases
+- [x] A `401` on a tag write triggers exactly one re-auth + retry; the cached token is reused across writes otherwise — 401 scenario (login called 2×) + multi-platform scenario (login called 1×)
+- [x] `StateVersion` gains `tags: Option[List[String]]` with the updated spray-json format; no null usage — `HttpStateApiClient.scala` (`jsonFormat10`)
+- [x] `upsertVersionStateApi` takes `tags: Option[List[String]]`; the default→`lts` mapping is computed in the route, not the client — `VersionReleaseRoutes` computes `tags` from `req.default`; client stays generic
+- [x] Java-skip + best-effort recovery extracted into a shared helper used by both routes (no duplicated guard) — `HttpStateApiClient.bestEffortNonJava` used by `VersionReleaseRoutes` and `CandidateDefaultRoutes`
+- [x] Path 1 reuses the `versions` Seq already fetched by `CandidateDefaultRoutes` (no second Mongo query) — `propagateLtsTag(versions)` folds over the in-scope Seq
+- [x] `PlatformMapper` / `DistributionMapper` reused for coordinate translation (no duplicated tables) — both propagation paths call the shared mappers
+- [x] Cross-path platform-scope asymmetry documented in code/comments where relevant — `propagateLtsTag` scaladoc + Path 2 route comment
+- [x] Cucumber acceptance scenarios above pass; `sbt test` green and scalafmt clean — `sbt scalafmtCheckAll test` → 104/104 passed, exit 0
