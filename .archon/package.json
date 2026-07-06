@@ -1,0 +1,9 @@
+{
+  "name": "archon-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Bun scripts supporting the Archon ralph-wiggum workflow",
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
