@@ -24,8 +24,20 @@ case class StateVersion(
     tags: Option[List[String]] = None
 )
 
+/** State API tag-assignment coordinate (`POST /versions/tags` on sdkman-state). `distribution`
+  * is `None` for non-java candidates; spray-json omits it so the field is absent on the wire.
+  */
+case class StateTagAssignment(
+    candidate: String,
+    version: String,
+    distribution: Option[String],
+    platform: String,
+    tag: String
+)
+
 object VersionJsonProtocol extends DefaultJsonProtocol {
   implicit val versionFormat = jsonFormat10(StateVersion)
+  implicit val tagFormat     = jsonFormat5(StateTagAssignment)
 }
 
 object HttpStateApiClient {
@@ -74,6 +86,13 @@ trait HttpStateApiClient extends LazyLogging {
 
   private def postVersions(jsonBody: String, token: String): HttpResponse[String] =
     Http(s"$stateApiUrl/versions")
+      .postData(jsonBody)
+      .header("Content-Type", "application/json")
+      .header("Authorization", s"Bearer $token")
+      .asString
+
+  private def postTags(jsonBody: String, token: String): HttpResponse[String] =
+    Http(s"$stateApiUrl/versions/tags")
       .postData(jsonBody)
       .header("Content-Type", "application/json")
       .header("Authorization", s"Bearer $token")
@@ -141,6 +160,80 @@ trait HttpStateApiClient extends LazyLogging {
         )
     }
   }
+
+  /** Assert a single tag on `(candidate, version, distribution, platform)` via the State API's
+    * append-only `POST /versions/tags` endpoint. `204 No Content` is success; a `401` clears the
+    * cached JWT, re-authenticates and retries exactly once — mirroring [[upsertVersionStateApi]].
+    * Any other non-2xx (or a retry that still fails) raises, so the best-effort recovery lives in
+    * the caller (see [[bestEffortNonJava]]).
+    */
+  def assignTagStateApi(
+      candidate: String,
+      version: String,
+      distribution: Option[String],
+      platform: String,
+      tag: String
+  ): Future[Unit] = Future {
+    val assignment = StateTagAssignment(candidate, version, distribution, platform, tag)
+
+    logger.debug(s"State API tag payload: ${assignment.toJson.prettyPrint}")
+
+    val jsonBody = assignment.toJson.compactPrint
+
+    val token    = getToken()
+    val response = postTags(jsonBody, token)
+
+    response.code match {
+      case 204 =>
+        logger.info(
+          s"Assigned tag '$tag' via $stateApiUrl/versions/tags: $candidate $version $platform " +
+            s"${distribution.getOrElse("")}"
+        )
+      case 401 =>
+        logger.info(s"State API returned 401 on tag assignment, re-authenticating...")
+        cachedToken.set(None)
+        val freshToken    = login()
+        val retryResponse = postTags(jsonBody, freshToken)
+        retryResponse.code match {
+          case 204 =>
+            logger.info(
+              s"Assigned tag '$tag' via $stateApiUrl/versions/tags after re-auth: $candidate $version $platform " +
+                s"${distribution.getOrElse("")}"
+            )
+          case retryStatus =>
+            logger.error(
+              s"Failed to assign tag to state API after re-auth. Status: $retryStatus, Body: ${retryResponse.body}"
+            )
+            throw new RuntimeException(
+              s"State API tag request failed after re-auth with status: $retryStatus, body: ${retryResponse.body}"
+            )
+        }
+      case statusCode =>
+        logger.error(
+          s"Failed to assign tag to state API. Status: $statusCode, Body: ${response.body}"
+        )
+        throw new RuntimeException(
+          s"State API tag request failed with status: $statusCode, body: ${response.body}"
+        )
+    }
+  }
+
+  /** Shared java-skip + best-effort boundary used by both propagation paths. Java is never
+    * dual-written (the DISCO pipeline owns java in the State API), and for every other candidate
+    * the State API outcome must never block or fail the authoritative Mongo write — any exception
+    * escaping `f` is logged and swallowed to `Future.unit`.
+    */
+  def bestEffortNonJava(candidate: String)(f: => Future[Unit]): Future[Unit] =
+    if (candidate.equalsIgnoreCase("java")) {
+      logger.info(s"Skipping State API propagation for Java candidate: $candidate")
+      Future.successful(())
+    } else {
+      f.recoverWith {
+        case ex: Exception =>
+          logger.error(s"Failed to propagate to state API: ${ex.getMessage}", ex)
+          Future.unit
+      }
+    }
 
   private def extractChecksums(
       checksums: Option[Map[String, String]]
