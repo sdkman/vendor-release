@@ -27,7 +27,7 @@ Gather context by reading these sources. Use parallel **Sonnet** subagents to re
 
 ## Phase 2: Analyse
 
-Use an **Opus** reasoning subagent to analyse and synthesise findings. Compare the source code and tests against the specifications.
+Use a **Fable** reasoning subagent with ultrathink/xhigh to analyse and synthesise findings. Compare the source code and tests against the specifications.
 
 Look for:
 - Gaps between specs and implementation

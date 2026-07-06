@@ -33,7 +33,7 @@ Pick the most important incomplete item from `IMPLEMENTATION_PLAN.md` and implem
 
 - No placeholders, no stubs — implement completely or don't start
 - Search the codebase before writing new code; the functionality may already exist
-- If specs are inconsistent, use an **Opus** reasoning subagent with ultrathink to update the specs before implementing
+- If specs are inconsistent, use an **Fable** reasoning subagent with ultrathink to update the specs before implementing
 - You may add logging to debug issues
 
 ## Phase 3: Verify
@@ -58,7 +58,7 @@ Once tests pass:
 
 ## Constraints
 
-- **Subagent discipline:** Use **Sonnet** subagents for search/read, **Opus** subagents for complex reasoning (debugging, architectural decisions), and only **1 Opus** subagent for build/test execution.
+- **Subagent discipline:** Use **Sonnet** subagents for search/read, **Fable** subagents for complex reasoning (debugging, architectural decisions), and only **1 Opus** subagent for build/test execution.
 - **Implement completely.** Placeholders and stubs waste effort redoing the same work.
 - **Single sources of truth.** Don't duplicate information across files.
 - **Document the why** — in tests, commits, and documentation, capture importance and reasoning.

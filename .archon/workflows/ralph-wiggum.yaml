@@ -69,7 +69,7 @@ nodes:
     idle_timeout: 600000
     loop:
       command: ralph-plan
-      model: fable
+      model: opus
       until: PLAN_STABLE
       max_iterations: 5
       fresh_context: true
