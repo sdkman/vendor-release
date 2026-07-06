@@ -39,6 +39,13 @@ class StubSteps extends ScalaDsl with EN with Matchers {
             .withStatus(204)
         )
     )
+    stubFor(
+      post(urlEqualTo("/versions/tags"))
+        .willReturn(
+          aResponse()
+            .withStatus(204)
+        )
+    )
   }
 
   And("""^the state API is unavailable$""") { () =>
@@ -194,5 +201,88 @@ class StubSteps extends ScalaDsl with EN with Matchers {
             .withBody("""{"error":"Rate limit exceeded"}""")
         )
     )
+  }
+
+  // --- Path 1: POST /versions/tags (lts tag on PUT /candidates/default) ---
+
+  And("""^the state API /versions/tags endpoint returns 404$""") { () =>
+    stubFor(
+      post(urlEqualTo("/versions/tags"))
+        .willReturn(
+          aResponse()
+            .withStatus(404)
+            .withBody("Not Found")
+        )
+    )
+  }
+
+  And("""^the state API /versions/tags endpoint is unavailable$""") { () =>
+    stubFor(
+      post(urlEqualTo("/versions/tags"))
+        .willReturn(
+          aResponse()
+            .withStatus(500)
+            .withBody("Internal Server Error")
+        )
+    )
+  }
+
+  And("""^the state API will return 401 on the first tags request$""") { () =>
+    stubFor(
+      post(urlEqualTo("/login"))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withBody("""{"token":"test-jwt-token"}""")
+        )
+    )
+    stubFor(
+      post(urlEqualTo("/versions/tags"))
+        .inScenario("tag-token-expiry")
+        .whenScenarioStateIs(Scenario.STARTED)
+        .willReturn(aResponse().withStatus(401))
+        .willSetStateTo("re-authenticated")
+    )
+    stubFor(
+      post(urlEqualTo("/versions/tags"))
+        .inScenario("tag-token-expiry")
+        .whenScenarioStateIs("re-authenticated")
+        .willReturn(aResponse().withStatus(204))
+    )
+  }
+
+  Then("""^the state API received a POST /versions/tags with tag (\S+) for (\S+) (\S+) (\S+)$""") {
+    (tag: String, candidate: String, version: String, platform: String) =>
+      verify(
+        postRequestedFor(urlEqualTo("/versions/tags"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.candidate == '$candidate')]"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.version == '$version')]"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.platform == '$platform')]"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.tag == '$tag')]"))
+      )
+  }
+
+  Then("""^the state API received a POST /versions/tags with platform (\S+)$""") {
+    expectedPlatform: String =>
+      verify(
+        postRequestedFor(urlEqualTo("/versions/tags"))
+          .withRequestBody(matchingJsonPath(s"$$[?(@.platform == '$expectedPlatform')]"))
+      )
+  }
+
+  Then("""^the state API received a POST /versions/tags with a Bearer token$""") { () =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions/tags"))
+        .withHeader("Authorization", matching("Bearer .*"))
+    )
+  }
+
+  Then("""^the state API received (\d+) POST /versions/tags requests?$""") { count: Int =>
+    verify(count, postRequestedFor(urlEqualTo("/versions/tags")))
+  }
+
+  Then("""^the state API did not receive any POST /versions/tags requests$""") { () =>
+    verify(0, postRequestedFor(urlEqualTo("/versions/tags")))
   }
 }
