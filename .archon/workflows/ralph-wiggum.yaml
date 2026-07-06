@@ -71,7 +71,7 @@ nodes:
       command: ralph-plan
       model: fable
       until: PLAN_STABLE
-      max_iterations: 3
+      max_iterations: 5
       fresh_context: true
       until_bash: bun run .archon/scripts/ralph-plan-cap.ts "$ARTIFACTS_DIR"
 
