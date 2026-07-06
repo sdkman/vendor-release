@@ -120,6 +120,20 @@ class StubSteps extends ScalaDsl with EN with Matchers {
     verify(0, postRequestedFor(urlEqualTo("/versions")))
   }
 
+  Then("""^the state API received a POST /versions payload containing tags \["lts"\]$""") { () =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withRequestBody(matchingJsonPath(s"$$[?(@.tags[0] == 'lts')]"))
+    )
+  }
+
+  Then("""^the state API received a POST /versions payload with no tags field$""") { () =>
+    verify(
+      postRequestedFor(urlEqualTo("/versions"))
+        .withRequestBody(matchingJsonPath(s"$$[?(!@.tags)]"))
+    )
+  }
+
   Then("""^the state API received a POST request with a Bearer token$""") { () =>
     verify(
       postRequestedFor(urlEqualTo("/versions"))
