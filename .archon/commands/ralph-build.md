@@ -33,14 +33,14 @@ Pick the most important incomplete item from `IMPLEMENTATION_PLAN.md` and implem
 
 - No placeholders, no stubs — implement completely or don't start
 - Search the codebase before writing new code; the functionality may already exist
-- If specs are inconsistent, use an **Fable** reasoning subagent with ultrathink to update the specs before implementing
+- If specs are inconsistent, use a **Fable** reasoning subagent with ultrathink to update the specs before implementing
 - You may add logging to debug issues
 
 ## Phase 3: Verify
 
 Run the project's test suite to validate your changes.
 
-- If tests fail, use an **Opus** reasoning subagent to reason about the root cause before attempting fixes
+- If tests fail, use a **Fable** reasoning subagent to reason about the root cause before attempting fixes
 - If tests unrelated to your work fail, resolve them as part of this increment
 - If functionality is missing, add it per the specifications
 - **Blocking Backpressure**: If the item involves frontend user interaction or workflows, verify with `dev-browser --headless` against `http://localhost:3000`.

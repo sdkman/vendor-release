@@ -22,7 +22,7 @@ description: |
 # IMPORTANT — model is set at the WORKFLOW level on purpose: loop nodes ignore a
 # per-node `model:` and always use the workflow-level model. Drop to `sonnet`
 # for faster/cheaper iterations; the prompts already delegate heavy reasoning to
-# Opus subagents.
+# Fable subagents.
 #
 # IMPORTANT — prerequisites & isolation: this workflow does NO git surgery.
 # Branch creation and committing the spec are the HUMAN's responsibility. Before
@@ -103,7 +103,7 @@ nodes:
       until_bash: bun run .archon/scripts/ralph-build-cap.ts "$ARTIFACTS_DIR"
 
   # ═══════════════════════════════════════════════════════════════════════
-  # NODE 5: REVIEW — one-shot Opus/ultrathink pass. Scrutinise the built
+  # NODE 5: REVIEW — one-shot Fable/ultrathink pass. Scrutinise the built
   # implementation against specs/ and APPEND any gaps as `- [ ]` items to
   # IMPLEMENTATION_PLAN.md (append-only ledger). Implements nothing; the
   # build-fix loop closes whatever it finds.

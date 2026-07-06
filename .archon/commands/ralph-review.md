@@ -27,7 +27,7 @@ Gather context. Use parallel **Sonnet** subagents to read concurrently — as ma
 
 ## Phase 2: Scrutinise
 
-Use an **Fable** reasoning subagent with **ultrathink** to compare the *real, on-disk implementation* against the specs. Be adversarial — assume the build was optimistic.
+Use a **Fable** reasoning subagent with **ultrathink** to compare the *real, on-disk implementation* against the specs. Be adversarial — assume the build was optimistic.
 
 Look for:
 - Spec requirements with no corresponding implementation
