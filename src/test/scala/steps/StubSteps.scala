@@ -130,7 +130,12 @@ class StubSteps extends ScalaDsl with EN with Matchers {
   Then("""^the state API received a POST /versions payload containing tags \["lts"\]$""") { () =>
     verify(
       postRequestedFor(urlEqualTo("/versions"))
+      // Pin the array to exactly ["lts"]: first element is "lts" AND no second
+      // element exists. Without the length pin, a hypothetical ["lts","latest"]
+      // would still satisfy `@.tags[0] == 'lts'` and slip past — violating the
+      // spec's "exactly one tag is asserted per version/platform".
         .withRequestBody(matchingJsonPath(s"$$[?(@.tags[0] == 'lts')]"))
+        .withRequestBody(matchingJsonPath(s"$$[?(!@.tags[1])]"))
     )
   }
 
