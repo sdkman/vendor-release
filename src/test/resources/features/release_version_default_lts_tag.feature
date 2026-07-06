@@ -44,6 +44,24 @@ Feature: Dual-write default version as lts tag on POST /versions
     And the state API received a POST request with a Bearer token
     And the state API received a POST /versions payload containing tags ["lts"]
 
+  Scenario: A default release still succeeds when the State API version dual-write fails
+    Given the existing default UNIVERSAL groovy version is 2.3.5
+    And the consumer for candidate groovy is making a request
+    And the URI /groovy-2.3.6.zip is available for download
+    And the state API is unavailable
+    When a JSON POST on the /versions endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://localhost:8080/groovy-2.3.6.zip",
+          |  "platform" : "UNIVERSAL",
+          |  "default" : true
+          |}
+    """
+    Then the status received is 201 CREATED
+    And the default groovy version is 2.3.6 on mongodb
+
   Scenario: Releasing a non-java version without default sends no tags field
     Given the existing default UNIVERSAL groovy version is 2.3.5
     And the consumer for candidate groovy is making a request
