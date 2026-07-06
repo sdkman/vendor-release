@@ -120,3 +120,6 @@ project/plugins/project/
 
 # vscode
 .vscode/
+
+# Ralph runtime state
+.ralph/
