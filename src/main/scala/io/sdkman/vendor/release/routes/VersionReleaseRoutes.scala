@@ -77,10 +77,16 @@ trait VersionReleaseRoutes
                     checksums = req.checksums
                   )
                   val mongoVersionString = req.version + vendor.map(v => s"-$v").getOrElse("")
+                  // Path 2: the default→lts policy lives in the route. A default release marks the
+                  // dual-written State version with the `lts` tag; a non-default release omits the
+                  // tags field entirely (never `Some(Nil)`, which would clear existing tags).
+                  val defaultRequested = req.default.exists(d => d)
+                  val tags =
+                    if (defaultRequested) Some(List(HttpStateApiClient.LtsTag)) else None
                   for {
                     _ <- upsertVersionMongodb(v.copy(version = mongoVersionString))
-                    _ <- conditionalStateApiPropagation(v)
-                    _ <- if (req.default.exists(d => d)) for {
+                    _ <- conditionalStateApiPropagation(v, tags)
+                    _ <- if (defaultRequested) for {
                       _ <- updateDefaultVersion(c.candidate, mongoVersionString)
                     } yield ()
                     else Future.successful(Unit)
@@ -158,19 +164,18 @@ trait VersionReleaseRoutes
       insert <- if (!updated) saveVersion(version) else Future.successful(Completed())
     } yield insert
 
-  private def conditionalStateApiPropagation(version: Version): Future[Unit] = {
-    if (version.candidate.equalsIgnoreCase("java")) {
-      logger.info(s"Skipping State API propagation for Java candidate: ${version.version}")
-      Future.successful(())
-    } else {
-      upsertVersionStateApi(version).recoverWith {
-        case ex: Exception =>
-          logger.error(
-            s"Failed to upsert version to state API: ${ex.getMessage}",
-            ex
-          )
-          Future.unit
-      }
+  private def conditionalStateApiPropagation(
+      version: Version,
+      tags: Option[List[String]]
+  ): Future[Unit] =
+    bestEffortNonJava(version.candidate) {
+      // Path 2 (default→lts): the route computes `tags` from `req.default` and threads it here;
+      // the client stays generic and simply carries whatever tags the caller supplies.
+      //
+      // Accepted cross-path platform-scope asymmetry: this path tags only the single platform
+      // being posted (`POST /versions` is one-platform-per-call), whereas Path 1
+      // (`PUT /candidates/default`) tags *all* platform rows of the version. The two coincide for
+      // the dominant UNIVERSAL non-java case — the single UNIVERSAL row.
+      upsertVersionStateApi(version, tags)
     }
-  }
 }

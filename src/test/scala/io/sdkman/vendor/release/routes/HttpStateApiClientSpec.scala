@@ -5,6 +5,8 @@ import akka.stream.{ActorMaterializer, Materializer, SystemMaterializer}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
+import com.github.tomakehurst.wiremock.http.Fault
+import com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
 import io.sdkman.model.Version
 import io.sdkman.vendor.release.Configuration
 import org.scalatest.concurrent.ScalaFutures
@@ -168,6 +170,207 @@ class HttpStateApiClientSpec
           .withRequestBody(matchingJsonPath("$[?(!@.sha256sum)]"))
           .withRequestBody(matchingJsonPath("$[?(!@.sha512sum)]"))
       )
+    }
+
+    "omit the tags field when serialising a StateVersion with tags None" in {
+      import VersionJsonProtocol._
+      import spray.json._
+
+      val stateVersion = StateVersion(
+        candidate = "groovy",
+        version = "2.3.6",
+        distribution = None,
+        url = "http://example.com/groovy.zip",
+        tags = None
+      )
+
+      val json = stateVersion.toJson.asJsObject
+      json.fields.keySet should not contain "tags"
+    }
+
+    "serialise tags as [\"lts\"] when a StateVersion carries the lts tag" in {
+      import VersionJsonProtocol._
+      import spray.json._
+
+      val stateVersion = StateVersion(
+        candidate = "groovy",
+        version = "2.3.6",
+        distribution = None,
+        url = "http://example.com/groovy.zip",
+        tags = Some(List(HttpStateApiClient.LtsTag))
+      )
+
+      val json = stateVersion.toJson.asJsObject
+      json.fields("tags") shouldBe JsArray(JsString("lts"))
+    }
+
+    "post tags [\"lts\"] to /versions when upserting with the lts tag" in {
+      stubFor(
+        post(urlEqualTo("/versions"))
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      val version = Version(
+        candidate = "groovy",
+        version = "2.3.6",
+        platform = "UNIVERSAL",
+        url = "http://example.com/groovy.zip",
+        vendor = None,
+        visible = Some(true)
+      )
+
+      client.upsertVersionStateApi(version, Some(List(HttpStateApiClient.LtsTag))).futureValue
+
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath("$[?(@.tags[0] == 'lts')]"))
+      )
+    }
+
+    "post no tags field to /versions when upserting without tags" in {
+      stubFor(
+        post(urlEqualTo("/versions"))
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      val version = Version(
+        candidate = "groovy",
+        version = "2.3.6",
+        platform = "UNIVERSAL",
+        url = "http://example.com/groovy.zip",
+        vendor = None,
+        visible = Some(true)
+      )
+
+      client.upsertVersionStateApi(version, None).futureValue
+
+      verify(
+        postRequestedFor(urlEqualTo("/versions"))
+          .withRequestBody(matchingJsonPath("$[?(!@.tags)]"))
+      )
+    }
+
+    "post a tag assignment to /versions/tags with a Bearer token and correct body" in {
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      client
+        .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        .futureValue
+
+      verify(
+        postRequestedFor(urlEqualTo("/versions/tags"))
+          .withHeader("Authorization", equalTo("Bearer test-jwt-token"))
+          .withRequestBody(matchingJsonPath("$[?(@.candidate == 'groovy')]"))
+          .withRequestBody(matchingJsonPath("$[?(@.version == '2.3.6')]"))
+          .withRequestBody(matchingJsonPath("$[?(@.platform == 'UNIVERSAL')]"))
+          .withRequestBody(matchingJsonPath("$[?(@.tag == 'lts')]"))
+          .withRequestBody(matchingJsonPath("$[?(!@.distribution)]"))
+      )
+    }
+
+    "include the distribution in the tag body when it is present" in {
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      client
+        .assignTagStateApi(
+          "java",
+          "17.0.1",
+          Some("TEMURIN"),
+          "LINUX_X64",
+          HttpStateApiClient.LtsTag
+        )
+        .futureValue
+
+      verify(
+        postRequestedFor(urlEqualTo("/versions/tags"))
+          .withRequestBody(matchingJsonPath("$[?(@.distribution == 'TEMURIN')]"))
+      )
+    }
+
+    "re-authenticate once and retry the tag write on a 401" in {
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .inScenario("tag-401")
+          .whenScenarioStateIs(STARTED)
+          .willReturn(aResponse().withStatus(401))
+          .willSetStateTo("retried")
+      )
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .inScenario("tag-401")
+          .whenScenarioStateIs("retried")
+          .willReturn(aResponse().withStatus(204))
+      )
+
+      client
+        .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        .futureValue
+
+      verify(2, postRequestedFor(urlEqualTo("/versions/tags")))
+      verify(2, postRequestedFor(urlEqualTo("/login")))
+    }
+
+    "recover a 404 tag write to Future.unit via bestEffortNonJava" in {
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .willReturn(aResponse().withStatus(404))
+      )
+
+      client
+        .bestEffortNonJava("groovy")(
+          client.assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        )
+        .futureValue shouldBe (())
+
+      verify(postRequestedFor(urlEqualTo("/versions/tags")))
+    }
+
+    "recover a 5xx tag write to Future.unit via bestEffortNonJava" in {
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .willReturn(aResponse().withStatus(503))
+      )
+
+      client
+        .bestEffortNonJava("groovy")(
+          client.assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        )
+        .futureValue shouldBe (())
+    }
+
+    "recover a connection failure to Future.unit via bestEffortNonJava" in {
+      stubFor(
+        post(urlEqualTo("/versions/tags"))
+          .willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE))
+      )
+
+      client
+        .bestEffortNonJava("groovy")(
+          client.assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        )
+        .futureValue shouldBe (())
+    }
+
+    "skip the State API entirely for java candidates via bestEffortNonJava" in {
+      client
+        .bestEffortNonJava("java")(
+          client.assignTagStateApi(
+            "java",
+            "17.0.1",
+            Some("TEMURIN"),
+            "LINUX_X64",
+            HttpStateApiClient.LtsTag
+          )
+        )
+        .futureValue shouldBe (())
+
+      verify(0, postRequestedFor(urlEqualTo("/versions/tags")))
     }
 
     "fail with meaningful error when state API returns error" in {
