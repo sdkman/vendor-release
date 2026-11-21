@@ -127,14 +127,14 @@ class StubSteps extends ScalaDsl with EN with Matchers {
     verify(0, postRequestedFor(urlEqualTo("/versions")))
   }
 
-  Then("""^the state API received a POST /versions payload containing tags \["lts"\]$""") { () =>
+  Then("""^the state API received a POST /versions payload containing tags \["stable"\]$""") { () =>
     verify(
       postRequestedFor(urlEqualTo("/versions"))
-      // Pin the array to exactly ["lts"]: first element is "lts" AND no second
-      // element exists. Without the length pin, a hypothetical ["lts","latest"]
-      // would still satisfy `@.tags[0] == 'lts'` and slip past — violating the
+      // Pin the array to exactly ["stable"]: first element is "stable" AND no second
+      // element exists. Without the length pin, a hypothetical ["stable","latest"]
+      // would still satisfy `@.tags[0] == 'stable'` and slip past — violating the
       // spec's "exactly one tag is asserted per version/platform".
-        .withRequestBody(matchingJsonPath(s"$$[?(@.tags[0] == 'lts')]"))
+        .withRequestBody(matchingJsonPath(s"$$[?(@.tags[0] == 'stable')]"))
         .withRequestBody(matchingJsonPath(s"$$[?(!@.tags[1])]"))
     )
   }
@@ -208,7 +208,7 @@ class StubSteps extends ScalaDsl with EN with Matchers {
     )
   }
 
-  // --- Path 1: POST /versions/tags (lts tag on PUT /candidates/default) ---
+  // --- Path 1: POST /versions/tags (stable tag on PUT /candidates/default) ---
 
   And("""^the state API /versions/tags endpoint returns 404$""") { () =>
     stubFor(

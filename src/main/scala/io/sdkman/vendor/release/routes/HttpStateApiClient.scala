@@ -43,9 +43,10 @@ object VersionJsonProtocol extends DefaultJsonProtocol {
 object HttpStateApiClient {
 
   /** The only tag vendor-release ever asserts for non-java candidates: the marker for the
-    * default version. `latest`, `26`, and every other tag are used exclusively on java.
+    * default version, from which the State API derives the candidate default. vendor-release
+    * never asserts `latest` or any java tag.
     */
-  val LtsTag = "lts"
+  val StableTag = "stable"
 }
 
 trait HttpStateApiClient extends LazyLogging {

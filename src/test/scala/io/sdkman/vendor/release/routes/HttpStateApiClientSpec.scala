@@ -188,7 +188,7 @@ class HttpStateApiClientSpec
       json.fields.keySet should not contain "tags"
     }
 
-    "serialise tags as [\"lts\"] when a StateVersion carries the lts tag" in {
+    "serialise tags as [\"stable\"] when a StateVersion carries the stable tag" in {
       import VersionJsonProtocol._
       import spray.json._
 
@@ -197,14 +197,14 @@ class HttpStateApiClientSpec
         version = "2.3.6",
         distribution = None,
         url = "http://example.com/groovy.zip",
-        tags = Some(List(HttpStateApiClient.LtsTag))
+        tags = Some(List(HttpStateApiClient.StableTag))
       )
 
       val json = stateVersion.toJson.asJsObject
-      json.fields("tags") shouldBe JsArray(JsString("lts"))
+      json.fields("tags") shouldBe JsArray(JsString("stable"))
     }
 
-    "post tags [\"lts\"] to /versions when upserting with the lts tag" in {
+    "post tags [\"stable\"] to /versions when upserting with the stable tag" in {
       stubFor(
         post(urlEqualTo("/versions"))
           .willReturn(aResponse().withStatus(204))
@@ -219,11 +219,11 @@ class HttpStateApiClientSpec
         visible = Some(true)
       )
 
-      client.upsertVersionStateApi(version, Some(List(HttpStateApiClient.LtsTag))).futureValue
+      client.upsertVersionStateApi(version, Some(List(HttpStateApiClient.StableTag))).futureValue
 
       verify(
         postRequestedFor(urlEqualTo("/versions"))
-          .withRequestBody(matchingJsonPath("$[?(@.tags[0] == 'lts')]"))
+          .withRequestBody(matchingJsonPath("$[?(@.tags[0] == 'stable')]"))
       )
     }
 
@@ -257,7 +257,7 @@ class HttpStateApiClientSpec
       )
 
       client
-        .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.StableTag)
         .futureValue
 
       verify(
@@ -266,7 +266,7 @@ class HttpStateApiClientSpec
           .withRequestBody(matchingJsonPath("$[?(@.candidate == 'groovy')]"))
           .withRequestBody(matchingJsonPath("$[?(@.version == '2.3.6')]"))
           .withRequestBody(matchingJsonPath("$[?(@.platform == 'UNIVERSAL')]"))
-          .withRequestBody(matchingJsonPath("$[?(@.tag == 'lts')]"))
+          .withRequestBody(matchingJsonPath("$[?(@.tag == 'stable')]"))
           .withRequestBody(matchingJsonPath("$[?(!@.distribution)]"))
       )
     }
@@ -283,7 +283,7 @@ class HttpStateApiClientSpec
           "17.0.1",
           Some("TEMURIN"),
           "LINUX_X64",
-          HttpStateApiClient.LtsTag
+          HttpStateApiClient.StableTag
         )
         .futureValue
 
@@ -309,7 +309,7 @@ class HttpStateApiClientSpec
       )
 
       client
-        .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+        .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.StableTag)
         .futureValue
 
       verify(2, postRequestedFor(urlEqualTo("/versions/tags")))
@@ -324,7 +324,8 @@ class HttpStateApiClientSpec
 
       client
         .bestEffortNonJava("groovy")(
-          client.assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+          client
+            .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.StableTag)
         )
         .futureValue shouldBe (())
 
@@ -339,7 +340,8 @@ class HttpStateApiClientSpec
 
       client
         .bestEffortNonJava("groovy")(
-          client.assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+          client
+            .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.StableTag)
         )
         .futureValue shouldBe (())
     }
@@ -352,7 +354,8 @@ class HttpStateApiClientSpec
 
       client
         .bestEffortNonJava("groovy")(
-          client.assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.LtsTag)
+          client
+            .assignTagStateApi("groovy", "2.3.6", None, "UNIVERSAL", HttpStateApiClient.StableTag)
         )
         .futureValue shouldBe (())
     }
@@ -365,7 +368,7 @@ class HttpStateApiClientSpec
             "17.0.1",
             Some("TEMURIN"),
             "LINUX_X64",
-            HttpStateApiClient.LtsTag
+            HttpStateApiClient.StableTag
           )
         )
         .futureValue shouldBe (())

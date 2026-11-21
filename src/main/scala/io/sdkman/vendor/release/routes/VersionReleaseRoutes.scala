@@ -77,12 +77,12 @@ trait VersionReleaseRoutes
                     checksums = req.checksums
                   )
                   val mongoVersionString = req.version + vendor.map(v => s"-$v").getOrElse("")
-                  // Path 2: the default→lts policy lives in the route. A default release marks the
-                  // dual-written State version with the `lts` tag; a non-default release omits the
+                  // Path 2: the default→stable policy lives in the route. A default release marks the
+                  // dual-written State version with the `stable` tag; a non-default release omits the
                   // tags field entirely (never `Some(Nil)`, which would clear existing tags).
                   val defaultRequested = req.default.exists(d => d)
                   val tags =
-                    if (defaultRequested) Some(List(HttpStateApiClient.LtsTag)) else None
+                    if (defaultRequested) Some(List(HttpStateApiClient.StableTag)) else None
                   for {
                     _ <- upsertVersionMongodb(v.copy(version = mongoVersionString))
                     _ <- conditionalStateApiPropagation(v, tags)
@@ -169,7 +169,7 @@ trait VersionReleaseRoutes
       tags: Option[List[String]]
   ): Future[Unit] =
     bestEffortNonJava(version.candidate) {
-      // Path 2 (default→lts): the route computes `tags` from `req.default` and threads it here;
+      // Path 2 (default→stable): the route computes `tags` from `req.default` and threads it here;
       // the client stays generic and simply carries whatever tags the caller supplies.
       //
       // Accepted cross-path platform-scope asymmetry: this path tags only the single platform
