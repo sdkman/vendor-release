@@ -67,7 +67,7 @@ Feature: Dual-write default version as stable tag
 
 ## Verification
 
-- [ ] `PUT /candidates/default` (non-java) asserts `stable` on every platform row
-- [ ] `POST /versions` with `default: true` (non-java) sends `tags: ["stable"]`
-- [ ] No `lts` is left in vendor-release's main or test sources outside the 001 spec
-- [ ] Every 001 scenario still passes, renamed to `stable`; `sbt test` green and scalafmt clean
+- [x] `PUT /candidates/default` (non-java) asserts `stable` on every platform row
+- [x] `POST /versions` with `default: true` (non-java) sends `tags: ["stable"]`
+- [x] No `lts` is left in vendor-release's main or test sources outside the 001 spec
+- [x] Every 001 scenario still passes, renamed to `stable`; `sbt test` green and scalafmt clean
