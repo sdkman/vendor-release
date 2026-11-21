@@ -14,10 +14,10 @@
 #  limitations under the License.
 #
 
-Feature: Dual-write default version as lts tag on POST /versions
+Feature: Dual-write default version as stable tag on POST /versions
 
-  Path 2 of the default-version lts-tag dual write: releasing a non-java version with
-  "default": true folds tags:["lts"] into the existing State API version dual-write; a
+  Path 2 of the default-version stable-tag dual write: releasing a non-java version with
+  "default": true folds tags:["stable"] into the existing State API version dual-write; a
   non-default release omits the tags field entirely (never an empty list). Java is skipped
   on this path exactly as the existing version dual-write already skips it.
 
@@ -25,7 +25,7 @@ Feature: Dual-write default version as lts tag on POST /versions
     Given the consumer has a valid auth token
     And the state API is available
 
-  Scenario: Releasing a non-java version as default includes the lts tag in the dual write
+  Scenario: Releasing a non-java version as default includes the stable tag in the dual write
     Given the existing default UNIVERSAL groovy version is 2.3.5
     And the consumer for candidate groovy is making a request
     And the URI /groovy-2.3.6.zip is available for download
@@ -42,7 +42,7 @@ Feature: Dual-write default version as lts tag on POST /versions
     Then the status received is 201 CREATED
     And the default groovy version is 2.3.6 on mongodb
     And the state API received a POST request with a Bearer token
-    And the state API received a POST /versions payload containing tags ["lts"]
+    And the state API received a POST /versions payload containing tags ["stable"]
 
   Scenario: A default release still succeeds when the State API version dual-write fails
     Given the existing default UNIVERSAL groovy version is 2.3.5

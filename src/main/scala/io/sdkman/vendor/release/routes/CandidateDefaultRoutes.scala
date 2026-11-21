@@ -51,11 +51,11 @@ trait CandidateDefaultRoutes
                 versions.headOption
                   .map { v =>
                     // Mongo default write first (authoritative), then best-effort State API tag
-                    // propagation of the `lts` marker. The tag write never blocks or fails the
+                    // propagation of the `stable` marker. The tag write never blocks or fails the
                     // 202 — Path 1's ordering (Mongo, then State) is deliberate.
                     for {
                       _ <- updateDefaultVersion(v.candidate, v.version)
-                      _ <- propagateLtsTag(versions)
+                      _ <- propagateStableTag(versions)
                     } yield acceptedResponse(s"Defaulted: ${v.candidate} ${v.version}")
                   }
                   .getOrElse(
@@ -71,7 +71,7 @@ trait CandidateDefaultRoutes
     }
   }
 
-  /** Assert the `lts` tag on the State API for every Mongo platform row of the defaulted version,
+  /** Assert the `stable` tag on the State API for every Mongo platform row of the defaulted version,
     * reusing the `versions` Seq the route already fetched (no second query). Each row is wrapped
     * independently in [[bestEffortNonJava]], so java is skipped wholesale and one platform's
     * failure neither blocks the Mongo write nor suppresses its siblings. The writes run serially
@@ -81,7 +81,7 @@ trait CandidateDefaultRoutes
     * version, whereas Path 2 (`POST /versions`) tags only the single platform being posted. The
     * two coincide for the dominant UNIVERSAL non-java case — the single UNIVERSAL row.
     */
-  private def propagateLtsTag(versions: Seq[Version]): Future[Unit] =
+  private def propagateStableTag(versions: Seq[Version]): Future[Unit] =
     versions.foldLeft(Future.unit) { (acc, v) =>
       acc.flatMap { _ =>
         bestEffortNonJava(v.candidate) {
@@ -90,7 +90,7 @@ trait CandidateDefaultRoutes
             version = v.version,
             distribution = v.vendor.flatMap(DistributionMapper.mapToStateDistribution),
             platform = PlatformMapper.mapToStatePlatform(v.platform),
-            tag = HttpStateApiClient.LtsTag
+            tag = HttpStateApiClient.StableTag
           )
         }
       }
